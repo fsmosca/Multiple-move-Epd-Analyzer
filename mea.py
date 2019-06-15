@@ -1,0 +1,873 @@
+"""
+A. Program name
+MEA - Multiple move EPD Analyzer
+
+B. Program description
+Analyzes epd file having multiple solution moves with points
+"""
+
+
+import sys
+import os
+import subprocess
+import logging
+import time
+import shutil
+import re
+import csv
+import argparse
+import chess
+import cpuinfo
+
+
+APP_NAME = 'MEA'
+APP_DESC = 'Analyzes epd file having multiple solution moves with points'
+APP_VERSION = '0.3'
+APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
+
+
+THREAD_NAME = ['Threads', 'Cores', 'Number Of Threads', 'Max CPUs', 'CPUs']
+
+
+# Create logger
+logger = logging.getLogger('root')
+FORMAT = "[%(asctime)24s - %(levelname)8s ] %(message)s"
+logger.setLevel(logging.DEBUG)
+
+
+def mate_distance_to_value(d):
+    """ returns value given distance to mate """
+    value = 0
+    if d < 0:
+        value = -2*d - 32000
+    elif d > 0:
+        value = 32000 - 2*d + 1
+    return value
+
+
+def delete_file(fn):
+    """ Delete file if it exist """
+    if os.path.isfile(fn):
+        os.remove(fn)
+
+
+def sort_key_top1(item):
+    """ Sort by top1 score """
+    return item[2]
+
+
+def sort_key_score(item):
+    """ Sort by score """
+    return item[5]
+
+
+def count_pos(inputfn):
+    """ count pos in the epd file """
+    cnt = 0
+    with open(inputfn) as f:
+        for _ in f:
+            cnt += 1
+    return cnt
+
+
+def csv_to_html(csvfn, htmlfn, epdfn):
+    """ Creates table in html format from csv file """
+    # Get epd filename alone, not including path
+    epd_fn_only = epdfn.split('\\')
+    varlen = len(epd_fn_only)
+    if varlen > 0:
+        epd_fn_name = epd_fn_only[varlen-1]
+    else:
+        epd_fn_name = epdfn
+    
+    info = cpuinfo.get_cpu_info()
+    
+    # Open the CSV file for reading
+    reader = csv.reader(open(csvfn))
+
+    # Create the HTML file for output
+    htmlfile = open(htmlfn,"w")
+
+    # initialize rownum variable
+    rownum = 0
+
+    htmlfile.write('<!DOCTYPE html>\n')
+    htmlfile.write('<head>\n')
+    htmlfile.write('<style>\n')
+    htmlfile.write('body{margin-top:0px;margin-left:128px;margin-right:128px;}\n')
+    htmlfile.write('table {width:100%;}\n')
+    htmlfile.write('table, th, td {border: 1px solid black;border-collapse: ' + 
+        'collapse;collapse;font-family: "Calibri", serif;font-size: 16px;}\n')
+    htmlfile.write('th, td {padding: 5px;text-align: left;}\n')
+    htmlfile.write('table#t01 tr:nth-child(even) {background-color: #eee;}\n')
+    htmlfile.write('table#t01 tr:nth-child(odd) {background-color:#fff;}\n')
+    htmlfile.write('table#t01 th {background-color: black;color: white;}\n')
+    htmlfile.write('</style>\n')
+    htmlfile.write('</head>\n')
+    htmlfile.write('<body>\n')
+
+    htmlfile.write('<h3>%s</h3>\n' %(APP_NAME))
+
+    htmlfile.write('<strong>A. Processor:</strong><br>\n')
+    htmlfile.write('Brand: %s<br>\n' %(info['brand']))
+    htmlfile.write('Arch: %s<br>\n' %(info['arch']))
+    htmlfile.write('Cores: %s<br><br>\n' %(info['count']))
+
+    htmlfile.write('<strong>B. EPD test set:</strong><br>\n')
+    htmlfile.write('Filename: %s<br><br>\n' %(epd_fn_name))
+
+    # write <table> tag
+    htmlfile.write('<table id="t01">')
+
+    # generate table contents
+
+    for row in reader: # Read a single row from the CSV file
+        # write header row. assumes first row in csv contains header
+        if rownum == 0:
+            htmlfile.write('<tr>') # write <tr> tag
+            for column in row:
+                htmlfile.write('<th>' + column + '</th>')
+            htmlfile.write('</tr>')
+
+        #write all other rows
+        else:
+            htmlfile.write('<tr>')
+            for column in row:
+                htmlfile.write('<td>' + column + '</td>')
+            htmlfile.write('</tr>')
+
+        #increment row count
+        rownum += 1
+
+    # write </table> tag
+    htmlfile.write('</table>\n')
+
+    htmlfile.write('</body>\n')
+    htmlfile.write('</html>\n')
+
+
+class Analyze():     
+    def __init__(self, engine, fen_list, max_epd_cnt,
+                 movetime, num_threads, num_hash, log_on, proto,
+                 name, san, stmode, protover, eoption=None):
+        self.engine = engine
+        self.fen_list = fen_list # [fen, solutions, id]
+        self.max_epd_cnt = max_epd_cnt
+        self.movetime = movetime
+        self.log_on = log_on
+        self.num_threads = num_threads
+        self.num_hash = num_hash
+        self.num_pos_tried = 0
+        self.best_cnt = 0
+        self.total_score = 0        
+        self.max_score = 0
+        self.stop_time_margin_ms = 500
+        self.proto = proto
+        self.name = name
+        self.san = san
+        self.stmode = stmode
+        self.protover = protover  # 1 or 2
+        self.eoption = eoption
+        self.multipv = 1
+
+    def run(self):
+        """ Run engine to analyze epd """
+        if self.proto == 'xboard':
+            self.run_xb_engine()
+        else:
+            self.run_uci_engine()
+
+    def get_result(self):
+        return [self.name, self.best_cnt, self.total_score,
+                self.max_score, self.num_pos_tried]
+        
+    def run_uci_engine(self):
+        """ Start engine """
+        logger.info('Run engine %s' % self.name)
+
+        # Works for windows and python 2.7.x
+        p = subprocess.Popen(self.engine,
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE)
+        
+        p.stdin.write("uci\n")
+        logger.debug('>> uci')
+        uciTN = []
+        for eline in iter(p.stdout.readline, ''):
+            aa = eline.strip()
+            logger.debug('<< %s' % aa)
+            for n in THREAD_NAME:
+                if n in aa:
+                    uciTN.append(n)
+                    break
+            if "uciok" in aa:
+                break
+
+        # Threads
+        uciTN = list(set(uciTN))
+        for n in uciTN:
+            p.stdin.write("setoption name %s value %d\n" % (n, self.num_threads))
+            logger.debug(">> setoption name %s value %d" %(n, self.num_threads))
+
+        # Hash in mb
+        p.stdin.write("setoption name Hash value %d\n" % self.num_hash)
+        logger.debug('>> setoption name Hash value %d' %(self.num_hash))
+        
+        # Other options
+        # 'Futility Pruning=true, lmr=false, contempt=false'
+        if self.eoption is not None:
+            opt_list = self.eoption.split(',')
+            logger.info('eoption: %s' % opt_list)
+            for o in opt_list:
+                opt = o.strip()
+                name = opt.split('=')[0].strip()
+                value = opt.split('=')[1].strip()
+                
+                # Set it
+                p.stdin.write("setoption name %s value %s\n" % (name, value))
+                logger.info(">> setoption name %s value %s" % (name, value))
+                
+                if name == 'multipv':
+                    self.multipv = int(value)
+        
+        # Prepare engine
+        p.stdin.write("isready\n")
+        logger.debug('>> isready')
+                
+        for eline in iter(p.stdout.readline, ''):
+            aa = eline.strip()
+            if 'readyok' in aa:
+                logger.debug('<< readyok')
+                break
+
+        line_cnt = 0
+        t1 = time.clock()
+
+        for fen_line in self.fen_list:
+            logger.info('\n')
+            logger.info('Pos %d' %(line_cnt+1))
+            logger.info('id %s' %(fen_line[2]))
+            logger.info('FEN: %s' %(fen_line[0]))
+            logger.info('Solutions: %s' %(fen_line[1]))
+                    
+            line_cnt += 1
+
+            # Console progress
+            print('epd %d / %d \r' %(line_cnt, self.max_epd_cnt)),
+            
+            depth_info = 0
+            score_cp_info = -32000
+            fen = fen_line[0]
+            movesan = None
+            
+            p.stdin.write("ucinewgame\n")
+            logger.debug('>> ucinewgame')
+            
+            p.stdin.write("position fen " + fen + "\n")
+            logger.debug(">> position fen " + fen)
+            
+            p.stdin.write("go movetime %d\n" % self.movetime)
+            go_start = time.clock()
+            logger.debug(">> go movetime %d" % self.movetime)
+            start_t = time.clock()
+            stop_sent = False
+
+            # Parse engine output
+            for eline in iter(p.stdout.readline, ''):
+                line = eline.strip()
+                
+                if ('depth ' in line and ' pv ' in line \
+                    and not 'upperbound' in line \
+                    and not 'lowerbound' in line) or "bestmove" in line:
+                    logger.debug('<< %s' % line)
+                
+                if self.multipv >= 2:
+                    for i in range(1, self.multipv + 1, 1):
+                        if 'multipv ' + str(i) in line:
+                            if i == 1 and 'score' in line:
+                                if 'score mate' in line:
+                                    distance_to_mate = int(line.split('mate')[1].split()[0].strip())
+                                    score_cp_info = mate_distance_to_value(distance_to_mate)
+                                elif 'cp' in line:
+                                    score_cp_info = int(line.split('cp')[1].split()[0].strip())
+                                    
+                            if i == 1 and 'depth' in line:
+                                depth_info = int(line.split('depth')[1].split()[0])
+                elif 'depth' in line or 'score' in line:                    
+                    # Get depth, assume depth first before seldepth
+                    if 'depth' in line:
+                        depth_info = int(line.split('depth')[1].split()[0])
+                    
+                    # Get score
+                    if 'score' in line:
+                        if 'score mate' in line:
+                            distance_to_mate = int(line.split('mate')[1].split()[0].strip())
+                            score_cp_info = mate_distance_to_value(distance_to_mate)
+                        elif 'cp' in line:
+                            score_cp_info = int(line.split('cp')[1].split()[0].strip())
+
+                if "bestmove" in line:
+                    logger.info('elapsed(ms) since go: %0.0f'\
+                                %((time.clock() - go_start) * 1000))
+                    self.num_pos_tried += 1
+                    bm = line.split()[1]
+                    bm = bm.strip()
+
+                    # Convert uci bestmove to san bestmove
+                    b = chess.Board(fen)
+                    try:
+                        b.push_uci(bm)
+                        move = b.pop()
+                        movesan = b.san(move)
+                        logger.info('bestmove: %s' %(movesan))
+                    except:
+                        print("move %s is not legal" %(bm))
+                        logger.error('move %s is not legal' %(bm))
+                    
+                    # Find in the solution set if bm is there
+                    # Sample solution set: Nd2=10, h3=7, Be2=6
+                    bests = fen_line[1] # Nd2=10, h3=7, Be2=6
+                    best_list = bests.split(',')
+                    
+                    top_move_cnt = 0                    
+                    this_move_score = 0
+                    for n in best_list:
+                        top_move_cnt += 1
+                        # Deal with 2 equal symbols, b1=Q=77
+                        if n.count('=') == 2:
+                            m = n.split('=')[0] + '=' +  n.split('=')[1] # Get move
+                            m = m.strip()
+                            s = int(n.split('=')[2])  # Get score
+                        else:
+                            m = n.split('=')[0]  # Get move
+                            m = m.strip()
+                            s = int(n.split('=')[1])  # Get score
+                        if top_move_cnt == 1:
+                            self.max_score += s
+                        if m == movesan:
+                            this_move_score = s
+                            if top_move_cnt == 1:
+                                self.best_cnt += 1
+                                logger.info('Top 1 move!!')
+                            self.total_score += s
+                            break
+                    logger.info('Score for this test: %d' % this_move_score)
+                    logger.info('Total Score update: %d / %d (%0.3f)'\
+                                   %(self.total_score,
+                                     self.max_score,
+                                     float(self.total_score)/self.max_score))                                
+                    break
+
+                # There are engines that does not follow movetime so we stop it
+                if not stop_sent and\
+                       (time.clock() - start_t)*1000 -\
+                       self.stop_time_margin_ms >= self.movetime:
+                    stop_sent = True
+                    p.stdin.write("stop\n")
+                    logger.debug(">> stop")
+                    
+            epd = ' '.join(fen_line[0].split()[0:4])
+            logger.info('%s bm %s; ce %d; acd %d;' % (epd, movesan,
+                                                      score_cp_info, depth_info))
+
+        # Quit engine when all fen are analyzed
+        p.stdin.write("quit\n")
+        logger.debug('>> quit')
+        p.communicate()
+
+        t2 = time.clock()
+
+        # Check analysis time anomalies
+        expectedMaxTime = self.movetime * self.max_epd_cnt  # ms
+        ActualElapsedTime = (t2 - t1) * 1000  # ms
+        timeMarginPerPos = 200  # ms
+        timeMargin = self.max_epd_cnt * timeMarginPerPos  # ms
+
+        logger.warning('\n')
+        
+        if (ActualElapsedTime <= expectedMaxTime + timeMargin) and\
+                ActualElapsedTime >= expectedMaxTime - timeMargin:
+            logger.info('Time allocation  : GOOD!!')
+        elif ActualElapsedTime > expectedMaxTime + timeMargin:
+            logger.info('Time allocation  : BAD!! spending more time')
+        else:
+            logger.info('Time allocation  : BAD!! spending less time')
+        logger.info('ExpectedTime     : %0.1fs' %(float(expectedMaxTime)/1000))
+        logger.info('ActualTime       : %0.1fs' %(float(ActualElapsedTime)/1000))
+        logger.info('TimeMargin/pos   : %0.1fs' %(float(timeMarginPerPos)/1000))
+        logger.info('TimeMarginTotal  : %0.1fs' %(float(timeMargin)/1000))
+
+    def run_xb_engine(self):
+        """ Start engine """
+        logger.info('Run engine %s' % self.name)
+
+        # Works for windows and python 2.7.x
+        p = subprocess.Popen(self.engine,
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE)
+        
+        p.stdin.write("xboard\n")
+        logger.debug('>> xboard')
+
+        # Wait for done=1, applies for protover 2 only
+        if self.protover == 2:
+            p.stdin.write("protover 2\n")
+            logger.debug('>> protover 2')
+
+            for eline in iter(p.stdout.readline, ''):
+                line = eline.strip()
+                logger.debug('<< %s' % line)
+                if 'done=1' in line:                    
+                    break
+
+        logger.debug('>> post')
+        p.stdin.write("post\n")        
+
+        p.stdin.write("new\n")
+        logger.debug('>> new')
+
+        p.stdin.write("hard\n")
+        logger.debug('>> hard')
+
+        p.stdin.write("easy\n")
+        logger.debug('>> easy')        
+
+        line_cnt = 0
+        t1 = time.clock()
+
+        for fen_line in self.fen_list:
+            logger.info('\n')
+            logger.info('Pos %d' %(line_cnt+1))
+            logger.info('id %s' %(fen_line[2]))
+            logger.info('FEN: %s' %(fen_line[0]))
+            logger.info('Solutions: %s' %(fen_line[1]))
+                    
+            line_cnt += 1
+
+            # Console progress
+            print('epd %d / %d \r' %(line_cnt, self.max_epd_cnt)),
+            
+            # depth = 0
+            fen = fen_line[0]
+            
+            p.stdin.write("new\n")
+            logger.debug('>> new')
+
+            p.stdin.write("force\n")
+            logger.debug(">> force")
+            
+            p.stdin.write("setboard %s\n" % fen)
+            logger.debug(">> setboard %s" % fen)
+
+            # Use st
+            if self.stmode:
+                p.stdin.write("st %0.0f\n" % (self.movetime/1000.0))
+                logger.debug(">> st %0.0f" % (self.movetime/1000.0))
+            # Use level
+            else:
+                period = 40
+                tpm_ms = self.movetime  # ms
+                tpm_s = period * tpm_ms/1000  # sec
+                m, s = divmod(tpm_s, 60)
+                if s == 0:
+                    p.stdin.write("level %d %d 0\n" % (period, m))
+                    logger.debug(">> level %d %d 0" % (period, m))
+                    
+                    p.stdin.write("time %d\n" % (period*tpm_ms/10))  # in centisec
+                    logger.debug(">> time %d" % (period*tpm_ms/10))
+                else:
+                    # EXchess does not like m:n notation for min:sec in level
+                    if 'exchess' in self.name.lower():
+                        p.stdin.write("level %d %d 0\n" % (period, max(1, m)))
+                        logger.debug(">> level %d %d 0" % (period, max(1, m)))                    
+                        p.stdin.write("time %d\n" % (period*tpm_ms/10))
+                        logger.debug(">> time %d" % (period*tpm_ms/10))
+                    else:
+                        p.stdin.write("level %d %d:%d 0\n" % (period, m, s))
+                        logger.debug(">> level %d %d:%d 0" % (period, m, s))
+                        p.stdin.write("time %d\n" % (period*tpm_ms/10))
+                        logger.debug(">> time %d" % (period*tpm_ms/10))
+            
+            p.stdin.write("go %d\n")
+            go_start = time.clock()
+            logger.debug(">> go")
+
+            # Parse engine output
+            for eline in iter(p.stdout.readline, ''):
+                line = eline.strip()
+                logger.debug("<< %s" % (line))
+                if "move" in line and len(line.split()) == 2:
+                    logger.info('elapsed(ms) since go: %0.0f' %(
+                            (time.clock() - go_start) * 1000))
+                    self.num_pos_tried += 1
+                    bm = line.split()[1]
+                    bm = bm.strip()
+
+                    if self.san:
+                        movesan = bm
+                    else:
+                        # Convert uci bestmove to san bestmove
+                        b = chess.Board(fen)
+                        try:
+                            b.push_uci(bm)
+                            move = b.pop()
+                            movesan = b.san(move)
+                            logger.info('bestmove: %s' % movesan)
+                        except:
+                            print("move %s is not legal" % bm)
+                            logger.error('move %s is not legal' % bm)
+                    
+                    # Find in the solution set if bm is there
+                    # Sample solution set: Nd2=10, h3=7, Be2=6
+                    bests = fen_line[1] # Nd2=10, h3=7, Be2=6
+                    best_list = bests.split(',')
+                    
+                    top_move_cnt = 0                    
+                    this_move_score = 0
+                    for n in best_list:
+                        top_move_cnt += 1
+                        # Deal with 2 equal symbols, b1=Q=77
+                        if n.count('=') == 2:
+                            m = n.split('=')[0] + '=' +  n.split('=')[1] # Get move
+                            m = m.strip()
+                            s = int(n.split('=')[2])  # Get score
+                        else:
+                            m = n.split('=')[0]  # Get move
+                            m = m.strip()
+                            s = int(n.split('=')[1])  # Get score
+                        if top_move_cnt == 1:
+                            self.max_score += s
+                        if m == movesan:
+                            this_move_score = s
+                            if top_move_cnt == 1:
+                                self.best_cnt += 1
+                                logger.info('Top 1 move!!')
+                            self.total_score += s
+                            break
+                    logger.info('Score for this test: %d' %(this_move_score))
+                    logger.info('Total Score update: %d / %d (%0.3f)' % (
+                            self.total_score, self.max_score,
+                            float(self.total_score)/self.max_score))
+                    break
+
+        # Quit engine when all fen are analyzed
+        p.stdin.write("quit\n")
+        logger.debug('>> quit')
+        p.communicate()
+
+        t2 = time.clock()
+
+        # Check analysis time anomalies
+        expectedMaxTime = self.movetime * self.max_epd_cnt  # ms
+        ActualElapsedTime = (t2 - t1) * 1000  # ms
+        timeMarginPerPos = 200  # ms
+        timeMargin = self.max_epd_cnt * timeMarginPerPos  # ms
+
+        logger.info('\n')
+        
+        if (ActualElapsedTime <= expectedMaxTime + timeMargin) and\
+                ActualElapsedTime >= expectedMaxTime - timeMargin:
+            logger.info('Time allocation  : GOOD!!')
+        elif ActualElapsedTime > expectedMaxTime + timeMargin:
+            logger.info('Time allocation  : BAD!! spending more time')
+        else:
+            logger.info('Time allocation  : BAD!! spending less time')
+        logger.info('ExpectedTime     : %0.1fs' %(float(expectedMaxTime)/1000))
+        logger.info('ActualTime       : %0.1fs' %(float(ActualElapsedTime)/1000))
+        logger.info('TimeMargin/pos   : %0.1fs' %(float(timeMarginPerPos)/1000))
+        logger.info('TimeMarginTotal  : %0.1fs' %(float(timeMargin)/1000))
+
+
+def create_epd_list(epd_fn):
+    """ Read epd file and return a list in a format
+        [fen, solutions, id]
+    """
+    fen_data = []
+    cnt = 0
+    with open(epd_fn, 'r') as f:
+        for line in f:                
+            epd_line = line.strip()
+            epd_with_bm = epd_line.split(';')[0]          
+            epd = ' '.join(epd_with_bm.split()[0:4])
+
+            # Get solution line for epd with multiple good moves
+            solutions = ''
+            try:
+                solutions = re.search('c0\s\"(.*?)\";', epd_line).group(1)
+            except:
+                print('\nProblem reading c0 field in epd: %s' %(epd_line))
+                print('This position is not included.\n')
+                continue
+            if ':' in solutions:
+                solutions = solutions.split(':')[1]
+            solutions = solutions.strip() # Nd2=10, h3=7, Be2=6
+            if solutions == '':
+                print('\nThe following epd has no solution pts. epd: %s' % epd_line)
+                print('This position is not included.\n')
+                continue
+            fen = epd + ' 0 1'
+
+            # Get id
+            epd_id = None
+            try:
+                epd_id = re.search('id\s\"(.*?)\";', epd_line).group(1)
+            except:
+                pass
+            fen_data.append([fen, solutions, epd_id])
+            cnt += 1
+
+    return cnt, fen_data
+
+
+def write_results_summary(out_fn, data, threadsval, hashval, movetime, epd_fn):
+    """ Write results summary in text format """
+    # Get epd filename alone, not including path
+    epd_fn_only = epd_fn.split('\\')
+    varlen = len(epd_fn_only)
+    if varlen > 0:
+        epd_fn_name = epd_fn_only[varlen-1]
+    else:
+        epd_fn_name = epd_fn
+        
+    # Write summary to a file
+    if not os.path.isfile(out_fn):
+        with open(out_fn, 'a') as f:
+            info = cpuinfo.get_cpu_info()
+            f.write('A. Processor\n')
+            f.write('Brand          : %s\n' %(info['brand']))
+            f.write('Arch           : %s\n' %(info['arch']))
+            f.write('Count          : %s\n\n' %(info['count']))
+            
+            f.write('B. Engine settings\n')
+            
+            f.write('Threads        : %d\n' %(threadsval))
+            f.write('Hash (mb)      : %d\n' %(hashval))
+            f.write('Time(s)/pos    : %0.1f\n\n' %(float(movetime)/1000))
+
+
+            f.write('C. Test set\n')            
+           
+            f.write('Filename       : %s\n' %(epd_fn_name))
+            f.write('NumPos         : %s\n\n' %(count_pos(epd_fn)))
+
+
+            f.write('D. Results\n')
+            
+            f.write('%-24s : %6s  %5s  %7s  %8s  %5s  %8s  %9s\n' % (
+                    'Engine', 'Rating', 'Top1', 'MaxTop1', 'Top1Rate',
+                    'Score', 'MaxScore', 'ScoreRate'))
+
+    logger.info('Writing analysis results ...')
+    with open(out_fn, 'a') as f:
+        for n in data:
+            engine_name = n[0]
+            top1_cnt = n[1]
+            total_score = n[2]
+            max_score = n[3]
+            epd_cnt_tried = n[4]
+            rating = n[6]
+
+            top1_rate = 0.0
+            if epd_cnt_tried:
+                top1_rate = float(top1_cnt)/epd_cnt_tried
+            
+            score_rate = 0.0
+            if max_score:
+                score_rate = float(total_score)/max_score
+            f.write('%-24s : %6d  %5d  %7d  %8.3f  %5d  %8d  %9.3f\n' % (
+                    engine_name, rating, top1_cnt, epd_cnt_tried,
+                    top1_rate, total_score, max_score, score_rate))
+            
+
+def write_results_in_csv(csv_fn, ana_data,
+                         ana_time, engine_numhash,
+                         engine_numthreads, temp_csv_fn):
+    # Write to csv file
+    if not os.path.isfile(csv_fn):
+        with open(csv_fn, 'a') as f:
+            f.write('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' % ('Engine', 'Rating',
+                    'Top1', 'MaxTop1', 'Top1Rate', 'Score', 'MaxScore',
+                    'ScoreRate', 'MoveTime(ms)', 'Hash(MB)', 'Threads'))
+            
+    with open(csv_fn, 'a') as f:
+        for n in ana_data:
+            engine_name = n[0]
+            top1_cnt = n[1]
+            total_score = n[2]
+            max_score = n[3]
+            epd_cnt_tried = n[4]
+            rating = n[6]
+
+            top1_rate = 0.0
+            if epd_cnt_tried:
+                top1_rate = float(top1_cnt)/epd_cnt_tried
+            
+            score_rate = 0.0
+            if max_score:
+                score_rate = float(total_score)/max_score
+            f.write('%s,%d,%d,%d,%0.3f,%d,%d,%0.3f,%d,%d,%d\n' % (engine_name,
+                    rating, top1_cnt, epd_cnt_tried, top1_rate, total_score,
+                    max_score, score_rate, ana_time, engine_numhash,
+                    engine_numthreads))
+
+    # Create html table from csv
+    # Sort csv data by top1, score, movetime, hash, threads
+    csv_data = []
+    csv_data_header = []
+    linecnt = 0
+    with open(csv_fn, 'r') as f:
+        for lines in f:
+            linecnt += 1
+            line = lines.strip()
+            splitv = line.split(',')
+                
+            if linecnt == 1:
+                csv_data_header.append(splitv)
+            if linecnt >= 2:
+                cnt = 0
+                a = []
+                for j in splitv:
+                    cnt += 1
+                    if cnt == 1:
+                        val = j
+                    elif cnt == 5 or cnt == 8:
+                        val = float(j)
+                    else:
+                        val = int(j)
+                    a.append(val)
+                csv_data.append(a)
+
+    csv_data = sorted(csv_data, key=sort_key_top1, reverse=True)
+    csv_data = sorted(csv_data, key=sort_key_score, reverse=True)
+
+    delete_file(temp_csv_fn)
+    
+    with open(temp_csv_fn, 'a') as f:
+        for n in csv_data_header:
+            f.write('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n'\
+                    %('Rank', n[0], n[1], n[2], n[3], n[4], n[5], n[6],
+                      n[7], n[8], n[9], n[10]))
+
+    with open(temp_csv_fn, 'a') as f:
+        cnt = 0
+        for n in csv_data:
+            cnt += 1
+            engine_name = n[0]
+            rating = int(n[1])
+            top1 = int(n[2])
+            maxtop1 = int(n[3])
+            top1rate = float(n[4])
+            score = int(n[5])
+            maxscore = int(n[6])
+            scorerate = float(n[7])
+            movetime = int(n[8])
+            hashval = int(n[9])
+            threadsval = int(n[10])
+            
+            f.write('%d,%s,%d,%d,%d,%0.3f,%d,%d,%0.3f,%d,%d,%d\n' % (
+                    cnt, engine_name, rating, top1, maxtop1, top1rate,
+                    score, maxscore, scorerate, movetime, hashval, threadsval))
+            
+def main(argv):    
+    parser = argparse.ArgumentParser(description=APP_DESC, epilog=APP_NAME_VERSION)
+    parser.add_argument("-i", "--epd", help="input epd filename", required=True)
+    parser.add_argument("-o", "--output", default='mea_results.txt',
+                        help="text output filename for result, default=mea_results.txt")
+    parser.add_argument("-e", "--engine", help="engine filename", required=True)
+    parser.add_argument('--eoption', 
+       help='uci engine option, --eoption "contempt=true, \
+       Futility Pruning=false, pawn value=120"', required=False)
+    parser.add_argument("-n", "--name", help="engine name", required=True)
+    parser.add_argument("-t", "--threads", default=1,
+                        help="Threads or cores to be used by the engine, \
+                        default=1.", type=int)
+    parser.add_argument("-m", "--hash", default=64,
+                        help="Hash in MB to be used by the engine, default=64.",
+                        type=int)
+    parser.add_argument("-a", "--movetime", default=500,
+                        help="Analysis time in milliseconds, 1s = 1000ms, \
+                        default=500", type=int)
+    parser.add_argument("-r", "--rating", default=2500, help="You may input a \
+                        rating for this engine, this will be shown in the \
+                        output files, default=2500",
+                        type=int)
+    parser.add_argument("-p", "--protocol", default="uci",
+                        help="engine protocol [uci/xboard], default=uci")
+    parser.add_argument("-s", "--san", default=0,
+                        help="for xboard engine, set this to 1 if it will send a move\
+                        in san format, default=0", type=int, choices=[0, 1])
+    parser.add_argument("--stmode", default=1,
+                        help="for xboard engines, set this to 0 if\
+                        it does not support st command, default=1",
+                        type=int, choices=[0, 1])
+    parser.add_argument("--protover", default=2,
+                        help="for xboard engines, this is protocol version number, default=2",
+                        type=int, choices=[1, 2])
+    parser.add_argument("-l", "--log",
+                        help="Records engine and analyzer output to [engine name]_log.txt",
+                        type=int, choices=[0, 1])
+
+    # Get values from arguments    
+    args = parser.parse_args()
+    input_epd_fn = args.epd
+    output_summary_fn = args.output
+    engine_fn = args.engine
+    engine_numthreads = args.threads
+    engine_numhash = args.hash
+    ana_time = args.movetime
+    engine_rating = args.rating
+    turn_log = args.log
+    proto = args.protocol
+    eoption = args.eoption
+
+    csv_fn = output_summary_fn[0:-4] + '.csv'
+    html_fn = output_summary_fn[0:-4] + '.html'
+
+    if not turn_log:
+        logger.setLevel(logging.CRITICAL+1)
+
+    # Covert epd file to a list
+    epd_cnt, fen_list = create_epd_list(input_epd_fn)
+    
+    ana_data = []
+    log_fn = None
+
+    log_fn = '_'.join(args.name.split()) + '_' + str(ana_time) + '_log.txt'
+    log_fn.replace('/', '_')
+    log_fn.replace('\\', '_')
+    logging.basicConfig(format=FORMAT, filename=log_fn,filemode='w')
+
+    a = Analyze(engine_fn, fen_list, epd_cnt, ana_time, engine_numthreads,
+                 engine_numhash, turn_log, proto, args.name,
+                 args.san, args.stmode, args.protover, eoption)
+    
+    start_time = time.clock()
+    a.run()
+    end_time = time.clock()
+    
+    elapsed = end_time - start_time             
+    v = a.get_result()  # [engine, top1cnt, score, maxscore, numpostried]
+    v.insert(len(v), elapsed)  # [engine, top1cnt, score, maxscore, numpostried, elapsed]
+    v.insert(len(v), engine_rating) # [engine, top1cnt, score, maxscore, numpostried, elapsed, rating]
+    ana_data.append(v)
+
+    temp_csv_fn = 'temp_csv_results.csv'
+    write_results_summary(output_summary_fn, ana_data, engine_numthreads,
+                          engine_numhash, ana_time, input_epd_fn)
+    write_results_in_csv(csv_fn, ana_data, ana_time, engine_numhash,
+                         engine_numthreads, temp_csv_fn)
+
+    delete_file(html_fn)        
+    csv_to_html(temp_csv_fn, html_fn, input_epd_fn)
+    delete_file(temp_csv_fn)
+    logger.info('Done!!')
+
+    # Move engine log to log dir
+    if log_fn is not None:
+        logger.info("move %s to log dir" %(log_fn))
+        logging.shutdown()
+        shutil.move(log_fn, "log/" + log_fn)
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

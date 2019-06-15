@@ -1,0 +1,649 @@
+[ 2019-06-15 14:40:44,210 -     INFO ] Run engine Deuterium v2019.1.36.50
+[ 2019-06-15 14:40:44,226 -    DEBUG ] >> uci
+[ 2019-06-15 14:40:44,226 -    DEBUG ] << info string Deuterium v2019.1.36.50 64bit POPCNT
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << id name Deuterium v2019.1.36.50
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << id author Ferdinand Mosca
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name Hash type spin default 128 min 8 max 2048
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name EvalHash type spin default 32 min 4 max 32
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name PawnHash type spin default 4 min 2 max 8
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name Log type check default false
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name Ponder type check default true
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name OwnBook type check default false
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name BookFilename type string default deuterium.bin
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name BookMoveSelect type combo default Random var BestWeight var BestScore var Random
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name PawnValueOp type spin default 95 min 70 max 110
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name PawnValueEn type spin default 125 min 90 max 150
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name KnightValueOp type spin default 325 min 250 max 350
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name KnightValueEn type spin default 315 min 250 max 350
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name BishopValueOp type spin default 328 min 250 max 350
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name BishopValueEn type spin default 327 min 250 max 350
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name RookValueOp type spin default 504 min 450 max 550
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name RookValueEn type spin default 498 min 450 max 550
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name QueenValueOp type spin default 996 min 900 max 1200
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name QueenValueEn type spin default 999 min 900 max 1200
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name KingShelterWeight type spin default 100 min 25 max 100000
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name PawnStormWeight type spin default 100 min 25 max 100000
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name KingAttackWeight type spin default 100 min 25 max 100000
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name MobilityWeight type spin default 100 min 25 max 100000
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name PassedPawnWeightOp type spin default 100 min 25 max 100000
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name PassedPawnWeightEn type spin default 100 min 25 max 100000
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name WeakSquareWeight type spin default 100 min 0 max 100000
+[ 2019-06-15 14:40:44,273 -    DEBUG ] << option name RookInOpenFileOp type spin default 32 min 4 max 100
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << option name RookInOpenFileEn type spin default 16 min 2 max 100
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << option name NullMove type check default true
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << option name RepetitionScore type spin default 0 min -29800 max 29800
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << option name InsufficientMaterialScore type spin default 0 min -29800 max 29800
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << option name FiftyMoveScore type spin default 0 min -29800 max 29800
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << option name StaleMateScore type spin default 0 min -29800 max 29800
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << option name TimeBufferMilliSec type spin default 60 min 0 max 1000
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << option name MultiPV type spin default 1 min 1 max 300
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << option name UCI_AnalyseMode type check default false
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << option name ClearHash type button
+[ 2019-06-15 14:40:44,288 -    DEBUG ] << uciok
+[ 2019-06-15 14:40:44,288 -    DEBUG ] >> setoption name Hash value 256
+[ 2019-06-15 14:40:44,288 -    DEBUG ] >> isready
+[ 2019-06-15 14:40:44,365 -    DEBUG ] << readyok
+[ 2019-06-15 14:40:44,365 -     INFO ] 
+
+[ 2019-06-15 14:40:44,365 -     INFO ] Pos 1
+[ 2019-06-15 14:40:44,365 -     INFO ] id tony.pos.01
+[ 2019-06-15 14:40:44,365 -     INFO ] FEN: 1r2r1k1/1pqbbppp/p2p1n2/4p3/P3PP2/2N1BB2/1PP2QPP/R4R1K b - - 0 1
+[ 2019-06-15 14:40:44,365 -     INFO ] Solutions: Rbc8=10, h6=9, exf4=8, Qc4=7, Kh8=6, Bc6=5, Ra8=4, Qc6=4, Qc8=2, Be6=1
+[ 2019-06-15 14:40:44,365 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:40:44,365 -    DEBUG ] >> position fen 1r2r1k1/1pqbbppp/p2p1n2/4p3/P3PP2/2N1BB2/1PP2QPP/R4R1K b - - 0 1
+[ 2019-06-15 14:40:44,365 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:40:44,381 -    DEBUG ] << info depth 1 seldepth 6 multipv 1 score cp 2 time 1 nodes 103 nps 103000 pv b8c8
+[ 2019-06-15 14:40:44,381 -    DEBUG ] << info depth 2 seldepth 7 multipv 1 score cp -23 time 1 nodes 273 nps 273000 pv b8c8 h2h3
+[ 2019-06-15 14:40:44,381 -    DEBUG ] << info depth 3 seldepth 8 multipv 1 score cp -1 time 1 nodes 718 nps 718000 pv h7h5 f4f5 b8c8
+[ 2019-06-15 14:40:44,381 -    DEBUG ] << info depth 4 seldepth 9 multipv 1 score cp -25 time 1 nodes 1379 nps 1379000 pv e8c8 h2h3 h7h6 f4f5
+[ 2019-06-15 14:40:44,381 -    DEBUG ] << info depth 5 seldepth 10 multipv 1 score cp -55 time 1 nodes 2747 nps 2747000 pv b8c8
+[ 2019-06-15 14:40:44,397 -    DEBUG ] << info depth 5 seldepth 8 multipv 1 score cp -45 time 15 nodes 3264 nps 217600 pv b8c8 e3b6 c7b8 f4f5 h7h6
+[ 2019-06-15 14:40:44,397 -    DEBUG ] << info depth 6 seldepth 11 multipv 1 score cp -50 time 15 nodes 5140 nps 342666 pv e5f4 e3f4 b8c8 h2h3 h7h6 f3e2
+[ 2019-06-15 14:40:44,397 -    DEBUG ] << info depth 7 seldepth 10 multipv 1 score cp -37 time 15 nodes 6540 nps 436000 pv e5f4 e3f4 b8c8 h2h3 h7h6 f3e2 g8h7
+[ 2019-06-15 14:40:44,397 -    DEBUG ] << info depth 8 seldepth 13 multipv 1 score cp -30 time 15 nodes 10651 nps 710066 pv e5f4 e3f4 b8c8 h2h3 h7h6 h3h4 g8h7 f3e2
+[ 2019-06-15 14:40:44,413 -    DEBUG ] << info depth 9 seldepth 15 multipv 1 score cp -47 time 31 nodes 19102 nps 616193 pv e5f4 e3f4 c7c4 f4e3 c4b4 f1b1 b8c8 a4a5 g8h8
+[ 2019-06-15 14:40:44,444 -    DEBUG ] << info depth 10 seldepth 17 multipv 1 score cp -50 time 62 nodes 40480 nps 652903 pv e5f4 e3f4 c7c4 f4e3 c4b4 f1b1 b8c8 e3b6 g8h8 h2h3
+[ 2019-06-15 14:40:44,490 -    DEBUG ] << info depth 11 seldepth 18 multipv 1 score cp -46 time 109 nodes 83841 nps 769183 pv e5f4 e3f4 b7b5 a4b5 d7b5 c3b5 b8b5 c2c3 c7b8 a1a6 b5b2
+[ 2019-06-15 14:40:44,927 -    DEBUG ] << info depth 12 seldepth 21 multipv 1 score cp -48 time 546 nodes 389887 nps 714078 pv b8c8 a1d1 c7c4 f4e5 d6e5 a4a5 e7c5 f3e2 c4b4 e3c5 b4c5 f2c5 c8c5
+[ 2019-06-15 14:40:44,974 -    DEBUG ] << info depth 13 seldepth 19 multipv 1 score cp -46 time 593 nodes 438107 nps 738797 pv b8c8 a1d1 c7c4 f4e5 d6e5 a4a5 c4e6 e3b6 e7b4 d1d3 b4c3 b2c3 g8h8
+[ 2019-06-15 14:40:45,755 -    DEBUG ] << info depth 14 seldepth 23 multipv 1 score cp -30 time 1373 nodes 1023403 nps 745377 pv c7c4 f2d2 b8c8 f4f5 d7c6 d2d3 c4d3 c2d3 c6d7 h2h3 d6d5 f3e2 d5e4 d3e4
+[ 2019-06-15 14:40:45,989 -    DEBUG ] << info depth 15 seldepth 22 multipv 1 score cp -39 time 1607 nodes 1193213 nps 742509 pv c7c4 f2d2 b8c8 f4f5 d7c6 d2d3 c4d3 c2d3 h7h6 h2h3 c6d7 f3e2 g8h7 h1h2 d7c6
+[ 2019-06-15 14:40:46,457 -    DEBUG ] << info depth 16 seldepth 24 multipv 1 score cp -25 time 2075 nodes 1553548 nps 748697 pv c7c4 f2d2 b8c8 f4f5 d7c6 d2d3 c4d3 c2d3 h7h6 h2h3 f6d7 h1h2 a6a5 h2g3 e7g5 e3g5 h6g5
+[ 2019-06-15 14:40:47,081 -    DEBUG ] << info depth 17 seldepth 23 multipv 1 score cp -34 time 2699 nodes 2038976 nps 755456 pv c7c4 f2d2 b8c8 h2h3 d7c6 d2d3 c4d3 c2d3 e5f4 e3f4 h7h6 f4e3 f6d7 f3h5 d7e5 h1h2 e7g5
+[ 2019-06-15 14:40:49,076 -    DEBUG ] << info depth 18 seldepth 27 multipv 1 score cp -31 time 4695 nodes 3519740 nps 749678 pv c7c4 f2d2 b8c8 f4f5 d7c6 d2d3 c4d3 c2d3 h7h6 h2h3 c6d7 h1h2 d6d5 e4d5 d7f5 f3e2 f5d7 a1c1
+[ 2019-06-15 14:40:49,388 -    DEBUG ] << bestmove c7c4
+[ 2019-06-15 14:40:49,388 -     INFO ] elapsed(ms) since go: 5021
+[ 2019-06-15 14:40:49,388 -     INFO ] bestmove: Qc4
+[ 2019-06-15 14:40:49,388 -     INFO ] Score for this test: 7
+[ 2019-06-15 14:40:49,388 -     INFO ] Total Score update: 7 / 10 (0.700)
+[ 2019-06-15 14:40:49,388 -     INFO ] 1r2r1k1/1pqbbppp/p2p1n2/4p3/P3PP2/2N1BB2/1PP2QPP/R4R1K b - - bm Qc4; ce -31; acd 18;
+[ 2019-06-15 14:40:49,388 -     INFO ] 
+
+[ 2019-06-15 14:40:49,388 -     INFO ] Pos 2
+[ 2019-06-15 14:40:49,388 -     INFO ] id tony.pos.02
+[ 2019-06-15 14:40:49,388 -     INFO ] FEN: r1bk1bnr/ppp2ppp/8/4n3/2P5/P3B3/1P3PPP/RN2KBNR w KQ - 0 1
+[ 2019-06-15 14:40:49,388 -     INFO ] Solutions: Nd2=5, h3=2, Be2=1
+[ 2019-06-15 14:40:49,388 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:40:49,388 -    DEBUG ] >> position fen r1bk1bnr/ppp2ppp/8/4n3/2P5/P3B3/1P3PPP/RN2KBNR w KQ - 0 1
+[ 2019-06-15 14:40:49,388 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:40:49,404 -    DEBUG ] << info depth 1 seldepth 3 multipv 1 score cp 81 time 1 nodes 63 nps 63000 pv b1c3
+[ 2019-06-15 14:40:49,404 -    DEBUG ] << info depth 2 seldepth 5 multipv 1 score cp 111 time 1 nodes 136 nps 136000 pv f2f4
+[ 2019-06-15 14:40:49,404 -    DEBUG ] << info depth 2 seldepth 5 multipv 1 score cp 211 time 1 nodes 157 nps 157000 pv f2f4
+[ 2019-06-15 14:40:49,404 -    DEBUG ] << info depth 2 seldepth 5 multipv 1 score cp 272 time 1 nodes 215 nps 215000 pv f2f4 f7f6 f4e5 f6e5
+[ 2019-06-15 14:40:49,404 -    DEBUG ] << info depth 3 seldepth 5 multipv 1 score cp 272 time 1 nodes 286 nps 286000 pv f2f4 f7f6 f4e5 f6e5
+[ 2019-06-15 14:40:49,404 -    DEBUG ] << info depth 4 seldepth 10 multipv 1 score cp 43 time 1 nodes 1118 nps 1118000 pv b1c3 e5g4 e1c1 f8d6 c1c2 g4e3 f2e3
+[ 2019-06-15 14:40:49,404 -    DEBUG ] << info depth 5 seldepth 12 multipv 1 score cp 56 time 1 nodes 1807 nps 1807000 pv b1c3 e5g4 a1d1 f8d6 c3e4 g4e3 e4d6 e3d1 d6f7 d8e7 f7h8
+[ 2019-06-15 14:40:49,421 -    DEBUG ] << info depth 6 seldepth 12 multipv 1 score cp 46 time 16 nodes 7405 nps 462812 pv b1d2 g8f6 a1d1 e5g4 d2e4 c8d7 e4f6 g4f6
+[ 2019-06-15 14:40:49,421 -    DEBUG ] << info depth 7 seldepth 12 multipv 1 score cp 33 time 16 nodes 10236 nps 639750 pv b1d2 g8f6 e1c1 e5g4 d2e4 c8d7 e4f6 g4f6
+[ 2019-06-15 14:40:49,451 -    DEBUG ] << info depth 8 seldepth 17 multipv 1 score cp 57 time 47 nodes 31297 nps 665893 pv b1d2 c8d7 h2h3 g8f6 e1c1 e5g6 g1f3 f8d6
+[ 2019-06-15 14:40:49,499 -    DEBUG ] << info depth 9 seldepth 16 multipv 1 score cp 65 time 94 nodes 69305 nps 737287 pv b1d2 e5g4 e3f4 g8e7 g1f3 f7f6 d2e4 e7g6 e1c1 c8d7
+[ 2019-06-15 14:40:49,592 -    DEBUG ] << info depth 10 seldepth 19 multipv 1 score cp 76 time 187 nodes 150765 nps 806229 pv b1c3 c8e6 e1c1 d8c8 g1f3 e5c4 f1c4 e6c4 d1d4 c4e6 h1d1
+[ 2019-06-15 14:40:49,686 -    DEBUG ] << info depth 11 seldepth 19 multipv 1 score cp 82 time 281 nodes 224735 nps 799768 pv g1f3 e5f3 g2f3 g8e7 b1c3 e7f5 e1c1 c8d7 h1g1 f8d6 f1d3 f5e3 f2e3
+[ 2019-06-15 14:40:49,700 -    DEBUG ] << info depth 12 seldepth 20 multipv 1 score cp 87 time 296 nodes 242323 nps 818658 pv g1f3 e5f3 g2f3 g8e7 b1c3 e7f5 e1c1 c8d7 h1g1 d8c8 f1d3 h7h5 c1c2 f8d6
+[ 2019-06-15 14:40:49,888 -    DEBUG ] << info depth 13 seldepth 22 multipv 1 score cp 64 time 484 nodes 400106 nps 826665 pv g1f3 e5f3 g2f3 f8d6 f1d3 g8f6 b1c3 d8e7 e1g1 c8e6 f1e1 d6e5 e3a7 e5h2 g1h2 a8a7
+[ 2019-06-15 14:40:50,778 -    DEBUG ] << info depth 14 seldepth 25 multipv 1 score cp 67 time 1373 nodes 1131636 nps 824206 pv b1d2 c8f5 e1c1 e5g4 d2b3 d8c8 e3d4 a7a5 h2h3 g4f6 g1f3 a5a4 b3d2 c7c5 d4c3
+[ 2019-06-15 14:40:51,605 -    DEBUG ] << info depth 15 seldepth 26 multipv 1 score cp 80 time 2200 nodes 1816533 nps 825696 pv g1f3 f8d6 f1e2 g8f6 b1c3 e5f3 e2f3 c8g4 f3b7 a8b8 h2h3 g4e6 b7f3 e6c4 e1c1 c4b3 e3a7 b3d1 a7b8 d1f3 g2f3
+[ 2019-06-15 14:40:51,979 -    DEBUG ] << info depth 16 seldepth 26 multipv 1 score cp 78 time 2574 nodes 2143854 nps 832888 pv g1f3 f8d6 f1e2 g8f6 b1c3 e5g4 e3d2 h8e8 h2h3 g4e5 e1g1 e5f3 e2f3 c7c6 d2g5 d8c7 a1d1
+[ 2019-06-15 14:40:53,101 -    DEBUG ] << info depth 17 seldepth 28 multipv 1 score cp 79 time 3697 nodes 3076104 nps 832054 pv g1f3 e5f3 g2f3 b7b6 b1c3 c8b7 e1c1 f8d6 f1e2 g8e7 c4c5 b6c5 e3c5 e7f5 c5d6 c7d6 e2d3 f5d4 d3e4
+[ 2019-06-15 14:40:54,413 -    DEBUG ] << bestmove g1f3 ponder e5f3
+[ 2019-06-15 14:40:54,413 -     INFO ] elapsed(ms) since go: 5022
+[ 2019-06-15 14:40:54,413 -     INFO ] bestmove: Nf3
+[ 2019-06-15 14:40:54,413 -     INFO ] Score for this test: 0
+[ 2019-06-15 14:40:54,413 -     INFO ] Total Score update: 7 / 15 (0.467)
+[ 2019-06-15 14:40:54,413 -     INFO ] r1bk1bnr/ppp2ppp/8/4n3/2P5/P3B3/1P3PPP/RN2KBNR w KQ - bm Nf3; ce 79; acd 17;
+[ 2019-06-15 14:40:54,413 -     INFO ] 
+
+[ 2019-06-15 14:40:54,413 -     INFO ] Pos 3
+[ 2019-06-15 14:40:54,413 -     INFO ] id tony.pos.03
+[ 2019-06-15 14:40:54,413 -     INFO ] FEN: 8/7p/3k2p1/6P1/4KP2/8/7P/8 w - - 0 1
+[ 2019-06-15 14:40:54,413 -     INFO ] Solutions: h4=1
+[ 2019-06-15 14:40:54,413 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:40:54,413 -    DEBUG ] >> position fen 8/7p/3k2p1/6P1/4KP2/8/7P/8 w - - 0 1
+[ 2019-06-15 14:40:54,413 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:40:54,427 -    DEBUG ] << info depth 1 seldepth 3 multipv 1 score cp 166 time 1 nodes 12 nps 12000 pv f4f5
+[ 2019-06-15 14:40:54,427 -    DEBUG ] << info depth 2 seldepth 3 multipv 1 score cp 178 time 1 nodes 44 nps 44000 pv f4f5 g6f5 e4f5
+[ 2019-06-15 14:40:54,427 -    DEBUG ] << info depth 3 seldepth 5 multipv 1 score cp 160 time 1 nodes 195 nps 195000 pv h2h4 d6e6 e4d4
+[ 2019-06-15 14:40:54,427 -    DEBUG ] << info depth 4 seldepth 5 multipv 1 score cp 167 time 1 nodes 363 nps 363000 pv f4f5 g6f5 e4f5 d6d5 h2h4
+[ 2019-06-15 14:40:54,427 -    DEBUG ] << info depth 5 seldepth 7 multipv 1 score cp 197 time 1 nodes 526 nps 526000 pv f4f5
+[ 2019-06-15 14:40:54,427 -    DEBUG ] << info depth 5 seldepth 7 multipv 1 score cp 206 time 1 nodes 818 nps 818000 pv f4f5 d6e7 f5f6 e7e6 h2h3 e6f7
+[ 2019-06-15 14:40:54,427 -    DEBUG ] << info depth 6 seldepth 8 multipv 1 score cp 218 time 1 nodes 1349 nps 1349000 pv f4f5 d6e7 f5f6 e7e6 h2h3 e6f7 e4d5
+[ 2019-06-15 14:40:54,427 -    DEBUG ] << info depth 7 seldepth 10 multipv 1 score cp 225 time 1 nodes 2409 nps 2409000 pv f4f5 d6e7 f5f6 e7e6 h2h3 e6d6 e4d4 d6e6
+[ 2019-06-15 14:40:54,427 -    DEBUG ] << info depth 8 seldepth 11 multipv 1 score cp 225 time 1 nodes 4072 nps 4072000 pv f4f5 d6e7 f5f6 e7e6 h2h3 e6d6 e4d4 d6e6 h3h4
+[ 2019-06-15 14:40:54,444 -    DEBUG ] << info depth 9 seldepth 13 multipv 1 score cp 218 time 16 nodes 8268 nps 516750 pv f4f5 d6e7 f5f6 e7e6 h2h3 e6d6 e4d3 d6e6 d3d4 e6f7 d4d5
+[ 2019-06-15 14:40:54,444 -    DEBUG ] << info depth 10 seldepth 14 multipv 1 score cp 218 time 16 nodes 12604 nps 787750 pv f4f5 d6e7 f5f6 e7e6 h2h3 e6d6 e4d3 d6e6 d3d4 e6f7 d4d5
+[ 2019-06-15 14:40:54,444 -    DEBUG ] << info depth 11 seldepth 15 multipv 1 score cp 256 time 16 nodes 24051 nps 1503187 pv f4f5 g6f5 e4f5 d6e7 h2h4 e7f7 h4h5 f7g8 f5f6 g8f8 h5h6 f8g8
+[ 2019-06-15 14:40:54,444 -    DEBUG ] << info depth 12 seldepth 16 multipv 1 score cp 232 time 16 nodes 32053 nps 2003312 pv f4f5 g6f5 e4f5 d6e7 h2h4 e7f7 h4h5 f7g8 f5f6 g8f8 g5g6 f8g8 g6g7 h7h6
+[ 2019-06-15 14:40:54,459 -    DEBUG ] << info depth 13 seldepth 17 multipv 1 score cp 246 time 31 nodes 44380 nps 1431612 pv f4f5 g6f5 e4f5 d6e7 h2h4 e7f7 h4h5 f7g8 f5f6 g8f8 g5g6 f8g8 g6g7 h7h6 f6g6
+[ 2019-06-15 14:40:54,474 -    DEBUG ] << info depth 14 seldepth 18 multipv 1 score cp 242 time 31 nodes 73273 nps 2363645 pv f4f5 g6f5 e4f5 d6e7 h2h3 e7f7 h3h4 f7g7 h4h5 g7f8 f5f6 f8g8 h5h6 g8f8 g5g6
+[ 2019-06-15 14:40:54,474 -    DEBUG ] << info depth 15 seldepth 19 multipv 1 score cp 242 time 47 nodes 97746 nps 2079702 pv f4f5 g6f5 e4f5 d6e7 h2h3 e7f7 h3h4 f7g7 h4h5 g7f8 f5f6 f8g8 h5h6 g8f8 g5g6 f8g8
+[ 2019-06-15 14:40:54,490 -    DEBUG ] << info depth 16 seldepth 21 multipv 1 score cp 262 time 63 nodes 133322 nps 2116222 pv f4f5 g6f5 e4f5 d6e7 h2h3 e7f7 h3h4 f7g7 h4h5 g7f8 f5e6 f8g7 e6e7 g7g8 h5h6 g8h8 e7e6
+[ 2019-06-15 14:40:54,506 -    DEBUG ] << info depth 17 seldepth 21 multipv 1 score cp 256 time 78 nodes 181037 nps 2320987 pv f4f5 g6f5 e4f5 d6e7 h2h3 e7f7 h3h4 f7g7 h4h5 g7f8 f5e6 f8g7 e6e7 g7g8 h5h6 g8h8 e7f6 h8g8
+[ 2019-06-15 14:40:54,536 -    DEBUG ] << info depth 18 seldepth 22 multipv 1 score cp 247 time 109 nodes 246220 nps 2258899 pv f4f5 g6f5 e4f5 d6e7 h2h3 e7f7 h3h4 f7g7 h4h5 g7f8 f5e6 f8g7 e6e7 g7g8 h5h6 g8h8 e7e6 h8g8 e6f6 g8f8
+[ 2019-06-15 14:40:54,569 -    DEBUG ] << info depth 19 seldepth 26 multipv 1 score cp 249 time 141 nodes 345192 nps 2448170 pv f4f5 g6f5 e4f5 d6e7 h2h4 e7f7 h4h5 f7f8 f5e6 f8g7 e6e7 g7g8 h5h6 g8h8 e7e6 h8g8 e6e5 g8f7 e5f5 f7f8
+[ 2019-06-15 14:40:54,615 -    DEBUG ] << info depth 20 seldepth 25 multipv 1 score cp 248 time 187 nodes 468694 nps 2506385 pv f4f5 g6f5 e4f5 d6e7 h2h4 e7f7 h4h5 f7f8 f5e6 f8g7 e6e7 g7g8 h5h6 g8h8 e7e6 h8g8 e6e5 g8f7 e5f5 f7f8 f5f4
+[ 2019-06-15 14:40:54,677 -    DEBUG ] << info depth 21 seldepth 29 multipv 1 score cp 248 time 250 nodes 650292 nps 2601168 pv f4f5 g6f5 e4f5 d6e7 h2h4 e7f7 h4h5 f7f8 f5e6 f8g7 e6e7 g7g8 h5h6 g8h8 e7e6 h8g8 e6e5 g8f8 e5f5 f8f7 f5g4 f7f8 g4f4
+[ 2019-06-15 14:40:54,848 -    DEBUG ] << info depth 22 seldepth 28 multipv 1 score cp 248 time 421 nodes 1040896 nps 2472437 pv f4f5 g6f5 e4f5 d6e7 h2h4 e7f7 h4h5 f7f8 f5e6 f8g7 e6e7 g7g8 h5h6 g8h8 e7e6 h8g8 e6f6 g8f8 f6f5 f8f7 f5g4 f7g8 g4f4 g8f8
+[ 2019-06-15 14:40:54,927 -    DEBUG ] << info depth 23 seldepth 28 multipv 1 score cp 256 time 499 nodes 1247029 nps 2499056 pv f4f5 g6f5 e4f5 d6e7 h2h4 e7f7 h4h5 f7f8 f5e6 f8g7 e6e7 g7g8 h5h6 g8h8 e7e6 h8g8 e6f6 g8f8 f6e5 f8g8 e5e6 g8f8 e6f6 f8g8
+[ 2019-06-15 14:40:55,255 -    DEBUG ] << info depth 24 seldepth 29 multipv 1 score cp 247 time 827 nodes 2210575 nps 2673004 pv h2h4 d6e6 h4h5 e6d6 f4f5 g6f5 e4f5 d6e7 f5g4 e7f7 h5h6 f7f8 g4f4 f8f7 f4f5 f7g8 f5e6 g8f8 e6f6 f8g8 f6e7 g8h8 e7e6 h8g8 e6f6 g8f8
+[ 2019-06-15 14:40:55,302 -    DEBUG ] << info depth 25 seldepth 31 multipv 1 score cp 249 time 874 nodes 2347257 nps 2685648 pv h2h4 d6e6 h4h5 e6d6 f4f5 g6f5 e4f5 d6e7 f5g4 e7f7 h5h6 f7f8 g4f4 f8f7 f4f5 f7g8 f5e6 g8f8 e6f6 f8g8 f6e7 g8h8 e7e6 h8g8 e6f6 g8f8 f6f5
+[ 2019-06-15 14:40:55,411 -    DEBUG ] << info depth 26 seldepth 31 multipv 1 score cp 259 time 983 nodes 2663306 nps 2709365 pv h2h4 d6e6 h4h5 e6d6 f4f5 g6f5 e4f5 d6e7 h5h6 e7f7 f5f4 f7g8 f4e5 g8f7 e5f5 f7g8 f5e6 g8f8 e6f6 f8g8 f6e7 g8h8 e7d7 h8g8 d7e8 g8h8 e8f7
+[ 2019-06-15 14:40:55,614 -    DEBUG ] << info depth 27 seldepth 32 multipv 1 score cp 251 time 1186 nodes 3307589 nps 2788860 pv h2h4 d6e6 h4h5 e6d6 h5g6 h7g6 f4f5 d6e7 f5f6 e7f8 e4e5 f8f7 e5d6 f7f8 f6f7 f8f7 d6d7 f7f8 d7e6 f8g7 e6e7 g7g8 e7f6 g8f8 f6g6 f8e7 g6h7 e7f8 g5g6
+[ 2019-06-15 14:40:55,957 -    DEBUG ] << info depth 28 seldepth 32 multipv 1 score cp 344 time 1529 nodes 4227676 nps 2764994 pv h2h4 d6e6 h4h5 e6d6 h5g6 h7g6 f4f5 d6e7 f5f6 e7f8 e4e5 f8f7 e5d6 f7f8 f6f7 f8f7 d6d7 f7f8 d7e6 f8g7 e6e7 g7g8 e7f6 g8f8 f6g6 f8g8 g6f6 g8h7 g5g6 h7h8 f6f7
+[ 2019-06-15 14:40:56,065 -    DEBUG ] << info depth 29 seldepth 34 multipv 1 score cp 344 time 1638 nodes 4523725 nps 2761736 pv h2h4 d6e6 h4h5 e6d6 h5g6 h7g6 f4f5 d6e7 f5f6 e7f8 e4e5 f8f7 e5d6 f7f8 f6f7 f8f7 d6d7 f7f8 d7e6 f8g7 e6e7 g7g8 e7f6 g8f8 f6g6 f8g8 g6f6 g8h7 f6f7 h7h8 g5g6
+[ 2019-06-15 14:40:56,237 -    DEBUG ] << info depth 30 seldepth 36 multipv 1 score cp 414 time 1810 nodes 5081500 nps 2807458 pv h2h4 d6e6 h4h5 e6d6 h5g6 h7g6 f4f5 d6e7 f5f6 e7f8 e4e5 f8f7 e5d6 f7f8 f6f7 f8f7 d6d7 f7f8 d7e6 f8g7 e6e7 g7g8 e7f6 g8f8 f6g6 f8g8 g6h6 g8f8 h6h7 f8e7 g5g6 e7f6 g6g7
+[ 2019-06-15 14:40:58,940 -    DEBUG ] << info depth 31 seldepth 42 multipv 1 score cp 2105 time 4512 nodes 10837197 nps 2401861 pv h2h4 d6e6 h4h5 e6d6 h5g6 h7g6 f4f5 d6e7 f5f6 e7f8 e4e5 f8f7 e5d6 f7f8 f6f7 f8f7 d6d7 f7f8 d7e6 f8g7 e6e7 g7g8 e7f6 g8f8 f6g6 f8g8 g6h6 g8f8 h6h7 f8e7 g5g6 e7e6 g6g7 e6d5 g7g8q d5d4
+[ 2019-06-15 14:40:59,438 -    DEBUG ] << bestmove h2h4
+[ 2019-06-15 14:40:59,438 -     INFO ] elapsed(ms) since go: 5024
+[ 2019-06-15 14:40:59,438 -     INFO ] bestmove: h4
+[ 2019-06-15 14:40:59,438 -     INFO ] Top 1 move!!
+[ 2019-06-15 14:40:59,438 -     INFO ] Score for this test: 1
+[ 2019-06-15 14:40:59,438 -     INFO ] Total Score update: 8 / 16 (0.500)
+[ 2019-06-15 14:40:59,438 -     INFO ] 8/7p/3k2p1/6P1/4KP2/8/7P/8 w - - bm h4; ce 2105; acd 31;
+[ 2019-06-15 14:40:59,438 -     INFO ] 
+
+[ 2019-06-15 14:40:59,438 -     INFO ] Pos 4
+[ 2019-06-15 14:40:59,438 -     INFO ] id tony.pos.04
+[ 2019-06-15 14:40:59,438 -     INFO ] FEN: r1b1r1k1/1p1n1pbp/2p1n1p1/q1P1p3/4P3/1PN1BNPP/2Q2PB1/1R1R2K1 w - - 0 1
+[ 2019-06-15 14:40:59,438 -     INFO ] Solutions: Na4=10, b4=7, Kh2=6, Rb2=5, Bf1=5, Rd3=3, g4=2, Ne1=1
+[ 2019-06-15 14:40:59,438 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:40:59,438 -    DEBUG ] >> position fen r1b1r1k1/1p1n1pbp/2p1n1p1/q1P1p3/4P3/1PN1BNPP/2Q2PB1/1R1R2K1 w - - 0 1
+[ 2019-06-15 14:40:59,438 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 1 seldepth 5 multipv 1 score cp 219 time 1 nodes 95 nps 95000 pv b3b4
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 2 seldepth 3 multipv 1 score cp 304 time 1 nodes 109 nps 109000 pv b3b4
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 2 seldepth 3 multipv 1 score cp 404 time 1 nodes 120 nps 120000 pv b3b4
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 2 seldepth 6 multipv 1 score cp 956 time 1 nodes 209 nps 209000 pv b3b4 a5b4 b1b4 d7c5
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 3 seldepth 5 multipv 1 score cp 554 time 1 nodes 311 nps 311000 pv b3b4
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 3 seldepth 5 multipv 1 score cp 601 time 1 nodes 388 nps 388000 pv b3b4 e6d4 e3d4
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 4 seldepth 6 multipv 1 score cp 631 time 1 nodes 447 nps 447000 pv b3b4
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 4 seldepth 5 multipv 1 score cp 731 time 1 nodes 488 nps 488000 pv b3b4
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 4 seldepth 9 multipv 1 score cp 769 time 1 nodes 596 nps 596000 pv b3b4 e6d4 e3d4 e5d4 b4a5 d4c3
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 5 seldepth 9 multipv 1 score cp 143 time 1 nodes 1121 nps 1121000 pv b3b4 a5a3 g1h2 a3a6 h2g1
+[ 2019-06-15 14:40:59,453 -    DEBUG ] << info depth 6 seldepth 12 multipv 1 score cp 139 time 1 nodes 2242 nps 2242000 pv b3b4 a5a6 b4b5 a6a5 b5c6 b7c6
+[ 2019-06-15 14:40:59,470 -    DEBUG ] << info depth 7 seldepth 13 multipv 1 score cp 131 time 16 nodes 5962 nps 372625 pv b3b4 a5a6 g1h2 e8d8 b4b5 a6a5 b5c6 b7c6
+[ 2019-06-15 14:40:59,486 -    DEBUG ] << info depth 8 seldepth 14 multipv 1 score cp 137 time 32 nodes 17461 nps 545656 pv b3b4 a5c7 g1h2 e8d8 h3h4 b7b6 g2h3 b6c5 h3e6 f7e6 b4c5
+[ 2019-06-15 14:40:59,486 -    DEBUG ] << info depth 9 seldepth 14 multipv 1 score cp 124 time 32 nodes 24339 nps 760593 pv b3b4 a5c7 g1h2 d7f6 h2g1 c7b8 b4b5 b8c7 g1h2
+[ 2019-06-15 14:40:59,532 -    DEBUG ] << info depth 10 seldepth 17 multipv 1 score cp 112 time 78 nodes 53408 nps 684717 pv b3b4 a5c7 g2f1 d7f6 g1h2 e8d8 d1d8 c7d8 b1d1 d8c7 f1c4
+[ 2019-06-15 14:40:59,625 -    DEBUG ] << info depth 11 seldepth 17 multipv 1 score cp 83 time 172 nodes 123915 nps 720436 pv b3b4 a5c7 g2f1 d7f6 d1d6 g7f8 d6d3 h7h6 b1d1 c8d7 g1g2
+[ 2019-06-15 14:40:59,673 -    DEBUG ] << info depth 12 seldepth 19 multipv 1 score cp 104 time 219 nodes 158467 nps 723593 pv b3b4 a5c7 g2f1 d7f6 f1c4 e8d8 b4b5 c8d7 b5b6 c7b8 g1g2 h7h6
+[ 2019-06-15 14:40:59,812 -    DEBUG ] << info depth 13 seldepth 21 multipv 1 score cp 98 time 359 nodes 260181 nps 724738 pv b3b4 a5c7 c3a4 h7h6 b1a1 e8d8 h3h4 g8h7 a4b6 d7b6 c5b6 c7b8 a1a8 b8a8 d1d8 e6d8
+[ 2019-06-15 14:41:00,016 -    DEBUG ] << info depth 14 seldepth 23 multipv 1 score cp 109 time 562 nodes 414280 nps 737153 pv b3b4 a5c7 c3a4 h7h6 h3h4 e8d8 g2f1 g8h7 f1c4 h7g8 c4e6 f7e6 a4c3 d7b8
+[ 2019-06-15 14:41:00,171 -    DEBUG ] << info depth 15 seldepth 24 multipv 1 score cp 127 time 718 nodes 541442 nps 754097 pv b3b4 a5c7 c3a4 h7h6 d1d2 e8d8 b1d1 g6g5 a4b6 a8a3 g1h2 a3e3 f2e3 d7b6 d2d8 e6d8 c5b6 c7b6
+[ 2019-06-15 14:41:00,701 -    DEBUG ] << info depth 16 seldepth 23 multipv 1 score cp 97 time 1248 nodes 937897 nps 751520 pv b3b4
+[ 2019-06-15 14:41:02,542 -    DEBUG ] << info depth 16 seldepth 26 multipv 1 score cp 99 time 3089 nodes 2295101 nps 742991 pv c3a4 e8d8 h3h4 h7h6 b1a1 a5c7 b3b4 h6h5 a1c1 e6d4 f3d4 e5d4 e3d4 g7d4 d1d4 d7f6
+[ 2019-06-15 14:41:02,948 -    DEBUG ] << info depth 17 seldepth 29 multipv 1 score cp 100 time 3495 nodes 2612295 nps 747437 pv c3a4 e8d8 h3h4 h7h6 b1a1 a5c7 d1d3 g6g5 h4g5 h6g5 f3g5 e6d4 e3d4 e5d4 a1d1 c7e5 g5f3
+[ 2019-06-15 14:41:04,461 -    DEBUG ] << bestmove c3a4
+[ 2019-06-15 14:41:04,461 -     INFO ] elapsed(ms) since go: 5022
+[ 2019-06-15 14:41:04,461 -     INFO ] bestmove: Na4
+[ 2019-06-15 14:41:04,461 -     INFO ] Top 1 move!!
+[ 2019-06-15 14:41:04,461 -     INFO ] Score for this test: 10
+[ 2019-06-15 14:41:04,461 -     INFO ] Total Score update: 18 / 26 (0.692)
+[ 2019-06-15 14:41:04,461 -     INFO ] r1b1r1k1/1p1n1pbp/2p1n1p1/q1P1p3/4P3/1PN1BNPP/2Q2PB1/1R1R2K1 w - - bm Na4; ce 100; acd 17;
+[ 2019-06-15 14:41:04,461 -     INFO ] 
+
+[ 2019-06-15 14:41:04,461 -     INFO ] Pos 5
+[ 2019-06-15 14:41:04,461 -     INFO ] id tony.pos.05
+[ 2019-06-15 14:41:04,461 -     INFO ] FEN: 1rN1r1k1/1pq2pp1/2p1nn1p/p2p1B2/3P4/4P2P/PPQ1NPP1/2R2RK1 b - - 0 1
+[ 2019-06-15 14:41:04,461 -     INFO ] Solutions: Rbxc8=7, Rexc8=5, Ra8=1
+[ 2019-06-15 14:41:04,461 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:04,461 -    DEBUG ] >> position fen 1rN1r1k1/1pq2pp1/2p1nn1p/p2p1B2/3P4/4P2P/PPQ1NPP1/2R2RK1 b - - 0 1
+[ 2019-06-15 14:41:04,461 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:04,477 -    DEBUG ] << info depth 1 seldepth 4 multipv 1 score cp 7 time 1 nodes 42 nps 42000 pv b8c8 f5e6 e8e6
+[ 2019-06-15 14:41:04,477 -    DEBUG ] << info depth 2 seldepth 4 multipv 1 score cp -4 time 1 nodes 106 nps 106000 pv b8c8 f2f3
+[ 2019-06-15 14:41:04,477 -    DEBUG ] << info depth 3 seldepth 6 multipv 1 score cp 3 time 1 nodes 285 nps 285000 pv b8c8 g1h1 c8b8 f5e6 e8e6
+[ 2019-06-15 14:41:04,477 -    DEBUG ] << info depth 4 seldepth 9 multipv 1 score cp 2 time 1 nodes 477 nps 477000 pv b8c8 g1h1 g7g6 f5e6 e8e6
+[ 2019-06-15 14:41:04,477 -    DEBUG ] << info depth 5 seldepth 11 multipv 1 score cp -21 time 1 nodes 1252 nps 1252000 pv b8c8 e2f4 b7b6 h3h4 e6f4 f5c8 e8c8 e3f4 c7f4
+[ 2019-06-15 14:41:04,477 -    DEBUG ] << info depth 6 seldepth 13 multipv 1 score cp -39 time 1 nodes 2914 nps 2914000 pv b8c8 e2f4 c8a8 f5e6 f7e6 g1h2
+[ 2019-06-15 14:41:04,493 -    DEBUG ] << info depth 7 seldepth 11 multipv 1 score cp -38 time 15 nodes 4115 nps 274333 pv b8c8 e2f4 c8a8 f4e6 f7e6 f5g6 e8b8
+[ 2019-06-15 14:41:04,493 -    DEBUG ] << info depth 8 seldepth 11 multipv 1 score cp -33 time 15 nodes 7823 nps 521533 pv b8c8 e2f4 c8a8 f4e6 f7e6 f5g6 e8b8 f2f3
+[ 2019-06-15 14:41:04,493 -    DEBUG ] << info depth 9 seldepth 13 multipv 1 score cp -63 time 15 nodes 12002 nps 800133 pv b8c8
+[ 2019-06-15 14:41:04,493 -    DEBUG ] << info depth 9 seldepth 11 multipv 1 score cp -41 time 15 nodes 12984 nps 865600 pv b8c8 e2f4 e6f4 f5c8 e8c8 e3f4 c7f4 c2c5 c8e8
+[ 2019-06-15 14:41:04,493 -    DEBUG ] << info depth 10 seldepth 13 multipv 1 score cp -25 time 15 nodes 16640 nps 1109333 pv b8c8 e2f4 e6f4 f5c8 e8c8 e3f4 c7f4 c2c5 c8e8 g1h1
+[ 2019-06-15 14:41:04,509 -    DEBUG ] << info depth 11 seldepth 15 multipv 1 score cp -55 time 31 nodes 25924 nps 836258 pv b8c8
+[ 2019-06-15 14:41:04,509 -    DEBUG ] << info depth 11 seldepth 14 multipv 1 score cp -35 time 31 nodes 28410 nps 916451 pv b8c8 e2f4 e6f4 f5c8 e8c8 e3f4 c7f4 c2b3 f4c7 f2f3 c8e8
+[ 2019-06-15 14:41:04,523 -    DEBUG ] << info depth 12 seldepth 16 multipv 1 score cp -33 time 46 nodes 45480 nps 988695 pv b8c8 e2f4 e6f4 f5c8 e8c8 e3f4 c7f4 c2d3 c8e8 f2f3 g7g6 g1h1
+[ 2019-06-15 14:41:04,555 -    DEBUG ] << info depth 13 seldepth 17 multipv 1 score cp -42 time 78 nodes 65002 nps 833358 pv b8c8 e2f4 e6f4 f5c8 e8c8 e3f4 c7f4 c2b3 f4c7 f2f3 c8e8 b3d3 g7g6
+[ 2019-06-15 14:41:04,571 -    DEBUG ] << info depth 14 seldepth 18 multipv 1 score cp -37 time 93 nodes 91213 nps 980784 pv b8c8 e2f4 e6f4 f5c8 e8c8 e3f4 c7f4 c2b3 f4c7 f2f3 c8e8 b3d3 g7g6 g1h1
+[ 2019-06-15 14:41:04,726 -    DEBUG ] << info depth 15 seldepth 23 multipv 1 score cp -42 time 249 nodes 227431 nps 913377 pv b8c8 e2f4 b7b6 f5e6 f7e6 f4g6 c7b7 f2f3 c6c5 c2d3 b7d7 f1e1 d7a4 d4c5 c8c5
+[ 2019-06-15 14:41:04,882 -    DEBUG ] << info depth 16 seldepth 23 multipv 1 score cp -39 time 405 nodes 374420 nps 924493 pv b8c8 e2f4 b7b6 f5e6 f7e6 f4d3 c7b7 c2e2 f6d7 f2f4 c6c5 d4c5 b6c5 d3e5 d7e5 f4e5
+[ 2019-06-15 14:41:05,069 -    DEBUG ] << info depth 17 seldepth 26 multipv 1 score cp -39 time 592 nodes 556419 nps 939896 pv b8c8 e2f4 b7b6 f5e6 f7e6 f4g6 c7b7 f2f3 c6c5 c2d3 b7d7 b2b3 d7b7 d4c5 c8c5 c1c5 b6c5
+[ 2019-06-15 14:41:05,335 -    DEBUG ] << info depth 18 seldepth 26 multipv 1 score cp -40 time 858 nodes 811018 nps 945242 pv b8c8 e2f4 b7b6 f5e6 f7e6 f4g6 c6c5 f2f3 c7d6 c2d3 d6d7 b2b3 d7d6 d4c5 c8c5 c1c5 d6c5 f3f4
+[ 2019-06-15 14:41:05,663 -    DEBUG ] << info depth 19 seldepth 25 multipv 1 score cp -39 time 1185 nodes 1137362 nps 959799 pv b8c8 e2f4 b7b6 f5e6 f7e6 f4g6 c6c5 f2f3 c7d6 c2d3 d6d7 d3b3 d7d6 b3a3 f6d7 f3f4 d7f6 g6e5 f6e4
+[ 2019-06-15 14:41:06,395 -    DEBUG ] << info depth 20 seldepth 28 multipv 1 score cp -34 time 1918 nodes 1821063 nps 949459 pv b8c8 e2f4 b7b6 f5e6 f7e6 f4g6 c6c5 f2f3 c7d6 c2d1 f6d7 f3f4 d7f6 a2a3 d6d7 g1h2 d7a7 d4c5 c8c5 c1c5 b6c5
+[ 2019-06-15 14:41:07,598 -    DEBUG ] << info depth 21 seldepth 30 multipv 1 score cp -35 time 3120 nodes 2933974 nps 940376 pv b8c8 e2f4 b7b6 f5e6 f7e6 f4g6 c6c5 f1e1 c7b7 c2e2 f6e4 a2a4 c5c4 g6e5 b6b5 a4b5 e4d6 e2c2 b7b5 g1h2 b5b6
+[ 2019-06-15 14:41:09,437 -    DEBUG ] << info depth 22 seldepth 31 multipv 1 score cp -28 time 4960 nodes 4606429 nps 928715 pv b8c8 e2f4 b7b6 f5e6 f7e6 f4g6 c6c5 f1e1 c7b7 c2e2 b7f7 g6e5 f7b7 e2d3 c5d4 e3d4 c8c1 e1c1 e8c8 c1c8 b7c8 d3e3 c8c7
+[ 2019-06-15 14:41:09,484 -    DEBUG ] << bestmove b8c8
+[ 2019-06-15 14:41:09,484 -     INFO ] elapsed(ms) since go: 5021
+[ 2019-06-15 14:41:09,484 -     INFO ] bestmove: Rbxc8
+[ 2019-06-15 14:41:09,484 -     INFO ] Top 1 move!!
+[ 2019-06-15 14:41:09,484 -     INFO ] Score for this test: 7
+[ 2019-06-15 14:41:09,484 -     INFO ] Total Score update: 25 / 33 (0.758)
+[ 2019-06-15 14:41:09,484 -     INFO ] 1rN1r1k1/1pq2pp1/2p1nn1p/p2p1B2/3P4/4P2P/PPQ1NPP1/2R2RK1 b - - bm Rbxc8; ce -28; acd 22;
+[ 2019-06-15 14:41:09,484 -     INFO ] 
+
+[ 2019-06-15 14:41:09,484 -     INFO ] Pos 6
+[ 2019-06-15 14:41:09,484 -     INFO ] id tony.pos.06
+[ 2019-06-15 14:41:09,484 -     INFO ] FEN: 3r1rk1/p1q2pbp/1np1p1p1/1p2P3/5P2/2N2Q1P/PPP3P1/3RRBK1 b - - 0 1
+[ 2019-06-15 14:41:09,484 -     INFO ] Solutions: Rxd1=1
+[ 2019-06-15 14:41:09,484 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:09,484 -    DEBUG ] >> position fen 3r1rk1/p1q2pbp/1np1p1p1/1p2P3/5P2/2N2Q1P/PPP3P1/3RRBK1 b - - 0 1
+[ 2019-06-15 14:41:09,484 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:09,500 -    DEBUG ] << info depth 1 seldepth 6 multipv 1 score cp 30 time 1 nodes 84 nps 84000 pv f7f5 e5f6 f8f6 d1d8 c7d8
+[ 2019-06-15 14:41:09,500 -    DEBUG ] << info depth 2 seldepth 6 multipv 1 score cp 18 time 1 nodes 205 nps 205000 pv f7f5 e5f6 d8d1 c3d1 f8f6
+[ 2019-06-15 14:41:09,500 -    DEBUG ] << info depth 3 seldepth 8 multipv 1 score cp 30 time 1 nodes 509 nps 509000 pv f7f5 e5f6 f8f6 d1d8 c7d8
+[ 2019-06-15 14:41:09,500 -    DEBUG ] << info depth 4 seldepth 11 multipv 1 score cp 30 time 1 nodes 1521 nps 1521000 pv f7f5 e5f6 f8f6 d1d8 c7d8
+[ 2019-06-15 14:41:09,500 -    DEBUG ] << info depth 5 seldepth 10 multipv 1 score cp 46 time 1 nodes 2199 nps 2199000 pv d8d1 e1d1 f7f6 e5f6 g7f6
+[ 2019-06-15 14:41:09,500 -    DEBUG ] << info depth 6 seldepth 9 multipv 1 score cp 76 time 1 nodes 2487 nps 2487000 pv d8d1
+[ 2019-06-15 14:41:09,516 -    DEBUG ] << info depth 6 seldepth 11 multipv 1 score cp 146 time 15 nodes 3416 nps 227733 pv d8d1 c3d1 f7f6 c2c4 f6e5 c4b5 c6b5
+[ 2019-06-15 14:41:09,516 -    DEBUG ] << info depth 7 seldepth 13 multipv 1 score cp 59 time 15 nodes 13904 nps 926933 pv g6g5 d1d3 d8d3 f1d3 g5f4 f3f4 f7f5
+[ 2019-06-15 14:41:09,532 -    DEBUG ] << info depth 8 seldepth 17 multipv 1 score cp 39 time 31 nodes 24850 nps 801612 pv g6g5 f1d3 g5f4 b2b4 f7f6 f3e4 f6f5 e4f4
+[ 2019-06-15 14:41:09,562 -    DEBUG ] << info depth 9 seldepth 18 multipv 1 score cp 32 time 62 nodes 44208 nps 713032 pv g6g5 f1d3 g5f4 b2b4 f7f5 f3f4 g8h8 g1h2 h8g8
+[ 2019-06-15 14:41:09,641 -    DEBUG ] << info depth 10 seldepth 19 multipv 1 score cp 47 time 140 nodes 101918 nps 727985 pv d8d1 c3d1 c7d7 b2b3 d7d2 f3f2 f8d8 f1d3 d2f2 d1f2 b6d5
+[ 2019-06-15 14:41:09,703 -    DEBUG ] << info depth 11 seldepth 23 multipv 1 score cp 51 time 203 nodes 152409 nps 750783 pv d8d1 c3d1 b6d5 g2g3 c7a5 e1e4 d5b4 c2c4 b4a2 c4b5 c6b5
+[ 2019-06-15 14:41:09,766 -    DEBUG ] << info depth 12 seldepth 20 multipv 1 score cp 43 time 265 nodes 206871 nps 780645 pv d8d1 c3d1 b6d5 c2c4 b5c4 f1c4 c7a5 e1e4 f8d8 g1h2 a5d2 h2g1
+[ 2019-06-15 14:41:09,812 -    DEBUG ] << info depth 13 seldepth 22 multipv 1 score cp 50 time 312 nodes 251631 nps 806509 pv d8d1 c3d1 b6d5 c2c4 b5c4 f1c4 c7a5 e1e4 f8d8 d1c3 a5b6 f3f2 d5c3 f2b6 a7b6 b2c3
+[ 2019-06-15 14:41:09,969 -    DEBUG ] << info depth 14 seldepth 23 multipv 1 score cp 46 time 468 nodes 385729 nps 824207 pv d8d1 c3d1 b6d5 c2c4 b5c4 f1c4 c7a5 e1e4 f8d8 c4b3 a5d2 g2g3 d5b6 f3f2
+[ 2019-06-15 14:41:10,342 -    DEBUG ] << info depth 15 seldepth 23 multipv 1 score cp 46 time 842 nodes 699132 nps 830323 pv d8d1 e1d1 f7f6 d1d6 f6e5 d6c6 c7d7 f1b5 e5f4 a2a4 g7d4 g1h2 b6d5 c3d5 d7d5 f3d5 e6d5
+[ 2019-06-15 14:41:10,858 -    DEBUG ] << info depth 16 seldepth 24 multipv 1 score cp 61 time 1341 nodes 1118878 nps 834360 pv d8d1 f3d1 f7f5 a2a3 f8d8 f1d3 a7a5 d1f3 g6g5 g2g3 g5f4 g3f4 g7f8 f3g2 g8h8 g1h2 f8c5
+[ 2019-06-15 14:41:11,450 -    DEBUG ] << info depth 17 seldepth 25 multipv 1 score cp 50 time 1950 nodes 1625632 nps 833657 pv d8d1 f3d1 f7f5 a2a3 f8d8 f1d3 a7a5 d1f3 g7f8 f3f2 b5b4 a3b4 f8b4 e1d1 b4c3 b2c3 b6d5
+[ 2019-06-15 14:41:12,028 -    DEBUG ] << info depth 18 seldepth 26 multipv 1 score cp 51 time 2527 nodes 2133267 nps 844189 pv d8d1 f3d1 f7f5 a2a3 f8d8 f1d3 a7a5 d1f3 g7f8 f3f2 b5b4 c3b1 f8e7 e1d1 g8g7 g2g3 b4a3 b1a3
+[ 2019-06-15 14:41:14,507 -    DEBUG ] << bestmove d8d1 ponder f3d1
+[ 2019-06-15 14:41:14,507 -     INFO ] elapsed(ms) since go: 5022
+[ 2019-06-15 14:41:14,507 -     INFO ] bestmove: Rxd1
+[ 2019-06-15 14:41:14,507 -     INFO ] Top 1 move!!
+[ 2019-06-15 14:41:14,507 -     INFO ] Score for this test: 1
+[ 2019-06-15 14:41:14,507 -     INFO ] Total Score update: 26 / 34 (0.765)
+[ 2019-06-15 14:41:14,507 -     INFO ] 3r1rk1/p1q2pbp/1np1p1p1/1p2P3/5P2/2N2Q1P/PPP3P1/3RRBK1 b - - bm Rxd1; ce 51; acd 18;
+[ 2019-06-15 14:41:14,507 -     INFO ] 
+
+[ 2019-06-15 14:41:14,507 -     INFO ] Pos 7
+[ 2019-06-15 14:41:14,507 -     INFO ] id tony.pos.07
+[ 2019-06-15 14:41:14,507 -     INFO ] FEN: r2r2k1/p3ppbp/1p4p1/3p4/3P4/2P1P2P/P3BPP1/2R2RK1 w - - 0 1
+[ 2019-06-15 14:41:14,507 -     INFO ] Solutions: f4=10, Ba6=8, c4=6, g4=5, a4=3, Rfd1=2, g3=2, Bb5=2, Bd3=1, f3=1
+[ 2019-06-15 14:41:14,507 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:14,507 -    DEBUG ] >> position fen r2r2k1/p3ppbp/1p4p1/3p4/3P4/2P1P2P/P3BPP1/2R2RK1 w - - 0 1
+[ 2019-06-15 14:41:14,507 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:14,523 -    DEBUG ] << info depth 1 seldepth 1 multipv 1 score cp 26 time 1 nodes 27 nps 27000 pv c1b1
+[ 2019-06-15 14:41:14,523 -    DEBUG ] << info depth 2 seldepth 4 multipv 1 score cp 54 time 1 nodes 123 nps 123000 pv c3c4 e7e6 c4d5 d8d5
+[ 2019-06-15 14:41:14,523 -    DEBUG ] << info depth 3 seldepth 4 multipv 1 score cp 46 time 1 nodes 228 nps 228000 pv c3c4 f7f5 c4d5 d8d5
+[ 2019-06-15 14:41:14,523 -    DEBUG ] << info depth 4 seldepth 8 multipv 1 score cp 23 time 1 nodes 460 nps 460000 pv c3c4 d5c4 e2c4 e7e6
+[ 2019-06-15 14:41:14,523 -    DEBUG ] << info depth 5 seldepth 8 multipv 1 score cp 53 time 1 nodes 811 nps 811000 pv c3c4
+[ 2019-06-15 14:41:14,523 -    DEBUG ] << info depth 5 seldepth 10 multipv 1 score cp 50 time 1 nodes 1337 nps 1337000 pv c3c4 e7e5 c4d5 e5d4 e2f3 d4e3 f2e3
+[ 2019-06-15 14:41:14,539 -    DEBUG ] << info depth 6 seldepth 10 multipv 1 score cp 19 time 1 nodes 2821 nps 2821000 pv c3c4 e7e5 c4d5 e5d4 e2f3 a8c8
+[ 2019-06-15 14:41:14,539 -    DEBUG ] << info depth 7 seldepth 11 multipv 1 score cp 37 time 16 nodes 4491 nps 280687 pv c3c4 d5c4 e2c4 e7e6 f2f4 a8c8 c4a6 c8c1 f1c1
+[ 2019-06-15 14:41:14,539 -    DEBUG ] << info depth 8 seldepth 13 multipv 1 score cp 24 time 16 nodes 11681 nps 730062 pv f2f4 e7e6 c3c4 d8e8 e2f3 a8c8 c4d5 c8c1 f1c1 e6d5
+[ 2019-06-15 14:41:14,539 -    DEBUG ] << info depth 9 seldepth 13 multipv 1 score cp 28 time 16 nodes 16678 nps 1042375 pv f2f4 e7e6 c3c4 d5c4 e2c4 a7a5 c4d3 a8c8 g1f2
+[ 2019-06-15 14:41:14,555 -    DEBUG ] << info depth 10 seldepth 15 multipv 1 score cp 26 time 31 nodes 24616 nps 794064 pv f2f4 e7e6 c3c4 d5c4 e2c4 a8c8 c4a6 c8c1 f1c1 f7f5
+[ 2019-06-15 14:41:14,571 -    DEBUG ] << info depth 11 seldepth 16 multipv 1 score cp 34 time 47 nodes 38785 nps 825212 pv f2f4 e7e6 c3c4 d5c4 e2c4 a7a5 c4d3 a8c8 g1f2 f7f5 f2g3
+[ 2019-06-15 14:41:14,585 -    DEBUG ] << info depth 12 seldepth 17 multipv 1 score cp 43 time 62 nodes 55204 nps 890387 pv f2f4 e7e6 c3c4 d5c4 e2c4 a7a5 c4d3 d8c8 g1f2 a5a4 c1c8 a8c8 d3a6
+[ 2019-06-15 14:41:14,632 -    DEBUG ] << info depth 13 seldepth 18 multipv 1 score cp 47 time 109 nodes 110198 nps 1010990 pv f2f4 d8c8 c3c4 d5c4 e2c4 a7a5 g1f2 h7h5 a2a4 e7e6 c4b5 g7f6 g2g3
+[ 2019-06-15 14:41:14,664 -    DEBUG ] << info depth 14 seldepth 19 multipv 1 score cp 44 time 140 nodes 146550 nps 1046785 pv f2f4 d8c8 c3c4 d5c4 e2c4 a7a5 g1f2 h7h5 a2a4 e7e6 c4b5 g7f6 c1c8 a8c8 b5a6
+[ 2019-06-15 14:41:14,726 -    DEBUG ] << info depth 15 seldepth 23 multipv 1 score cp 48 time 203 nodes 225137 nps 1109049 pv f2f4 d8c8 c3c4 d5c4 e2c4 a7a5 g1f2 e7e6 c4d3 f7f5 f2g3 g8f7 d3b5 c8c1 f1c1
+[ 2019-06-15 14:41:14,805 -    DEBUG ] << info depth 16 seldepth 21 multipv 1 score cp 44 time 281 nodes 310620 nps 1105409 pv f2f4 d8c8 c3c4 d5c4 e2c4 a7a5 g1f2 e7e6 c4d3 f7f5 f2g3 g8f7 d3b5 c8c1 f1c1 f7f6
+[ 2019-06-15 14:41:15,023 -    DEBUG ] << info depth 17 seldepth 23 multipv 1 score cp 36 time 499 nodes 556034 nps 1114296 pv f2f4 d8c8 c3c4 d5c4 e2c4 a7a5 g1f2 e7e6 c4d3 g7f8 h3h4 f8b4 d3e2 a8b8 e2a6 c8c3 c1c3 b4c3
+[ 2019-06-15 14:41:15,476 -    DEBUG ] << info depth 18 seldepth 26 multipv 1 score cp 32 time 952 nodes 1026150 nps 1077888 pv f2f4 d8c8 c3c4 d5c4 e2c4 a7a5 g1f2 e7e6 g2g4 g7f8 d4d5 e6d5 c4d5 a8b8 c1c8 b8c8 f2g3 g8g7
+[ 2019-06-15 14:41:16,240 -    DEBUG ] << info depth 19 seldepth 25 multipv 1 score cp 26 time 1716 nodes 1799811 nps 1048840 pv f2f4 d8c8 c3c4 d5c4 e2c4 a7a5 g1f2 e7e6 g2g4 g7f8 d4d5 e6d5 c4d5 a8b8 c1c8 b8c8 f2g3 g8g7 f1f2
+[ 2019-06-15 14:41:16,755 -    DEBUG ] << info depth 20 seldepth 28 multipv 1 score cp 32 time 2231 nodes 2382218 nps 1067780 pv f2f4 d8c8 c3c4 d5c4 e2c4 a7a5 g1f2 e7e6 g2g4 g7f8 c4d3 f8a3 c1b1 a8b8 g4g5 c8c3 d3e4 g8g7 b1b3 c3b3 a2b3
+[ 2019-06-15 14:41:17,878 -    DEBUG ] << info depth 21 seldepth 29 multipv 1 score cp 31 time 3354 nodes 3560089 nps 1061445 pv f2f4 d8c8 c3c4 d5c4 e2c4 a7a5 c4e2 e7e6 e2f3 a8b8 c1c8 b8c8 f1b1 a5a4 b1b6 c8c1 g1h2 c1c2 a2a3 c2c3 b6b8 g7f8 h2g3 c3a3
+[ 2019-06-15 14:41:19,532 -    DEBUG ] << bestmove f2f4 ponder d8c8
+[ 2019-06-15 14:41:19,532 -     INFO ] elapsed(ms) since go: 5023
+[ 2019-06-15 14:41:19,532 -     INFO ] bestmove: f4
+[ 2019-06-15 14:41:19,532 -     INFO ] Top 1 move!!
+[ 2019-06-15 14:41:19,532 -     INFO ] Score for this test: 10
+[ 2019-06-15 14:41:19,532 -     INFO ] Total Score update: 36 / 44 (0.818)
+[ 2019-06-15 14:41:19,532 -     INFO ] r2r2k1/p3ppbp/1p4p1/3p4/3P4/2P1P2P/P3BPP1/2R2RK1 w - - bm f4; ce 31; acd 21;
+[ 2019-06-15 14:41:19,532 -     INFO ] 
+
+[ 2019-06-15 14:41:19,532 -     INFO ] Pos 8
+[ 2019-06-15 14:41:19,532 -     INFO ] id tony.pos.08
+[ 2019-06-15 14:41:19,532 -     INFO ] FEN: 2rq3r/pb1pbkpp/1p2pp2/n1P5/2P5/QP2BNPB/P3PP1P/3R1RK1 w - - 0 1
+[ 2019-06-15 14:41:19,532 -     INFO ] Solutions: b4=9, Rd3=2, Nd4=2, Qc1=1, Qb4=1, Qb2=1, Rfe1=1, Bf4=1, Bd2=1, Ne1=1
+[ 2019-06-15 14:41:19,532 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:19,532 -    DEBUG ] >> position fen 2rq3r/pb1pbkpp/1p2pp2/n1P5/2P5/QP2BNPB/P3PP1P/3R1RK1 w - - 0 1
+[ 2019-06-15 14:41:19,532 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:19,546 -    DEBUG ] << info depth 1 seldepth 6 multipv 1 score cp 196 time 1 nodes 104 nps 104000 pv h3e6 f7e6
+[ 2019-06-15 14:41:19,546 -    DEBUG ] << info depth 2 seldepth 8 multipv 1 score cp 226 time 1 nodes 385 nps 385000 pv a3a4
+[ 2019-06-15 14:41:19,546 -    DEBUG ] << info depth 2 seldepth 8 multipv 1 score cp 247 time 1 nodes 505 nps 505000 pv a3a4 b7f3 e2f3
+[ 2019-06-15 14:41:19,546 -    DEBUG ] << info depth 3 seldepth 8 multipv 1 score cp 247 time 1 nodes 957 nps 957000 pv a3a4 b7f3 e2f3
+[ 2019-06-15 14:41:19,546 -    DEBUG ] << info depth 4 seldepth 8 multipv 1 score cp 277 time 1 nodes 1078 nps 1078000 pv a3a4
+[ 2019-06-15 14:41:19,546 -    DEBUG ] << info depth 4 seldepth 9 multipv 1 score cp 260 time 1 nodes 1811 nps 1811000 pv a3a4 d7d5 c5b6 a7b6
+[ 2019-06-15 14:41:19,562 -    DEBUG ] << info depth 5 seldepth 12 multipv 1 score cp 150 time 16 nodes 5091 nps 318187 pv a3b2 b6c5 b2c2 b7c6 g1g2
+[ 2019-06-15 14:41:19,562 -    DEBUG ] << info depth 6 seldepth 11 multipv 1 score cp 93 time 16 nodes 8236 nps 514750 pv a3b2 b6c5 b2c2 b7f3 e2f3 a5c6
+[ 2019-06-15 14:41:19,562 -    DEBUG ] << info depth 7 seldepth 12 multipv 1 score cp 101 time 16 nodes 11183 nps 698937 pv a3b2 b6c5 b2c2 b7f3 e2f3 a5c6 g1g2
+[ 2019-06-15 14:41:19,578 -    DEBUG ] << info depth 8 seldepth 16 multipv 1 score cp 112 time 16 nodes 16097 nps 1006062 pv a3b2 b6c5 b2c2 b7f3 e2f3 a5c6 g1g2 g7g6
+[ 2019-06-15 14:41:19,594 -    DEBUG ] << info depth 9 seldepth 20 multipv 1 score cp 90 time 47 nodes 34972 nps 744085 pv a3b2 b6c5 g1g2 b7f3 e2f3 a5c6 h3g4 g7g6 b2c2 c6b4
+[ 2019-06-15 14:41:19,655 -    DEBUG ] << info depth 10 seldepth 20 multipv 1 score cp 115 time 109 nodes 86225 nps 791055 pv a3b2 b6c5 b2c2 b7f3 e2f3 a5c6 c2d2 c6e5 g1g2 f7g8
+[ 2019-06-15 14:41:19,766 -    DEBUG ] << info depth 11 seldepth 19 multipv 1 score cp 136 time 219 nodes 168161 nps 767858 pv f3d4 e7c5 a3b2 c5d4 b2d4 b7c6 d4c3 h7h5 f2f3 d8c7 g1g2
+[ 2019-06-15 14:41:19,828 -    DEBUG ] << info depth 12 seldepth 20 multipv 1 score cp 117 time 281 nodes 223013 nps 793640 pv f3d4 e7c5 a3b2 c5d4 b2d4 d7d5 f2f4 f6f5 c4d5 b7d5 h3f5 a5c6
+[ 2019-06-15 14:41:19,890 -    DEBUG ] << info depth 13 seldepth 22 multipv 1 score cp 125 time 343 nodes 280629 nps 818160 pv f3d4 e7c5 a3b2 c5d4 b2d4 d7d5 f2f4 g7g6 h3g2 f7g7 c4d5 e6d5 g2d5 b7d5 d4d5 d8d5 d1d5
+[ 2019-06-15 14:41:20,015 -    DEBUG ] << info depth 14 seldepth 22 multipv 1 score cp 119 time 468 nodes 382727 nps 817792 pv f3d4 e7c5 a3b2 c5d4 b2d4 d7d5 d4g4 f6f5 g4f4 g7g6 h3g2 h7h5 g1h1 f7g8
+[ 2019-06-15 14:41:20,201 -    DEBUG ] << info depth 15 seldepth 23 multipv 1 score cp 114 time 655 nodes 549352 nps 838705 pv f3d4 e7c5 a3b2 c5d4 b2d4 d7d5 d4g4 f6f5 g4f4 g7g6 h3g2 h7h5 g1h1 g6g5 f4g5 d8g5 e3g5 d5c4
+[ 2019-06-15 14:41:20,436 -    DEBUG ] << info depth 16 seldepth 24 multipv 1 score cp 114 time 889 nodes 756076 nps 850479 pv f3d4 e7c5 a3b2 c5d4 b2d4 d7d5 d4g4 f6f5 g4f4 g7g6 h3g2 h7h5 g1h1 g6g5 f4g5 d8g5 e3g5 d5c4
+[ 2019-06-15 14:41:20,997 -    DEBUG ] << info depth 17 seldepth 25 multipv 1 score cp 124 time 1451 nodes 1225569 nps 844637 pv f3d4 e7c5 a3b2 c5d4 b2d4 d7d5 d4g4 d8e8 c4d5 b7d5 d1d5 e6d5 f1d1 g7g6 d1d5 c8c7 g4f3
+[ 2019-06-15 14:41:23,634 -    DEBUG ] << info depth 18 seldepth 29 multipv 1 score cp 114 time 4087 nodes 3388874 nps 829183 pv f3d4 e7c5 a3b2 c5d4 d1d4 d8e7 f1d1 d7d5 c4d5 b7d5 b2d2 h8d8 d4d5 d8d5 h3e6 e7e6 d2d5 e6d5 d1d5
+[ 2019-06-15 14:41:24,555 -    DEBUG ] << bestmove f3d4
+[ 2019-06-15 14:41:24,555 -     INFO ] elapsed(ms) since go: 5021
+[ 2019-06-15 14:41:24,555 -     INFO ] bestmove: Nd4
+[ 2019-06-15 14:41:24,555 -     INFO ] Score for this test: 2
+[ 2019-06-15 14:41:24,555 -     INFO ] Total Score update: 38 / 53 (0.717)
+[ 2019-06-15 14:41:24,555 -     INFO ] 2rq3r/pb1pbkpp/1p2pp2/n1P5/2P5/QP2BNPB/P3PP1P/3R1RK1 w - - bm Nd4; ce 114; acd 18;
+[ 2019-06-15 14:41:24,555 -     INFO ] 
+
+[ 2019-06-15 14:41:24,555 -     INFO ] Pos 9
+[ 2019-06-15 14:41:24,555 -     INFO ] id tony.pos.09
+[ 2019-06-15 14:41:24,555 -     INFO ] FEN: 1r1q1rk1/pp1bbppp/2n1p1n1/4P3/2BpN3/3P1N2/PP2QPPP/R1B1R1K1 b - - 0 1
+[ 2019-06-15 14:41:24,555 -     INFO ] Solutions: b5=6, a5=4, h6=1, Qb6=5, Qc7=5, Rc8=4, Ra8=3, b6=3, a6=3, Be8=2, Ncxe5=1
+[ 2019-06-15 14:41:24,555 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:24,555 -    DEBUG ] >> position fen 1r1q1rk1/pp1bbppp/2n1p1n1/4P3/2BpN3/3P1N2/PP2QPPP/R1B1R1K1 b - - 0 1
+[ 2019-06-15 14:41:24,555 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:24,569 -    DEBUG ] << info depth 1 seldepth 5 multipv 1 score cp 193 time 1 nodes 49 nps 49000 pv g6e5
+[ 2019-06-15 14:41:24,569 -    DEBUG ] << info depth 2 seldepth 6 multipv 1 score cp 203 time 1 nodes 121 nps 121000 pv g6e5 g1h1 e5c4 d3c4
+[ 2019-06-15 14:41:24,569 -    DEBUG ] << info depth 3 seldepth 5 multipv 1 score cp 233 time 1 nodes 268 nps 268000 pv b7b5
+[ 2019-06-15 14:41:24,569 -    DEBUG ] << info depth 3 seldepth 6 multipv 1 score cp 333 time 1 nodes 306 nps 306000 pv b7b5
+[ 2019-06-15 14:41:24,569 -    DEBUG ] << info depth 3 seldepth 7 multipv 1 score cp 423 time 1 nodes 431 nps 431000 pv b7b5 c4e6 f7e6
+[ 2019-06-15 14:41:24,569 -    DEBUG ] << info depth 4 seldepth 8 multipv 1 score cp 453 time 1 nodes 615 nps 615000 pv b7b5
+[ 2019-06-15 14:41:24,569 -    DEBUG ] << info depth 4 seldepth 8 multipv 1 score cp 330 time 1 nodes 875 nps 875000 pv b7b5 c4b5 b8b5 a2a4
+[ 2019-06-15 14:41:24,569 -    DEBUG ] << info depth 5 seldepth 9 multipv 1 score cp 300 time 1 nodes 1111 nps 1111000 pv b7b5
+[ 2019-06-15 14:41:24,569 -    DEBUG ] << info depth 5 seldepth 10 multipv 1 score cp 178 time 1 nodes 2045 nps 2045000 pv c6e5 f3d4 e5c4 d3c4 e6e5
+[ 2019-06-15 14:41:24,585 -    DEBUG ] << info depth 6 seldepth 10 multipv 1 score cp 135 time 16 nodes 3307 nps 206687 pv c6e5 f3e5 g6e5 c4b3 b7b5 c1d2
+[ 2019-06-15 14:41:24,585 -    DEBUG ] << info depth 7 seldepth 11 multipv 1 score cp 165 time 16 nodes 4239 nps 264937 pv c6e5
+[ 2019-06-15 14:41:24,585 -    DEBUG ] << info depth 7 seldepth 15 multipv 1 score cp 187 time 16 nodes 9718 nps 607375 pv c6e5 e4d2 e5f3 d2f3 d7c6 c1d2 b7b5 c4b3
+[ 2019-06-15 14:41:24,601 -    DEBUG ] << info depth 8 seldepth 14 multipv 1 score cp 97 time 32 nodes 20765 nps 648906 pv b7b5 c4b3 a7a6 c1d2 g6e5 f3e5 c6e5 e4g3
+[ 2019-06-15 14:41:24,617 -    DEBUG ] << info depth 9 seldepth 15 multipv 1 score cp 102 time 47 nodes 28791 nps 612574 pv c6e5 f3e5 g6e5 c1f4 f7f6 c4b3 b8c8 e4g3 a7a6 f4e5 f6e5 e2e5
+[ 2019-06-15 14:41:24,617 -    DEBUG ] << info depth 10 seldepth 17 multipv 1 score cp 111 time 47 nodes 37568 nps 799319 pv c6e5 f3e5 g6e5 c1f4 f7f6 a2a4 b8c8 e4g3 e5c4 d3c4
+[ 2019-06-15 14:41:24,648 -    DEBUG ] << info depth 11 seldepth 21 multipv 1 score cp 107 time 78 nodes 60547 nps 776243 pv c6e5 f3e5 g6e5 c1f4 f7f6 a2a4 a7a6 e1c1 b8c8 c4b3 g8h8
+[ 2019-06-15 14:41:24,789 -    DEBUG ] << info depth 12 seldepth 27 multipv 1 score cp 89 time 219 nodes 160774 nps 734127 pv b7b5 c4b3 a7a5 e4g3 a5a4 b3c2 b8c8 b2b3 a4a3 c1d2 f7f6 e5f6 e7f6
+[ 2019-06-15 14:41:24,835 -    DEBUG ] << info depth 13 seldepth 22 multipv 1 score cp 99 time 266 nodes 195449 nps 734770 pv b7b5 c4b3 a7a5 e4g3 a5a4 b3c2 b8c8 b2b3 a4a3 c1d2 c6e5 f3d4 f7f5
+[ 2019-06-15 14:41:24,976 -    DEBUG ] << info depth 14 seldepth 23 multipv 1 score cp 92 time 406 nodes 310151 nps 763918 pv b7b5 c4b3 d8b6 e4g3 f8c8 c1d2 a7a5 a1c1 h7h6 b3c2 a5a4 b2b3 a4a3 g1h1
+[ 2019-06-15 14:41:25,069 -    DEBUG ] << info depth 15 seldepth 21 multipv 1 score cp 86 time 500 nodes 390682 nps 781364 pv b7b5 c4b3 d8b6 e4g3 f8c8 c1d2 a7a5 a1c1 h7h6 b3c2 a5a4 b2b3 a4a3 g1h1 f7f5 e5f6 e7f6
+[ 2019-06-15 14:41:25,335 -    DEBUG ] << info depth 16 seldepth 24 multipv 1 score cp 89 time 765 nodes 592098 nps 773984 pv b7b5 c4b3 d8b6 e4g3 f8c8 c1d2 a7a5 e1c1 a5a4 b3d1 h7h6 h2h3 f7f5 e5f6 e7f6 a1b1
+[ 2019-06-15 14:41:25,786 -    DEBUG ] << info depth 17 seldepth 27 multipv 1 score cp 96 time 1217 nodes 946394 nps 777645 pv b7b5 c4b3 d8b6 e4g3 f8c8 c1d2 a7a5 e1c1 a5a4 b3d1 h7h6 e2e4 a4a3 b2b3 b6a7 a1b1 a7b6
+[ 2019-06-15 14:41:26,427 -    DEBUG ] << info depth 18 seldepth 27 multipv 1 score cp 84 time 1857 nodes 1458247 nps 785270 pv b7b5 c4b3 d8b6 e4g3 f8c8 c1d2 a7a5 e1c1 e7b4 d2b4 c6b4 e2d2 b4c6 d2e2 a5a4 b3c2 f7f6 e5f6 g7f6
+[ 2019-06-15 14:41:27,503 -    DEBUG ] << info depth 19 seldepth 27 multipv 1 score cp 77 time 2933 nodes 2284568 nps 778918 pv b7b5 c4b3 d8b6 e4g3 f8c8 c1d2 a7a5 e1c1 e7b4 d2b4 c6b4 e2d2 b4c6 d2e2 a5a4 b3d1 h7h6 e2e4 g8h7
+[ 2019-06-15 14:41:29,579 -    DEBUG ] << bestmove b7b5 ponder c4b3
+[ 2019-06-15 14:41:29,579 -     INFO ] elapsed(ms) since go: 5023
+[ 2019-06-15 14:41:29,579 -     INFO ] bestmove: b5
+[ 2019-06-15 14:41:29,579 -     INFO ] Top 1 move!!
+[ 2019-06-15 14:41:29,579 -     INFO ] Score for this test: 6
+[ 2019-06-15 14:41:29,579 -     INFO ] Total Score update: 44 / 59 (0.746)
+[ 2019-06-15 14:41:29,579 -     INFO ] 1r1q1rk1/pp1bbppp/2n1p1n1/4P3/2BpN3/3P1N2/PP2QPPP/R1B1R1K1 b - - bm b5; ce 77; acd 19;
+[ 2019-06-15 14:41:29,579 -     INFO ] 
+
+[ 2019-06-15 14:41:29,579 -     INFO ] Pos 10
+[ 2019-06-15 14:41:29,579 -     INFO ] id tony.pos.10
+[ 2019-06-15 14:41:29,579 -     INFO ] FEN: 3r2k1/2p2ppp/1p1br3/pPn5/3PP3/P7/1B1N2PP/R3R1K1 w - - 0 1
+[ 2019-06-15 14:41:29,579 -     INFO ] Solutions: Re2=8, Rab1=2, Bc1=1
+[ 2019-06-15 14:41:29,579 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:29,579 -    DEBUG ] >> position fen 3r2k1/2p2ppp/1p1br3/pPn5/3PP3/P7/1B1N2PP/R3R1K1 w - - 0 1
+[ 2019-06-15 14:41:29,579 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:29,595 -    DEBUG ] << info depth 1 seldepth 4 multipv 1 score cp 136 time 1 nodes 42 nps 42000 pv e4e5
+[ 2019-06-15 14:41:29,595 -    DEBUG ] << info depth 2 seldepth 6 multipv 1 score cp 166 time 1 nodes 135 nps 135000 pv d4d5
+[ 2019-06-15 14:41:29,595 -    DEBUG ] << info depth 2 seldepth 5 multipv 1 score cp 266 time 1 nodes 152 nps 152000 pv d4d5
+[ 2019-06-15 14:41:29,595 -    DEBUG ] << info depth 2 seldepth 6 multipv 1 score cp 267 time 1 nodes 217 nps 217000 pv d4d5 d6h2 g1h2 e6h6 h2g3
+[ 2019-06-15 14:41:29,595 -    DEBUG ] << info depth 3 seldepth 8 multipv 1 score cp 136 time 1 nodes 877 nps 877000 pv e1e3 e6h6 e4e5
+[ 2019-06-15 14:41:29,595 -    DEBUG ] << info depth 4 seldepth 11 multipv 1 score cp 49 time 1 nodes 1997 nps 1997000 pv d4d5 d6f4 d5e6 d8d2 e6f7 g8f7
+[ 2019-06-15 14:41:29,611 -    DEBUG ] << info depth 5 seldepth 11 multipv 1 score cp -49 time 15 nodes 4596 nps 306400 pv e1e2 d6f4 d4c5 f4d2 c5b6 c7b6
+[ 2019-06-15 14:41:29,611 -    DEBUG ] << info depth 6 seldepth 13 multipv 1 score cp -42 time 15 nodes 7788 nps 519200 pv b2c1 d6h2 g1h2 d8d4 e1e2 c5e4 d2b3
+[ 2019-06-15 14:41:29,611 -    DEBUG ] << info depth 7 seldepth 13 multipv 1 score cp -12 time 15 nodes 8949 nps 596600 pv d4c5
+[ 2019-06-15 14:41:29,611 -    DEBUG ] << info depth 7 seldepth 14 multipv 1 score cp -108 time 15 nodes 15540 nps 1036000 pv b2c3 c5a4 d2b1 f7f6 d4d5 d6c5 g1f1 e6e8
+[ 2019-06-15 14:41:29,627 -    DEBUG ] << info depth 8 seldepth 13 multipv 1 score cp -100 time 31 nodes 18596 nps 599870 pv b2c3 c5a4 d2b1 f7f6 d4d5 d6c5 g1f1 e6e8 e1e2
+[ 2019-06-15 14:41:29,641 -    DEBUG ] << info depth 9 seldepth 14 multipv 1 score cp -17 time 46 nodes 34340 nps 746521 pv g2g3 c5d3 e1b1 e6e8 b2c3 f7f6 g1g2 g8f7 d4d5
+[ 2019-06-15 14:41:29,657 -    DEBUG ] << info depth 10 seldepth 15 multipv 1 score cp -80 time 62 nodes 51422 nps 829387 pv b2c3 c5a4 d2b1 d6e7 d4d5 e7c5 g1h1 e6e8 g2g3 f7f6 h1g2
+[ 2019-06-15 14:41:29,674 -    DEBUG ] << info depth 11 seldepth 16 multipv 1 score cp -69 time 78 nodes 71011 nps 910397 pv g2g3 c5d3 e1b1 d6e7 d4d5 d3b2 b1b2 e7f6 d5e6 f6d4 g1g2 d4b2
+[ 2019-06-15 14:41:29,688 -    DEBUG ] << info depth 12 seldepth 19 multipv 1 score cp -57 time 93 nodes 87618 nps 942129 pv g2g3 c5d3 e1b1 d6e7 d4d5 d3b2 b1b2 e7f6 d5e6 f6b2 e6f7 g8f7 a1f1 f7e6
+[ 2019-06-15 14:41:29,813 -    DEBUG ] << info depth 13 seldepth 20 multipv 1 score cp -90 time 218 nodes 219586 nps 1007275 pv g2g3 f7f5 e4e5 d6e5 d4c5 e5b2 e1e6 b2a1 c5b6 a1d4 g1g2 d4b6 d2c4 g8f7
+[ 2019-06-15 14:41:30,032 -    DEBUG ] << info depth 14 seldepth 22 multipv 1 score cp -105 time 436 nodes 419943 nps 963172 pv b2c3 c5a4 d2b1 d6e7 d4d5 e7c5 g1h1 e6e8 g2g4 a4c3 b1c3 c5d4 a1c1 d4c5 h1g2 c5a3
+[ 2019-06-15 14:41:30,173 -    DEBUG ] << info depth 15 seldepth 22 multipv 1 score cp -100 time 577 nodes 562368 nps 974641 pv g2g3 f7f5 e4e5 c5d3 d2f3 d3e1 a1e1 d6e7 e1c1 d8d7 a3a4 e6h6 g1g2 g8f7 g2f2
+[ 2019-06-15 14:41:30,703 -    DEBUG ] << info depth 16 seldepth 26 multipv 1 score cp -101 time 1106 nodes 1081429 nps 977783 pv b2c1 c5d3 e1e3 d3c1 a1c1 d6f4 e3d3 e6e4 d2e4 f4c1 g1f2 d8e8 e4g3 c1f4 a3a4 f4g3 d3g3 h7h5
+[ 2019-06-15 14:41:30,861 -    DEBUG ] << info depth 17 seldepth 24 multipv 1 score cp -93 time 1265 nodes 1247201 nps 985929 pv b2c1 c5d3 e1e3 d3c1 a1c1 d6f4 e3d3 e6e4 d2e4 f4c1 g1f2 d8e8 e4g3 c1f4 a3a4 f4g3 f2g3 e8e2 g3f3
+[ 2019-06-15 14:41:31,138 -    DEBUG ] << info depth 18 seldepth 25 multipv 1 score cp -94 time 1543 nodes 1539443 nps 997694 pv b2c1 c5d3 e1e3 d3c1 a1c1 d6f4 e3d3 e6e4 d2e4 f4c1 g1f2 f7f5 e4g3 d8d5 a3a4 c1b2 g3e2 g8f7
+[ 2019-06-15 14:41:32,062 -    DEBUG ] << info depth 19 seldepth 28 multipv 1 score cp -106 time 2466 nodes 2458145 nps 996814 pv e1e2 c5a4 a1a2 a4b2 a2b2 d6a3 b2a2 a3e7 d2f3 c7c6 b5c6 e6c6 e2c2 c6c2 a2c2 a5a4 g1f2 a4a3 f2e3
+[ 2019-06-15 14:41:32,513 -    DEBUG ] << info depth 20 seldepth 26 multipv 1 score cp -108 time 2918 nodes 2935244 nps 1005909 pv e1e2 c5a4 a1a2 a4b2 a2b2 d6a3 b2a2 a3e7 d2f3 c7c6 b5c6 e6c6 e2c2 c6c2 a2c2 a5a4 g1f2 a4a3 f2e3 e7b4
+[ 2019-06-15 14:41:34,605 -    DEBUG ] << bestmove g2g3 ponder f7f5
+[ 2019-06-15 14:41:34,605 -     INFO ] elapsed(ms) since go: 5023
+[ 2019-06-15 14:41:34,605 -     INFO ] bestmove: g3
+[ 2019-06-15 14:41:34,605 -     INFO ] Score for this test: 0
+[ 2019-06-15 14:41:34,605 -     INFO ] Total Score update: 44 / 67 (0.657)
+[ 2019-06-15 14:41:34,605 -     INFO ] 3r2k1/2p2ppp/1p1br3/pPn5/3PP3/P7/1B1N2PP/R3R1K1 w - - bm g3; ce -108; acd 20;
+[ 2019-06-15 14:41:34,605 -     INFO ] 
+
+[ 2019-06-15 14:41:34,605 -     INFO ] Pos 11
+[ 2019-06-15 14:41:34,605 -     INFO ] id tony.pos.11
+[ 2019-06-15 14:41:34,605 -     INFO ] FEN: r4rk1/p2qn1bp/1pnp2p1/2p2p2/4PP1N/2PPB3/PP2QN1P/R4RK1 b - - 0 1
+[ 2019-06-15 14:41:34,605 -     INFO ] Solutions: Rae8=6, Qe6=2, Rad8=2, b5=3, Bf6=2, Kh8=2, d5=2, a5=2, Rab8=1, Rac8=1, Rf7=1
+[ 2019-06-15 14:41:34,605 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:34,605 -    DEBUG ] >> position fen r4rk1/p2qn1bp/1pnp2p1/2p2p2/4PP1N/2PPB3/PP2QN1P/R4RK1 b - - 0 1
+[ 2019-06-15 14:41:34,605 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:34,619 -    DEBUG ] << info depth 1 seldepth 4 multipv 1 score cp 70 time 1 nodes 75 nps 75000 pv g7f6
+[ 2019-06-15 14:41:34,619 -    DEBUG ] << info depth 2 seldepth 3 multipv 1 score cp 118 time 1 nodes 91 nps 91000 pv g7f6
+[ 2019-06-15 14:41:34,619 -    DEBUG ] << info depth 2 seldepth 4 multipv 1 score cp 218 time 1 nodes 110 nps 110000 pv g7f6
+[ 2019-06-15 14:41:34,619 -    DEBUG ] << info depth 2 seldepth 5 multipv 1 score cp 318 time 1 nodes 177 nps 177000 pv g7f6 h4f5 g6f5
+[ 2019-06-15 14:41:34,619 -    DEBUG ] << info depth 3 seldepth 7 multipv 1 score cp 318 time 1 nodes 263 nps 263000 pv g7f6 h4f5 g6f5
+[ 2019-06-15 14:41:34,619 -    DEBUG ] << info depth 4 seldepth 9 multipv 1 score cp 44 time 1 nodes 1413 nps 1413000 pv d6d5 h4f3 d5d4 c3d4 f5e4 d3e4 c5d4
+[ 2019-06-15 14:41:34,619 -    DEBUG ] << info depth 5 seldepth 9 multipv 1 score cp 43 time 1 nodes 2216 nps 2216000 pv d6d5 e3d2 f5e4 d3e4 g8h8
+[ 2019-06-15 14:41:34,635 -    DEBUG ] << info depth 6 seldepth 12 multipv 1 score cp 35 time 16 nodes 4460 nps 278750 pv d6d5 e3d2 a7a5 h4f3 g8h8 g1g2 d5e4 d3e4 f5e4 e2e4
+[ 2019-06-15 14:41:34,635 -    DEBUG ] << info depth 7 seldepth 11 multipv 1 score cp 42 time 16 nodes 7567 nps 472937 pv d6d5 e3d2 d5e4 d3e4 f5e4 f2e4 g8h8
+[ 2019-06-15 14:41:34,667 -    DEBUG ] << info depth 8 seldepth 14 multipv 1 score cp 36 time 47 nodes 27385 nps 582659 pv a7a6 h4f3 f5e4 d3e4 g7h6 f3g5 h6g5 f4g5
+[ 2019-06-15 14:41:34,697 -    DEBUG ] << info depth 9 seldepth 17 multipv 1 score cp 31 time 78 nodes 59167 nps 758551 pv a7a6 a2a4 d6d5 h4f3 f5e4 d3e4 g7h6 f3g5 h6g5 f4g5
+[ 2019-06-15 14:41:34,776 -    DEBUG ] << info depth 10 seldepth 17 multipv 1 score cp 38 time 156 nodes 109727 nps 703378 pv a7a6 a2a4 g7h6 h4g2 d6d5 e2d1 h6g7 d1b3 f5e4 d3e4
+[ 2019-06-15 14:41:34,901 -    DEBUG ] << info depth 11 seldepth 20 multipv 1 score cp 38 time 281 nodes 206672 nps 735487 pv d6d5 h4f3 a8e8 e2d1 d5e4 d3e4 d7d1 a1d1 f5e4 f2e4 e7d5
+[ 2019-06-15 14:41:35,400 -    DEBUG ] << info depth 12 seldepth 22 multipv 1 score cp 51 time 780 nodes 558525 nps 716057 pv g7h6 a2a4 a8e8 h4g2 d6d5 a4a5 d5d4 c3d4 c5d4 e3d2 f5e4 f2e4
+[ 2019-06-15 14:41:35,898 -    DEBUG ] << info depth 13 seldepth 24 multipv 1 score cp 51 time 1279 nodes 934891 nps 730954 pv g7h6 h4g2 d6d5 e3d2 d5d4 a2a4 a8e8 e2d1 g8h8 f1e1 d4c3 d2c3 c6d4 c3d4 d7d4
+[ 2019-06-15 14:41:36,944 -    DEBUG ] << info depth 14 seldepth 26 multipv 1 score cp 59 time 2325 nodes 1698457 nps 730519 pv a8e8 e3d2 g7h6 h4g2 e7d5 a1e1 d5c7 e2f3 f5e4 d3e4 h6g7 a2a4 c7e6 f3g3
+[ 2019-06-15 14:41:38,691 -    DEBUG ] << info depth 15 seldepth 24 multipv 1 score cp 70 time 4072 nodes 3000448 nps 736848 pv a8e8 e3d2 e7d5 e2f3 f5e4 d3e4 d5c7 h4g2 d6d5 e4d5 d7d5 f3d5 c7d5 f1e1 b6b5 a2a4 e8e1 g2e1
+[ 2019-06-15 14:41:39,503 -    DEBUG ] << info depth 16 seldepth 26 multipv 1 score cp 65 time 4883 nodes 3602554 nps 737774 pv a8e8 e3d2 e7d5 e2f3 f5e4 d3e4 d5c7 h4g2 d6d5 e4d5 d7d5 f3d5 c7d5 a1e1 b6b5 e1e4 g8f7
+[ 2019-06-15 14:41:39,628 -    DEBUG ] << bestmove a8e8
+[ 2019-06-15 14:41:39,628 -     INFO ] elapsed(ms) since go: 5021
+[ 2019-06-15 14:41:39,628 -     INFO ] bestmove: Rae8
+[ 2019-06-15 14:41:39,628 -     INFO ] Top 1 move!!
+[ 2019-06-15 14:41:39,628 -     INFO ] Score for this test: 6
+[ 2019-06-15 14:41:39,628 -     INFO ] Total Score update: 50 / 73 (0.685)
+[ 2019-06-15 14:41:39,628 -     INFO ] r4rk1/p2qn1bp/1pnp2p1/2p2p2/4PP1N/2PPB3/PP2QN1P/R4RK1 b - - bm Rae8; ce 65; acd 16;
+[ 2019-06-15 14:41:39,628 -     INFO ] 
+
+[ 2019-06-15 14:41:39,628 -     INFO ] Pos 12
+[ 2019-06-15 14:41:39,628 -     INFO ] id tony.pos.12
+[ 2019-06-15 14:41:39,628 -     INFO ] FEN: r3r1k1/1b1n1p2/1q1p1n1p/2p1p2P/p1P3p1/P1QNPPB1/1P2B1P1/2KR3R w - - 0 1
+[ 2019-06-15 14:41:39,628 -     INFO ] Solutions: Rh4=9, Nf2=6, Kb1=3, Bh2=2, Qd2=1
+[ 2019-06-15 14:41:39,628 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:39,628 -    DEBUG ] >> position fen r3r1k1/1b1n1p2/1q1p1n1p/2p1p2P/p1P3p1/P1QNPPB1/1P2B1P1/2KR3R w - - 0 1
+[ 2019-06-15 14:41:39,628 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:39,642 -    DEBUG ] << info depth 1 seldepth 3 multipv 1 score cp -12 time 1 nodes 56 nps 56000 pv d3f2
+[ 2019-06-15 14:41:39,642 -    DEBUG ] << info depth 2 seldepth 6 multipv 1 score cp -34 time 1 nodes 172 nps 172000 pv c1b1 g8g7
+[ 2019-06-15 14:41:39,642 -    DEBUG ] << info depth 3 seldepth 7 multipv 1 score cp -4 time 1 nodes 218 nps 218000 pv c1b1
+[ 2019-06-15 14:41:39,642 -    DEBUG ] << info depth 3 seldepth 7 multipv 1 score cp -1 time 1 nodes 433 nps 433000 pv c1b1 g4f3 g2f3
+[ 2019-06-15 14:41:39,642 -    DEBUG ] << info depth 4 seldepth 8 multipv 1 score cp -23 time 1 nodes 667 nps 667000 pv c1b1 g4f3 g2f3 g8g7
+[ 2019-06-15 14:41:39,642 -    DEBUG ] << info depth 5 seldepth 9 multipv 1 score cp 7 time 1 nodes 1103 nps 1103000 pv c1b1
+[ 2019-06-15 14:41:39,642 -    DEBUG ] << info depth 5 seldepth 11 multipv 1 score cp 18 time 1 nodes 1453 nps 1453000 pv c1b1 g4f3 g2f3 g8g7 d3f2
+[ 2019-06-15 14:41:39,658 -    DEBUG ] << info depth 6 seldepth 11 multipv 1 score cp 17 time 16 nodes 3363 nps 210187 pv c1b1 e8b8 d3f2 g4f3 g2f3 g8g7
+[ 2019-06-15 14:41:39,658 -    DEBUG ] << info depth 7 seldepth 13 multipv 1 score cp 30 time 16 nodes 6498 nps 406125 pv c1b1 e8b8 d3f2 g4f3 g2f3 g8g7 b1a2
+[ 2019-06-15 14:41:39,658 -    DEBUG ] << info depth 8 seldepth 13 multipv 1 score cp -19 time 16 nodes 10885 nps 680312 pv c1b1 g4f3 g2f3 g8h8 g3f2 e8g8 b1a2 h8h7
+[ 2019-06-15 14:41:39,706 -    DEBUG ] << info depth 9 seldepth 18 multipv 1 score cp -7 time 63 nodes 38969 nps 618555 pv c1b1 e8b8 c3c2 g8h8 d3c1 h8g7 g3f2 b6c7 b1a1
+[ 2019-06-15 14:41:39,736 -    DEBUG ] << info depth 10 seldepth 17 multipv 1 score cp -6 time 94 nodes 61910 nps 658617 pv c1b1 e8b8 d3f2 g8h8 d1g1 b7c6 g1d1 g4f3 g2f3 b8g8
+[ 2019-06-15 14:41:39,845 -    DEBUG ] << info depth 11 seldepth 21 multipv 1 score cp 19 time 203 nodes 146574 nps 722039 pv d3f2 g4f3 g2f3 g8h8 c1b1 d6d5 c4d5 f6d5 c3d2 e8g8 h1h3
+[ 2019-06-15 14:41:40,032 -    DEBUG ] << info depth 12 seldepth 20 multipv 1 score cp 20 time 390 nodes 295090 nps 756641 pv d3f2 g8h8 c1b1 g4f3 g2f3 d6d5 c4d5 f6d5 c3d2 e8g8 f2g4 b6b3
+[ 2019-06-15 14:41:40,361 -    DEBUG ] << info depth 13 seldepth 25 multipv 1 score cp 38 time 718 nodes 546400 nps 761002 pv d3f2 g8h8 e3e4 g4f3 e2f3 e8g8 g3h4 a8b8 c3d2 b7a6 d2h6 f6h7 h6d2 a6c4
+[ 2019-06-15 14:41:40,687 -    DEBUG ] << info depth 14 seldepth 24 multipv 1 score cp 32 time 1044 nodes 792265 nps 758874 pv d3f2 g8h8 g3h4 g4f3 g2f3 e8e6 c1b1 a8b8 c3c2 b7c6 h1g1 f6h5 b1a1 b6b3
+[ 2019-06-15 14:41:40,891 -    DEBUG ] << info depth 15 seldepth 25 multipv 1 score cp 17 time 1248 nodes 966758 nps 774645 pv d3f2 g8h8 g3h4 g4f3 g2f3 a8b8 c1b1 e8e6 c3d2 b7c6 h1g1 f6h5 b1a1 b6b3 e3e4
+[ 2019-06-15 14:41:41,171 -    DEBUG ] << info depth 16 seldepth 24 multipv 1 score cp 22 time 1529 nodes 1202268 nps 786310 pv d3f2 g8h8 g3h4 g4f3 g2f3 a8b8 c1b1 e8e6 c3d2 b7c6 h4f6 e6f6 f2g4 f6e6 e3e4 h8g8 d1g1
+[ 2019-06-15 14:41:41,842 -    DEBUG ] << info depth 17 seldepth 28 multipv 1 score cp 42 time 2199 nodes 1733334 nps 788237 pv d3f2 g8h8 g3h4 g4f3 g2f3 a8b8 c1b1 e8e6 c3d2 b7c6 h4f6 e6f6 f2g4 f6e6 e3e4 h8g8 d1g1 g8h7
+[ 2019-06-15 14:41:44,650 -    DEBUG ] << bestmove d3f2
+[ 2019-06-15 14:41:44,650 -     INFO ] elapsed(ms) since go: 5021
+[ 2019-06-15 14:41:44,650 -     INFO ] bestmove: Nf2
+[ 2019-06-15 14:41:44,650 -     INFO ] Score for this test: 6
+[ 2019-06-15 14:41:44,650 -     INFO ] Total Score update: 56 / 82 (0.683)
+[ 2019-06-15 14:41:44,650 -     INFO ] r3r1k1/1b1n1p2/1q1p1n1p/2p1p2P/p1P3p1/P1QNPPB1/1P2B1P1/2KR3R w - - bm Nf2; ce 42; acd 17;
+[ 2019-06-15 14:41:44,650 -     INFO ] 
+
+[ 2019-06-15 14:41:44,650 -     INFO ] Pos 13
+[ 2019-06-15 14:41:44,650 -     INFO ] id tony.pos.13
+[ 2019-06-15 14:41:44,650 -     INFO ] FEN: 1rb1nrk1/2q1bppp/p1n1p3/2p1P3/2Pp1PP1/3P1NN1/P5BP/R1BQ1RK1 w - - 0 1
+[ 2019-06-15 14:41:44,650 -     INFO ] Solutions: Qe2=10, h4=4, g5=4, Bd2=3, Qd2=2, Re1=2, Nd2=2, Rf2=2, Qe1=2, Qc2=2, f5=1, Ne4=1
+[ 2019-06-15 14:41:44,650 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:44,650 -    DEBUG ] >> position fen 1rb1nrk1/2q1bppp/p1n1p3/2p1P3/2Pp1PP1/3P1NN1/P5BP/R1BQ1RK1 w - - 0 1
+[ 2019-06-15 14:41:44,650 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:44,665 -    DEBUG ] << info depth 1 seldepth 4 multipv 1 score cp 45 time 1 nodes 41 nps 41000 pv c1d2
+[ 2019-06-15 14:41:44,665 -    DEBUG ] << info depth 2 seldepth 6 multipv 1 score cp 75 time 1 nodes 164 nps 164000 pv f3d2
+[ 2019-06-15 14:41:44,665 -    DEBUG ] << info depth 2 seldepth 6 multipv 1 score cp 77 time 1 nodes 257 nps 257000 pv f3g5 e7g5 g2c6 c7c6 f4g5
+[ 2019-06-15 14:41:44,665 -    DEBUG ] << info depth 3 seldepth 8 multipv 1 score cp 36 time 1 nodes 630 nps 630000 pv f3d2 f7f5 g4f5 e6f5
+[ 2019-06-15 14:41:44,665 -    DEBUG ] << info depth 4 seldepth 6 multipv 1 score cp 66 time 1 nodes 697 nps 697000 pv f3d2
+[ 2019-06-15 14:41:44,665 -    DEBUG ] << info depth 4 seldepth 8 multipv 1 score cp 70 time 1 nodes 865 nps 865000 pv f3d2 f7f5 g4f5 e6f5 g2d5 g8h8
+[ 2019-06-15 14:41:44,681 -    DEBUG ] << info depth 5 seldepth 11 multipv 1 score cp 11 time 16 nodes 2779 nps 173687 pv f3d2 c8d7 d2b3 f7f5 g4f5 e6f5
+[ 2019-06-15 14:41:44,681 -    DEBUG ] << info depth 6 seldepth 12 multipv 1 score cp 0 time 16 nodes 10362 nps 647625 pv f1e1 g7g6 g3e4 f7f6 e5f6 e8f6
+[ 2019-06-15 14:41:44,697 -    DEBUG ] << info depth 7 seldepth 15 multipv 1 score cp 11 time 31 nodes 14548 nps 469290 pv c1d2 c8d7 a2a3 f7f6 d1e2 b8b2 g3e4 f6e5 f4e5
+[ 2019-06-15 14:41:44,697 -    DEBUG ] << info depth 8 seldepth 15 multipv 1 score cp 3 time 31 nodes 24161 nps 779387 pv c1d2 c8d7 f1e1 f7f6 a2a4 g7g6 d1c1 g8h8
+[ 2019-06-15 14:41:44,743 -    DEBUG ] << info depth 9 seldepth 17 multipv 1 score cp 25 time 78 nodes 55314 nps 709153 pv c1d2 f7f6 d1e2 c7b7 f4f5 b7c7 e5f6 e8f6 g4g5
+[ 2019-06-15 14:41:44,759 -    DEBUG ] << info depth 10 seldepth 19 multipv 1 score cp 35 time 94 nodes 70437 nps 749329 pv c1d2 f7f6 d1e2 c7b7 f4f5 e6f5 g3f5 b7c7 e5f6 e8f6 f5e7 c6e7
+[ 2019-06-15 14:41:44,838 -    DEBUG ] << info depth 11 seldepth 20 multipv 1 score cp 58 time 172 nodes 121714 nps 707639 pv c1d2 h7h6 a1b1 b8b1 d1b1 f7f6 e5f6 e8f6 g4g5 h6g5 f4g5
+[ 2019-06-15 14:41:44,900 -    DEBUG ] << info depth 12 seldepth 21 multipv 1 score cp 40 time 234 nodes 173683 nps 742235 pv c1d2 h7h6 a1b1 b8b1 d1b1 f7f6 e5f6 e8f6 g4g5 h6g5 f4g5 f6e8
+[ 2019-06-15 14:41:44,977 -    DEBUG ] << info depth 13 seldepth 21 multipv 1 score cp 46 time 312 nodes 232375 nps 744791 pv c1d2 h7h6 a1b1 b8b1 d1b1 c8d7 b1d1 f7f6 e5f6 e8f6 g4g5 h6g5 f4g5
+[ 2019-06-15 14:41:45,102 -    DEBUG ] << info depth 14 seldepth 23 multipv 1 score cp 51 time 437 nodes 326700 nps 747597 pv c1d2 h7h6 a1b1 b8b1 d1b1 c8d7 b1d1 f7f6 a2a3 f6e5 f4e5 c7b6 g3e4 g7g5
+[ 2019-06-15 14:41:45,446 -    DEBUG ] << info depth 15 seldepth 24 multipv 1 score cp 58 time 780 nodes 575607 nps 737957 pv c1d2 h7h6 a1b1 b8b1 d1b1 c8d7 a2a3 g7g6 b1d1 c7b8 f3e1 b8b2 g3e4 b2a3 h2h3
+[ 2019-06-15 14:41:45,914 -    DEBUG ] << info depth 16 seldepth 26 multipv 1 score cp 59 time 1248 nodes 930905 nps 745917 pv c1d2 c8d7 a1b1 b8b1 d1b1 f7f6 b1e1 f6e5 f3e5 c6e5 f4e5 f8f1 g1f1 e7h4 f1g1 g7g6 g1f2
+[ 2019-06-15 14:41:49,220 -    DEBUG ] << info depth 17 seldepth 24 multipv 1 score cp 29 time 4540 nodes 3290293 nps 724734 pv c1d2
+[ 2019-06-15 14:41:49,407 -    DEBUG ] << info depth 17 seldepth 26 multipv 1 score cp 34 time 4742 nodes 3439511 nps 725329 pv c1d2 c8d7 a1b1 b8b1 d1b1 f7f6 f1e1 h7h6 e1e2 g7g5 b1c1 c7b6 g3h5 f6f5 h2h3 f5g4 h3g4
+[ 2019-06-15 14:41:49,674 -    DEBUG ] << bestmove c1d2 ponder c8d7
+[ 2019-06-15 14:41:49,674 -     INFO ] elapsed(ms) since go: 5021
+[ 2019-06-15 14:41:49,674 -     INFO ] bestmove: Bd2
+[ 2019-06-15 14:41:49,674 -     INFO ] Score for this test: 3
+[ 2019-06-15 14:41:49,674 -     INFO ] Total Score update: 59 / 92 (0.641)
+[ 2019-06-15 14:41:49,674 -     INFO ] 1rb1nrk1/2q1bppp/p1n1p3/2p1P3/2Pp1PP1/3P1NN1/P5BP/R1BQ1RK1 w - - bm Bd2; ce 34; acd 17;
+[ 2019-06-15 14:41:49,674 -     INFO ] 
+
+[ 2019-06-15 14:41:49,674 -     INFO ] Pos 14
+[ 2019-06-15 14:41:49,674 -     INFO ] id tony.pos.14
+[ 2019-06-15 14:41:49,674 -     INFO ] FEN: r3r1k1/ppqbbpp1/2pp1nnp/3Pp3/2P1P3/5N1P/PPBN1PP1/R1BQR1K1 w - - 0 1
+[ 2019-06-15 14:41:49,674 -     INFO ] Solutions: a4=6, Bd3=1
+[ 2019-06-15 14:41:49,674 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:49,674 -    DEBUG ] >> position fen r3r1k1/ppqbbpp1/2pp1nnp/3Pp3/2P1P3/5N1P/PPBN1PP1/R1BQR1K1 w - - 0 1
+[ 2019-06-15 14:41:49,674 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:49,688 -    DEBUG ] << info depth 1 seldepth 3 multipv 1 score cp -45 time 1 nodes 46 nps 46000 pv b2b4
+[ 2019-06-15 14:41:49,688 -    DEBUG ] << info depth 2 seldepth 6 multipv 1 score cp -59 time 1 nodes 258 nps 258000 pv c2d3 a7a5
+[ 2019-06-15 14:41:49,688 -    DEBUG ] << info depth 3 seldepth 6 multipv 1 score cp -45 time 1 nodes 445 nps 445000 pv c2d3 a7a5 a2a4
+[ 2019-06-15 14:41:49,688 -    DEBUG ] << info depth 4 seldepth 8 multipv 1 score cp -56 time 1 nodes 749 nps 749000 pv c2d3 a7a5 a2a4 g8h7
+[ 2019-06-15 14:41:49,688 -    DEBUG ] << info depth 5 seldepth 10 multipv 1 score cp -52 time 1 nodes 1985 nps 1985000 pv a2a4 a7a5 a1a3 g8h7 c2d3
+[ 2019-06-15 14:41:49,704 -    DEBUG ] << info depth 6 seldepth 12 multipv 1 score cp -51 time 16 nodes 3250 nps 203125 pv a2a4 a7a5 e1e3 g8h7 a1a3 g6f4
+[ 2019-06-15 14:41:49,704 -    DEBUG ] << info depth 7 seldepth 12 multipv 1 score cp -51 time 16 nodes 5391 nps 336937 pv a2a4 a7a5 e1e3 g8h7 a1a3 b7b6 c2d3
+[ 2019-06-15 14:41:49,704 -    DEBUG ] << info depth 8 seldepth 14 multipv 1 score cp -53 time 16 nodes 11695 nps 730937 pv a2a4 a7a5 e1e3 e8b8 a1a3 g8h7 c2d3 b7b6
+[ 2019-06-15 14:41:49,720 -    DEBUG ] << info depth 9 seldepth 15 multipv 1 score cp -60 time 31 nodes 22960 nps 740645 pv a2a4 a7a5 e1e3 a8c8 c2d3 c6d5 e4d5 g6f4 d3f1
+[ 2019-06-15 14:41:49,752 -    DEBUG ] << info depth 10 seldepth 16 multipv 1 score cp -54 time 63 nodes 38318 nps 608222 pv a2a4 a7a5 e1e3 a8c8 e3c3 g6f4 d2b3 c7b6 c1f4 e5f4
+[ 2019-06-15 14:41:49,907 -    DEBUG ] << info depth 11 seldepth 19 multipv 1 score cp -47 time 219 nodes 144759 nps 661000 pv a2a4 a7a5 e1e3 a8c8 e3c3 g8h7 a1a3 c6d5 c4d5 c7b6 a3b3
+[ 2019-06-15 14:41:50,078 -    DEBUG ] << info depth 12 seldepth 20 multipv 1 score cp -44 time 390 nodes 267459 nps 685792 pv a2a4 a7a5 e1e3 a8c8 e3c3 g8h7 a1a3 c8a8 a3b3 e8c8 c2d3 b7b6
+[ 2019-06-15 14:41:50,282 -    DEBUG ] << info depth 13 seldepth 21 multipv 1 score cp -44 time 593 nodes 406763 nps 685940 pv a2a4 a7a5 e1e3 a8c8 e3c3 c6d5 c4d5 c7b6 a1a3 g6f4 d2c4 b6a7 c1f4 e5f4
+[ 2019-06-15 14:41:50,828 -    DEBUG ] << info depth 14 seldepth 23 multipv 1 score cp -43 time 1139 nodes 795297 nps 698241 pv a2a4 a7a5 e1e3 a8c8 e3c3 c7d8 a1a3 d8b6 c3b3 b6c7 b3c3 c8a8 c3b3 c6c5
+[ 2019-06-15 14:41:52,653 -    DEBUG ] << info depth 15 seldepth 25 multipv 1 score cp -56 time 2964 nodes 2053882 nps 692942 pv a2a4 e8c8 b2b4 g6f4 d5c6 c7c6 c1a3 c6c7 e1e3 g8h7 g1h1 g7g5 f3h2 a7a5 b4b5
+[ 2019-06-15 14:41:53,792 -    DEBUG ] << info depth 16 seldepth 25 multipv 1 score cp -49 time 4103 nodes 2839621 nps 692084 pv a2a4 a8c8 b2b4 g6f4 d5c6 c7c6 c1a3 c6c7 a4a5 g7g5 e1e3 f4e6 c2b3 g8g7 e3c3 e6f4
+[ 2019-06-15 14:41:54,493 -    DEBUG ] << info depth 17 seldepth 25 multipv 1 score cp -46 time 4805 nodes 3359388 nps 699144 pv a2a4 a8c8 b2b4 g6f4 d5c6 c7c6 c1a3 c6c7 a4a5 g7g5 e1e3 f4e6 e3c3 c7d8 c3b3 g8g7 a3b2
+[ 2019-06-15 14:41:54,697 -    DEBUG ] << bestmove a2a4
+[ 2019-06-15 14:41:54,697 -     INFO ] elapsed(ms) since go: 5021
+[ 2019-06-15 14:41:54,697 -     INFO ] bestmove: a4
+[ 2019-06-15 14:41:54,697 -     INFO ] Top 1 move!!
+[ 2019-06-15 14:41:54,697 -     INFO ] Score for this test: 6
+[ 2019-06-15 14:41:54,697 -     INFO ] Total Score update: 65 / 98 (0.663)
+[ 2019-06-15 14:41:54,697 -     INFO ] r3r1k1/ppqbbpp1/2pp1nnp/3Pp3/2P1P3/5N1P/PPBN1PP1/R1BQR1K1 w - - bm a4; ce -46; acd 17;
+[ 2019-06-15 14:41:54,697 -     INFO ] 
+
+[ 2019-06-15 14:41:54,697 -     INFO ] Pos 15
+[ 2019-06-15 14:41:54,697 -     INFO ] id tony.pos.15
+[ 2019-06-15 14:41:54,697 -     INFO ] FEN: 5r1k/1q2rnpp/p4p2/1pp5/6Q1/1P3P2/PBP3PP/3RR1K1 w - - 0 1
+[ 2019-06-15 14:41:54,697 -     INFO ] Solutions: Kf2=7, a4=3, h3=4, h4=2, c4=2, Qf5=2, Kf1=1, Rxe7=1, Bc3=1, Re6=1
+[ 2019-06-15 14:41:54,697 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:54,697 -    DEBUG ] >> position fen 5r1k/1q2rnpp/p4p2/1pp5/6Q1/1P3P2/PBP3PP/3RR1K1 w - - 0 1
+[ 2019-06-15 14:41:54,697 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:54,711 -    DEBUG ] << info depth 1 seldepth 5 multipv 1 score cp 37 time 1 nodes 83 nps 83000 pv c2c4
+[ 2019-06-15 14:41:54,711 -    DEBUG ] << info depth 2 seldepth 5 multipv 1 score cp 40 time 1 nodes 267 nps 267000 pv f3f4 e7e1 d1e1
+[ 2019-06-15 14:41:54,711 -    DEBUG ] << info depth 3 seldepth 6 multipv 1 score cp 56 time 1 nodes 567 nps 567000 pv e1e7 b7e7 f3f4 e7e3 g1h1
+[ 2019-06-15 14:41:54,711 -    DEBUG ] << info depth 4 seldepth 8 multipv 1 score cp 30 time 1 nodes 952 nps 952000 pv e1e7 b7e7 f3f4 h8g8
+[ 2019-06-15 14:41:54,711 -    DEBUG ] << info depth 5 seldepth 11 multipv 1 score cp 30 time 1 nodes 1479 nps 1479000 pv e1e7 b7e7 h2h4 e7e3 g1h2 h8g8
+[ 2019-06-15 14:41:54,711 -    DEBUG ] << info depth 6 seldepth 11 multipv 1 score cp 0 time 1 nodes 2987 nps 2987000 pv e1e7
+[ 2019-06-15 14:41:54,727 -    DEBUG ] << info depth 6 seldepth 11 multipv 1 score cp 14 time 16 nodes 5014 nps 313375 pv g4h4 e7e1 h4e1 b7c7 c2c4 h8g8 h2h4 b5c4 b3c4
+[ 2019-06-15 14:41:54,727 -    DEBUG ] << info depth 7 seldepth 13 multipv 1 score cp 7 time 16 nodes 8666 nps 541625 pv g4h4 e7e1 h4e1 f8c8 f3f4 h8g8 e1e3 c5c4
+[ 2019-06-15 14:41:54,759 -    DEBUG ] << info depth 8 seldepth 16 multipv 1 score cp -18 time 47 nodes 36411 nps 774702 pv g4h4 f8e8 b2c3 e7e1 d1e1 e8e1 h4e1 f7d6 e1e3 b7c7
+[ 2019-06-15 14:41:54,775 -    DEBUG ] << info depth 9 seldepth 16 multipv 1 score cp -18 time 63 nodes 44454 nps 705619 pv g4h4 f8e8 b2c3 e7e1 d1e1 e8e1 h4e1 f7d6 e1e3 b7d5 g1f2
+[ 2019-06-15 14:41:54,789 -    DEBUG ] << info depth 10 seldepth 18 multipv 1 score cp -18 time 78 nodes 62184 nps 797230 pv g4h4 f8e8 h4f2 e7e1 d1e1 e8e1 f2e1 f7d6 e1e6 b7c7 c2c4 b5b4
+[ 2019-06-15 14:41:54,805 -    DEBUG ] << info depth 11 seldepth 18 multipv 1 score cp -17 time 94 nodes 76684 nps 815787 pv g4h4 f8e8 h4f2 e7e1 d1e1 e8e1 f2e1 f7d6 e1e6 b7c6 c2c4 b5c4 b3c4
+[ 2019-06-15 14:41:55,101 -    DEBUG ] << info depth 12 seldepth 21 multipv 1 score cp -17 time 390 nodes 357478 nps 916610 pv a2a3 f8e8 b2c3 e7e1 d1e1 e8e1 c3e1 b7c6 e1f2 h8g8 f2e3 f7e5 g4h5 b5b4 a3b4 c5b4
+[ 2019-06-15 14:41:55,164 -    DEBUG ] << info depth 13 seldepth 23 multipv 1 score cp -19 time 453 nodes 420765 nps 928841 pv a2a3 f8e8 b2c3 b7c6 e1e7 e8e7 g4g3 e7e8 d1e1 e8e1 g3e1 h8g8 e1g3 g7g5 g3b8 g8g7
+[ 2019-06-15 14:41:55,289 -    DEBUG ] << info depth 14 seldepth 22 multipv 1 score cp -15 time 578 nodes 528403 nps 914192 pv a2a3 f8e8 b2c3 b7c6 e1e7 e8e7 g4g3 e7e8 d1e1 e8e1 g3e1 c6c8 g1f2 h8g8 e1e7
+[ 2019-06-15 14:41:55,430 -    DEBUG ] << info depth 15 seldepth 24 multipv 1 score cp -11 time 718 nodes 675901 nps 941366 pv a2a3 f8e8 b2c3 e7e1 d1e1 e8e1 c3e1 b7c6 e1f2 h8g8 f2e3 f7e5 g4e4 c6e4 f3e4 c5c4 g1f2 g8f7 e3d4
+[ 2019-06-15 14:41:55,617 -    DEBUG ] << info depth 16 seldepth 26 multipv 1 score cp -12 time 905 nodes 858179 nps 948264 pv a2a3 f8e8 b2c3 e7e1 d1e1 e8e1 c3e1 b7c6 e1f2 h8g8 f2e3 f7e5 g4f5 c5c4 g1f2 e5f7 f2e2 c4b3 c2b3
+[ 2019-06-15 14:41:55,867 -    DEBUG ] << info depth 17 seldepth 25 multipv 1 score cp -11 time 1139 nodes 1094834 nps 961223 pv a2a3 f8e8 b2c3 e7e1 d1e1 e8e1 c3e1 b7c6 e1f2 h8g8 f2e3 f7e5 g4f5 g7g6 f5e4 c6e4 f3e4 c5c4 g1f1 g8f7 f1e2
+[ 2019-06-15 14:41:58,066 -    DEBUG ] << info depth 18 seldepth 29 multipv 1 score cp 0 time 3355 nodes 3171962 nps 945443 pv h2h3 f8e8 e1e7 b7e7 d1d7 e7f8 f3f4 b5b4 g1h2 e8e1 g4h5 h8g8 h5g4 g8h8
+[ 2019-06-15 14:41:58,535 -    DEBUG ] << info depth 19 seldepth 27 multipv 1 score cp 0 time 3823 nodes 3614489 nps 945458 pv h2h3 f8e8 e1e7 b7e7 d1d7 e7f8 f3f4 b5b4 g1h2 e8e1 g4h5 h8g8 h5g4 g8h8
+[ 2019-06-15 14:41:59,720 -    DEBUG ] << bestmove h2h3
+[ 2019-06-15 14:41:59,720 -     INFO ] elapsed(ms) since go: 5023
+[ 2019-06-15 14:41:59,720 -     INFO ] bestmove: h3
+[ 2019-06-15 14:41:59,720 -     INFO ] Score for this test: 4
+[ 2019-06-15 14:41:59,720 -     INFO ] Total Score update: 69 / 105 (0.657)
+[ 2019-06-15 14:41:59,720 -     INFO ] 5r1k/1q2rnpp/p4p2/1pp5/6Q1/1P3P2/PBP3PP/3RR1K1 w - - bm h3; ce 0; acd 19;
+[ 2019-06-15 14:41:59,720 -     INFO ] 
+
+[ 2019-06-15 14:41:59,720 -     INFO ] Pos 16
+[ 2019-06-15 14:41:59,720 -     INFO ] id tony.pos.16
+[ 2019-06-15 14:41:59,720 -     INFO ] FEN: 2r2k2/5p2/2Bp1b1r/2qPp1pp/PpN1P3/1P2Q3/5PPP/4R1K1 w - - 0 1
+[ 2019-06-15 14:41:59,720 -     INFO ] Solutions: Qxc5=9, a5=5, Ra1=5, Qd2=2, Rf1=2, Rb1=2, Rd1=2, Rc1=2, Kf1=1, h3=1, Re2=1
+[ 2019-06-15 14:41:59,720 -    DEBUG ] >> ucinewgame
+[ 2019-06-15 14:41:59,720 -    DEBUG ] >> position fen 2r2k2/5p2/2Bp1b1r/2qPp1pp/PpN1P3/1P2Q3/5PPP/4R1K1 w - - 0 1
+[ 2019-06-15 14:41:59,720 -    DEBUG ] >> go movetime 5000
+[ 2019-06-15 14:41:59,736 -    DEBUG ] << info depth 1 seldepth 4 multipv 1 score cp 64 time 1 nodes 54 nps 54000 pv e3h3
+[ 2019-06-15 14:41:59,736 -    DEBUG ] << info depth 2 seldepth 7 multipv 1 score cp 115 time 1 nodes 171 nps 171000 pv e3d2
+[ 2019-06-15 14:41:59,736 -    DEBUG ] << info depth 2 seldepth 4 multipv 1 score cp 75 time 1 nodes 296 nps 296000 pv e3h3 c8c6 d5c6 c5c6
+[ 2019-06-15 14:41:59,736 -    DEBUG ] << info depth 3 seldepth 6 multipv 1 score cp 79 time 1 nodes 506 nps 506000 pv e3c5 d6c5 c4d6
+[ 2019-06-15 14:41:59,736 -    DEBUG ] << info depth 4 seldepth 8 multipv 1 score cp 88 time 1 nodes 807 nps 807000 pv e3c5 d6c5 c4b6 c8d8 b6d7 f8e7 d7c5
+[ 2019-06-15 14:41:59,736 -    DEBUG ] << info depth 5 seldepth 8 multipv 1 score cp 88 time 1 nodes 1051 nps 1051000 pv e3c5 d6c5 c4b6 c8d8 b6d7 f8e7 d7c5
+[ 2019-06-15 14:41:59,736 -    DEBUG ] << info depth 6 seldepth 10 multipv 1 score cp 118 time 1 nodes 1169 nps 1169000 pv e3c5
+[ 2019-06-15 14:41:59,736 -    DEBUG ] << info depth 6 seldepth 10 multipv 1 score cp 124 time 1 nodes 1633 nps 1633000 pv e3c5 d6c5 c4b6 c8d8 e1c1 f8g7 c1c5
+[ 2019-06-15 14:41:59,750 -    DEBUG ] << info depth 7 seldepth 10 multipv 1 score cp 124 time 1 nodes 2224 nps 2224000 pv e3c5 d6c5 c4b6 c8d8 e1c1 f8g7 c1c5
+[ 2019-06-15 14:41:59,750 -    DEBUG ] << info depth 8 seldepth 14 multipv 1 score cp 128 time 15 nodes 3792 nps 252800 pv e3c5 d6c5 c4d6 c8d8 d6b7 d8b8 b7c5 f8e7 e1c1
+[ 2019-06-15 14:41:59,750 -    DEBUG ] << info depth 9 seldepth 14 multipv 1 score cp 118 time 15 nodes 7287 nps 485800 pv e3c5 d6c5 c4b6 c8d8 b6d7 f8g7 d7c5 h6h8 c5d3 d8b8
+[ 2019-06-15 14:41:59,766 -    DEBUG ] << info depth 10 seldepth 15 multipv 1 score cp 111 time 31 nodes 21167 nps 682806 pv e3c5 d6c5 c4d6 c8b8 e1c1 f6e7 d6f5 h6g6 a4a5 b8d8 f5e7 f8e7 c1c5
+[ 2019-06-15 14:41:59,766 -    DEBUG ] << info depth 11 seldepth 17 multipv 1 score cp 131 time 31 nodes 32170 nps 1037741 pv e3c5 d6c5 c4b6 c8d8 e1c1 f6e7 a4a5 f8g7 b6d7 h6h8 d7c5 e7c5 c1c5
+[ 2019-06-15 14:41:59,782 -    DEBUG ] << info depth 12 seldepth 18 multipv 1 score cp 142 time 47 nodes 42096 nps 895659 pv e3c5 d6c5 c4b6 c8d8 e1c1 f6e7 b6d7 f8g8 d7c5 e7c5 c1c5 g8g7 a4a5
+[ 2019-06-15 14:41:59,798 -    DEBUG ] << info depth 13 seldepth 19 multipv 1 score cp 153 time 62 nodes 61413 nps 990532 pv e3c5 d6c5 c4b6 c8d8 e1c1 g5g4 c1c5 f6e7 c5c1 e7g5 c1c4 f8g7 c4b4
+[ 2019-06-15 14:41:59,861 -    DEBUG ] << info depth 14 seldepth 21 multipv 1 score cp 158 time 125 nodes 114903 nps 919224 pv e3c5 d6c5 c4b6 c8c7 e1c1 f6e7 b6d7 f8g7 d7e5 f7f5 e4f5 g7f6 e5d3 f6f5 d3c5 e7c5 c1c5
+[ 2019-06-15 14:41:59,875 -    DEBUG ] << info depth 15 seldepth 21 multipv 1 score cp 158 time 140 nodes 135604 nps 968600 pv e3c5 d6c5 c4b6 c8c7 e1c1 f6e7 b6d7 f8g7 d7e5 f7f5 e4f5 g7f6 e5d7 f6f5 d7c5 e7c5 c1c5
+[ 2019-06-15 14:41:59,940 -    DEBUG ] << info depth 16 seldepth 22 multipv 1 score cp 164 time 205 nodes 214082 nps 1044302 pv e3c5 d6c5 c4b6 c8c7 e1c1 h6h8 a4a5 f6e7 b6d7 f8g7 d7e5 c7a7 e5c4 g5g4 d5d6 e7d6 c4d6 a7a5
+[ 2019-06-15 14:42:00,003 -    DEBUG ] << info depth 17 seldepth 22 multipv 1 score cp 171 time 267 nodes 283992 nps 1063640 pv e3c5 d6c5 c4b6 c8c7 e1c1 h6h8 c1c5 f6e7 c5c1 e7d6 b6c4 f8e7 g2g3 h8c8 a4a5 c7a7 g1g2
+[ 2019-06-15 14:42:00,096 -    DEBUG ] << info depth 18 seldepth 25 multipv 1 score cp 171 time 345 nodes 376405 nps 1091028 pv e3c5 d6c5 c4b6 c8c7 e1c1 h6h8 c1c5 f6e7 c5a5 f8g7 b6c4 f7f6 a5b5 h8d8 a4a5 c7a7 b5b7 a7b7 c6b7
+[ 2019-06-15 14:42:00,253 -    DEBUG ] << info depth 19 seldepth 25 multipv 1 score cp 171 time 517 nodes 542970 nps 1050232 pv e3c5 d6c5 c4b6 c8c7 e1c1 h6h8 c1c5 f6e7 c5a5 f8g7 b6c4 f7f6 a5b5 h8d8 a4a5 c7a7 b5b7 a7b7 c6b7
+[ 2019-06-15 14:42:00,440 -    DEBUG ] << info depth 20 seldepth 28 multipv 1 score cp 161 time 704 nodes 758323 nps 1077163 pv e3c5 d6c5 c4b6 c8c7 e1c1 h6h8 c1c5 f6e7 c5a5 f8g7 b6c4 f7f6 a5b5 h8d8 a4a5 c7a7 b5b6 g5g4 b6b7 a7b7 c6b7
+[ 2019-06-15 14:42:00,799 -    DEBUG ] << info depth 21 seldepth 30 multipv 1 score cp 167 time 1063 nodes 1155007 nps 1086554 pv e3c5 d6c5 c4b6 c8c7 e1c1 h6h8 c1c5 f6e7 c5a5 f8g7 b6c4 f7f6 a5b5 h8d8 g2g3 c7a7 a4a5 g5g4 g1g2 g7f7 b5b7 a7b7 c6b7
+[ 2019-06-15 14:42:01,921 -    DEBUG ] << info depth 22 seldepth 30 multipv 1 score cp 165 time 2186 nodes 2340633 nps 1070737 pv e3c5 d6c5 c4b6 c8c7 e1c1 f8g7 c1c5 f6e7 c5c1 h6f6 b6c4 e7c5 c4e3 c5e3 f2e3 g7f8 c1c4 f8e7 c4b4 c7a7 b4b8 e7d6
+[ 2019-06-15 14:42:03,075 -    DEBUG ] << info depth 23 seldepth 32 multipv 1 score cp 168 time 3340 nodes 3503712 nps 1049015 pv e3c5 d6c5 c4b6 c8c7 e1c1 h6h8 c1c5 f6e7 c5c1 e7d6 a4a5 f8e7 a5a6 h8d8 b6c4 c7a7 c6b7 e7f6 c4d6 d8d6 c1c4 f6e7 c4b4
+[ 2019-06-15 14:42:04,744 -    DEBUG ] << bestmove e3c5 ponder d6c5
+[ 2019-06-15 14:42:04,744 -     INFO ] elapsed(ms) since go: 5022
+[ 2019-06-15 14:42:04,744 -     INFO ] bestmove: Qxc5
+[ 2019-06-15 14:42:04,744 -     INFO ] Top 1 move!!
+[ 2019-06-15 14:42:04,744 -     INFO ] Score for this test: 9
+[ 2019-06-15 14:42:04,744 -     INFO ] Total Score update: 78 / 114 (0.684)
+[ 2019-06-15 14:42:04,744 -     INFO ] 2r2k2/5p2/2Bp1b1r/2qPp1pp/PpN1P3/1P2Q3/5PPP/4R1K1 w - - bm Qxc5; ce 168; acd 23;
+[ 2019-06-15 14:42:04,744 -    DEBUG ] >> quit
+[ 2019-06-15 14:42:04,760 -  WARNING ] 
+
+[ 2019-06-15 14:42:04,760 -     INFO ] Time allocation  : GOOD!!
+[ 2019-06-15 14:42:04,760 -     INFO ] ExpectedTime     : 80.0s
+[ 2019-06-15 14:42:04,760 -     INFO ] ActualTime       : 80.4s
+[ 2019-06-15 14:42:04,760 -     INFO ] TimeMargin/pos   : 0.2s
+[ 2019-06-15 14:42:04,760 -     INFO ] TimeMarginTotal  : 3.2s
+[ 2019-06-15 14:42:04,760 -     INFO ] Writing analysis results ...
+[ 2019-06-15 14:42:05,900 -     INFO ] Done!!
+[ 2019-06-15 14:42:05,900 -     INFO ] move Deuterium_v2019.1.36.50_5000_log.txt to log dir

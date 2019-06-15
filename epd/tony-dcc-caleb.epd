@@ -1,0 +1,16 @@
+1r2r1k1/1pqbbppp/p2p1n2/4p3/P3PP2/2N1BB2/1PP2QPP/R4R1K b - - bm Rbc8; c0 "positional scores are: Rbc8=10, h6=9, exf4=8, Qc4=7, Kh8=6, Bc6=5, Ra8=4, Qc6=4, Qc8=2, Be6=1"; id "tony.pos.01";
+r1bk1bnr/ppp2ppp/8/4n3/2P5/P3B3/1P3PPP/RN2KBNR w KQ - bm Nd2; c0 "positional scores are: Nd2=5, h3=2, Be2=1"; id "tony.pos.02";
+8/7p/3k2p1/6P1/4KP2/8/7P/8 w - - bm h4; c0 "positional scores are: h4=1"; id "tony.pos.03";
+r1b1r1k1/1p1n1pbp/2p1n1p1/q1P1p3/4P3/1PN1BNPP/2Q2PB1/1R1R2K1 w - - bm Na4; c0 "positional scores are: Na4=10, b4=7, Kh2=6, Rb2=5, Bf1=5, Rd3=3, g4=2, Ne1=1"; id "tony.pos.04";
+1rN1r1k1/1pq2pp1/2p1nn1p/p2p1B2/3P4/4P2P/PPQ1NPP1/2R2RK1 b - - bm Rbxc8; c0 "positional scores are: Rbxc8=7, Rexc8=5, Ra8=1"; id "tony.pos.05";
+3r1rk1/p1q2pbp/1np1p1p1/1p2P3/5P2/2N2Q1P/PPP3P1/3RRBK1 b - - bm Rxd1; c0 "positional scores are: Rxd1=1"; id "tony.pos.06";
+r2r2k1/p3ppbp/1p4p1/3p4/3P4/2P1P2P/P3BPP1/2R2RK1 w - - bm f4; c0 "positional scores are: f4=10, Ba6=8, c4=6, g4=5, a4=3, Rfd1=2, g3=2, Bb5=2, Bd3=1, f3=1"; id "tony.pos.07";
+2rq3r/pb1pbkpp/1p2pp2/n1P5/2P5/QP2BNPB/P3PP1P/3R1RK1 w - - bm b4; c0 "positional scores are: b4=9, Rd3=2, Nd4=2, Qc1=1, Qb4=1, Qb2=1, Rfe1=1, Bf4=1, Bd2=1, Ne1=1"; id "tony.pos.08";
+1r1q1rk1/pp1bbppp/2n1p1n1/4P3/2BpN3/3P1N2/PP2QPPP/R1B1R1K1 b - - bm b5; c0 "positional scores are: b5=6, a5=4, h6=1, Qb6=5, Qc7=5, Rc8=4, Ra8=3, b6=3, a6=3, Be8=2, Ncxe5=1"; id "tony.pos.09";
+3r2k1/2p2ppp/1p1br3/pPn5/3PP3/P7/1B1N2PP/R3R1K1 w - - bm Re2; c0 "positional scores are: Re2=8, Rab1=2, Bc1=1"; id "tony.pos.10";
+r4rk1/p2qn1bp/1pnp2p1/2p2p2/4PP1N/2PPB3/PP2QN1P/R4RK1 b - - bm Rae8; c0 "positional scores are: Rae8=6, Qe6=2, Rad8=2, b5=3, Bf6=2, Kh8=2, d5=2, a5=2, Rab8=1, Rac8=1, Rf7=1"; id "tony.pos.11";
+r3r1k1/1b1n1p2/1q1p1n1p/2p1p2P/p1P3p1/P1QNPPB1/1P2B1P1/2KR3R w - - bm Rh4; c0 "positional scores are: Rh4=9, Nf2=6, Kb1=3, Bh2=2, Qd2=1"; id "tony.pos.12";
+1rb1nrk1/2q1bppp/p1n1p3/2p1P3/2Pp1PP1/3P1NN1/P5BP/R1BQ1RK1 w - - bm Qe2; c0 "positional scores are: Qe2=10, h4=4, g5=4, Bd2=3, Qd2=2, Re1=2, Nd2=2, Rf2=2, Qe1=2, Qc2=2, f5=1, Ne4=1"; id "tony.pos.13";
+r3r1k1/ppqbbpp1/2pp1nnp/3Pp3/2P1P3/5N1P/PPBN1PP1/R1BQR1K1 w - - bm a4; c0 "positional scores are: a4=6, Bd3=1"; id "tony.pos.14";
+5r1k/1q2rnpp/p4p2/1pp5/6Q1/1P3P2/PBP3PP/3RR1K1 w - - bm Kf2; c0 "positional scores are: Kf2=7, a4=3, h3=4, h4=2, c4=2, Qf5=2, Kf1=1, Rxe7=1, Bc3=1, Re6=1"; id "tony.pos.15";
+2r2k2/5p2/2Bp1b1r/2qPp1pp/PpN1P3/1P2Q3/5PPP/4R1K1 w - - bm Qxc5; c0 "positional scores are: Qxc5=9, a5=5, Ra1=5, Qd2=2, Rf1=2, Rb1=2, Rd1=2, Rc1=2, Kf1=1, h3=1, Re2=1"; id "tony.pos.16";
