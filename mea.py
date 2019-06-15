@@ -224,9 +224,9 @@ class Analyze():
                 
                 # Set it
                 p.stdin.write("setoption name %s value %s\n" % (name, value))
-                logger.info(">> setoption name %s value %s" % (name, value))
+                logger.debug(">> setoption name %s value %s" % (name, value))
                 
-                if name == 'multipv':
+                if name.lower() == 'multipv':
                     self.multipv = int(value)
         
         # Prepare engine
@@ -826,7 +826,7 @@ def main(argv):
     ana_data = []
     log_fn = None
 
-    log_fn = '_'.join(args.name.split()) + '_' + str(ana_time) + '_log.txt'
+    log_fn = '_'.join(args.name.split()) + '_mt' + str(ana_time) + 'ms_log.txt'
     log_fn.replace('/', '_')
     log_fn.replace('\\', '_')
     logging.basicConfig(format=FORMAT, filename=log_fn,filemode='w')
@@ -844,6 +844,19 @@ def main(argv):
     v.insert(len(v), elapsed)  # [engine, top1cnt, score, maxscore, numpostried, elapsed]
     v.insert(len(v), engine_rating) # [engine, top1cnt, score, maxscore, numpostried, elapsed, rating]
     ana_data.append(v)
+    
+    # If there is engine options in command line, find the hash and threads
+    # value, we will use this in csv and html table
+    if eoption:
+        opt_list = eoption.split(',')
+        for o in opt_list:
+            opt = o.strip()
+            name = opt.split('=')[0].strip()
+            value = opt.split('=')[1].strip()            
+            if name.lower() == 'hash':
+                engine_numhash = int(value)
+            elif name.lower() == 'threads':
+                engine_numthreads = int(value)
 
     temp_csv_fn = 'temp_csv_results.csv'
     write_results_summary(output_summary_fn, ana_data, engine_numthreads,
