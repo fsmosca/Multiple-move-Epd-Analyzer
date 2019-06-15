@@ -16,7 +16,8 @@ https://www.python.org/downloads/release/python-2716/ <br>
 https://github.com/niklasf/python-chess <br>
 pip install python-chess
 * Py-cpuinfo <br>
-https://github.com/workhorsy/py-cpuinfo
+https://github.com/workhorsy/py-cpuinfo <br>
+python -m pip install -U py-cpuinfo
 * mea.py <br>
 https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 
@@ -25,7 +26,7 @@ https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 ```
 usage: mea.py [-h] -i EPD [-o OUTPUT] -e ENGINE [--eoption EOPTION] -n NAME
               [-t THREADS] [-m HASH] [-a MOVETIME] [-r RATING] [-p PROTOCOL]
-              [-s {0,1}] [--stmode {0,1}] [--protover {1,2}] [-l {0,1}]
+              [-s {0,1}] [--stmode {0,1}] [--protover {1,2}] [--log]
 
 Analyzes epd file having multiple solution moves with points
 
@@ -48,7 +49,7 @@ optional arguments:
                         default=500
   -r RATING, --rating RATING
                         You may input a rating for this engine, this will be
-                        shown in the output files, default=2500
+                        shown in the output file, default=2500
   -p PROTOCOL, --protocol PROTOCOL
                         engine protocol [uci/xboard], default=uci
   -s {0,1}, --san {0,1}
@@ -58,9 +59,10 @@ optional arguments:
                         support st command, default=1
   --protover {1,2}      for xboard engines, this is protocol version number,
                         default=2
-  -l {0,1}, --log {0,1}
-                        Records engine and analyzer output to [engine
-                        name]_log.txt
+  --log                 Records engine and analyzer output to [engine
+                        name]_[movetime]_log.txt
+
+MEA v0.3
 ```
 
 ### Credits
