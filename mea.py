@@ -862,12 +862,18 @@ def main(argv):
     delete_file(temp_csv_fn)
     logger.info('Done!!')
 
-    # Move engine log to log dir
+    # Move engine log to log dir. If dir does not exist, we will create it.
     if log_fn is not None:
-        logger.info("move %s to log dir" %(log_fn))
-        logging.shutdown()
-        shutil.move(log_fn, "log/" + log_fn)
+        if not os.path.isdir("log/"):
+            logger.info('Create log dir')
+            os.mkdir('log')
 
+        logger.info('move %s to log dir' % log_fn)
+        logging.shutdown()
+        
+        # Use 'log/' + log_fn as destination to overwrite existing file
+        shutil.move(log_fn, 'log/' + log_fn)
+            
 
 if __name__ == "__main__":
     main(sys.argv[1:])
