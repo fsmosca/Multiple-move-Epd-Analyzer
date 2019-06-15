@@ -148,13 +148,12 @@ def csv_to_html(csvfn, htmlfn, epdfn):
 
 class Analyze():     
     def __init__(self, engine, fen_list, max_epd_cnt,
-                 movetime, num_threads, num_hash, log_on, proto,
+                 movetime, num_threads, num_hash, proto,
                  name, san, stmode, protover, eoption=None):
         self.engine = engine
         self.fen_list = fen_list # [fen, solutions, id]
         self.max_epd_cnt = max_epd_cnt
         self.movetime = movetime
-        self.log_on = log_on
         self.num_threads = num_threads
         self.num_hash = num_hash
         self.num_pos_tried = 0
@@ -770,42 +769,38 @@ def write_results_in_csv(csv_fn, ana_data,
             
 def main(argv):    
     parser = argparse.ArgumentParser(description=APP_DESC, epilog=APP_NAME_VERSION)
-    parser.add_argument("-i", "--epd", help="input epd filename", required=True)
-    parser.add_argument("-o", "--output", default='mea_results.txt',
-                        help="text output filename for result, default=mea_results.txt")
-    parser.add_argument("-e", "--engine", help="engine filename", required=True)
+    parser.add_argument('-i', '--epd', help='input epd filename', required=True)
+    parser.add_argument('-o', '--output', default='mea_results.txt',
+                        help='text output filename for result, default=mea_results.txt')
+    parser.add_argument('-e', '--engine', help='engine filename', required=True)
     parser.add_argument('--eoption', 
        help='uci engine option, --eoption "contempt=true, \
        Futility Pruning=false, pawn value=120"', required=False)
-    parser.add_argument("-n", "--name", help="engine name", required=True)
-    parser.add_argument("-t", "--threads", default=1,
-                        help="Threads or cores to be used by the engine, \
-                        default=1.", type=int)
-    parser.add_argument("-m", "--hash", default=64,
-                        help="Hash in MB to be used by the engine, default=64.",
-                        type=int)
-    parser.add_argument("-a", "--movetime", default=500,
-                        help="Analysis time in milliseconds, 1s = 1000ms, \
-                        default=500", type=int)
-    parser.add_argument("-r", "--rating", default=2500, help="You may input a \
-                        rating for this engine, this will be shown in the \
-                        output files, default=2500",
-                        type=int)
-    parser.add_argument("-p", "--protocol", default="uci",
-                        help="engine protocol [uci/xboard], default=uci")
-    parser.add_argument("-s", "--san", default=0,
-                        help="for xboard engine, set this to 1 if it will send a move\
-                        in san format, default=0", type=int, choices=[0, 1])
-    parser.add_argument("--stmode", default=1,
-                        help="for xboard engines, set this to 0 if\
-                        it does not support st command, default=1",
-                        type=int, choices=[0, 1])
+    parser.add_argument('-n', '--name', help='engine name', required=True)
+    parser.add_argument('-t', '--threads', default=1,
+                        help='Threads or cores to be used by the engine, \
+                        default=1.', type=int)
+    parser.add_argument('-m', '--hash', default=64,
+            help='Hash in MB to be used by the engine, default=64.', type=int)
+    parser.add_argument('-a', '--movetime', default=500,
+        help='Analysis time in milliseconds, 1s = 1000ms, default=500', type=int)
+    parser.add_argument('-r', '--rating', default=2500, 
+        help="You may input a rating for this engine, this will be shown \
+        in the output file, default=2500", type=int)
+    parser.add_argument('-p', '--protocol', default='uci',
+                        help='engine protocol [uci/xboard], default=uci')
+    parser.add_argument('-s', '--san', default=0,
+        help="for xboard engine, set this to 1 if it will send a move \
+        in san format, default=0", type=int, choices=[0, 1])
+    parser.add_argument('--stmode', default=1,
+        help='for xboard engines, set this to 0 if it does not support \
+        st command, default=1', type=int, choices=[0, 1])
     parser.add_argument("--protover", default=2,
-                        help="for xboard engines, this is protocol version number, default=2",
-                        type=int, choices=[1, 2])
-    parser.add_argument("-l", "--log",
-                        help="Records engine and analyzer output to [engine name]_log.txt",
-                        type=int, choices=[0, 1])
+        help='for xboard engines, this is protocol version number, default=2',
+        type=int, choices=[1, 2])
+    parser.add_argument('--log', help='Records engine and analyzer output ' +
+                        'to [engine name]_[movetime]_log.txt',
+                        action="store_true")
 
     # Get values from arguments    
     args = parser.parse_args()
@@ -816,15 +811,14 @@ def main(argv):
     engine_numhash = args.hash
     ana_time = args.movetime
     engine_rating = args.rating
-    turn_log = args.log
     proto = args.protocol
     eoption = args.eoption
 
     csv_fn = output_summary_fn[0:-4] + '.csv'
     html_fn = output_summary_fn[0:-4] + '.html'
 
-    if not turn_log:
-        logger.setLevel(logging.CRITICAL+1)
+    if not args.log:
+        logger.disabled = True
 
     # Covert epd file to a list
     epd_cnt, fen_list = create_epd_list(input_epd_fn)
@@ -838,7 +832,7 @@ def main(argv):
     logging.basicConfig(format=FORMAT, filename=log_fn,filemode='w')
 
     a = Analyze(engine_fn, fen_list, epd_cnt, ana_time, engine_numthreads,
-                 engine_numhash, turn_log, proto, args.name,
+                 engine_numhash, proto, args.name,
                  args.san, args.stmode, args.protover, eoption)
     
     start_time = time.clock()
