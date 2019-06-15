@@ -22,7 +22,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.3'
+APP_VERSION = '0.3.1'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -31,7 +31,7 @@ THREAD_NAME = ['Threads', 'Cores', 'Number Of Threads', 'Max CPUs', 'CPUs']
 
 # Create logger
 logger = logging.getLogger('root')
-FORMAT = "[%(asctime)24s - %(levelname)8s ] %(message)s"
+FORMAT = '[%(asctime)24s - %(levelname)8s ] %(message)s'
 logger.setLevel(logging.DEBUG)
 
 
@@ -86,7 +86,7 @@ def csv_to_html(csvfn, htmlfn, epdfn):
     reader = csv.reader(open(csvfn))
 
     # Create the HTML file for output
-    htmlfile = open(htmlfn,"w")
+    htmlfile = open(htmlfn, 'w')
 
     # initialize rownum variable
     rownum = 0
@@ -189,7 +189,7 @@ class Analyze():
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE)
         
-        p.stdin.write("uci\n")
+        p.stdin.write('uci\n')
         logger.debug('>> uci')
         uciTN = []
         for eline in iter(p.stdout.readline, ''):
@@ -199,17 +199,17 @@ class Analyze():
                 if n in aa:
                     uciTN.append(n)
                     break
-            if "uciok" in aa:
+            if 'uciok' in aa:
                 break
 
         # Threads
         uciTN = list(set(uciTN))
         for n in uciTN:
-            p.stdin.write("setoption name %s value %d\n" % (n, self.num_threads))
-            logger.debug(">> setoption name %s value %d" %(n, self.num_threads))
+            p.stdin.write('setoption name %s value %d\n' % (n, self.num_threads))
+            logger.debug('>> setoption name %s value %d' %(n, self.num_threads))
 
         # Hash in mb
-        p.stdin.write("setoption name Hash value %d\n" % self.num_hash)
+        p.stdin.write('setoption name Hash value %d\n' % self.num_hash)
         logger.debug('>> setoption name Hash value %d' %(self.num_hash))
         
         # Other options
@@ -223,14 +223,14 @@ class Analyze():
                 value = opt.split('=')[1].strip()
                 
                 # Set it
-                p.stdin.write("setoption name %s value %s\n" % (name, value))
-                logger.debug(">> setoption name %s value %s" % (name, value))
+                p.stdin.write('setoption name %s value %s\n' % (name, value))
+                logger.debug('>> setoption name %s value %s' % (name, value))
                 
                 if name.lower() == 'multipv':
                     self.multipv = int(value)
         
         # Prepare engine
-        p.stdin.write("isready\n")
+        p.stdin.write('isready\n')
         logger.debug('>> isready')
                 
         for eline in iter(p.stdout.readline, ''):
@@ -259,15 +259,15 @@ class Analyze():
             fen = fen_line[0]
             movesan = None
             
-            p.stdin.write("ucinewgame\n")
+            p.stdin.write('ucinewgame\n')
             logger.debug('>> ucinewgame')
             
-            p.stdin.write("position fen " + fen + "\n")
-            logger.debug(">> position fen " + fen)
+            p.stdin.write('position fen ' + fen + '\n')
+            logger.debug('>> position fen ' + fen)
             
-            p.stdin.write("go movetime %d\n" % self.movetime)
+            p.stdin.write('go movetime %d\n' % self.movetime)
             go_start = time.clock()
-            logger.debug(">> go movetime %d" % self.movetime)
+            logger.debug('>> go movetime %d' % self.movetime)
             start_t = time.clock()
             stop_sent = False
 
@@ -277,7 +277,7 @@ class Analyze():
                 
                 if ('depth ' in line and ' pv ' in line \
                     and not 'upperbound' in line \
-                    and not 'lowerbound' in line) or "bestmove" in line:
+                    and not 'lowerbound' in line) or 'bestmove' in line:
                     logger.debug('<< %s' % line)
                 
                 if self.multipv >= 2:
@@ -305,7 +305,7 @@ class Analyze():
                         elif 'cp' in line:
                             score_cp_info = int(line.split('cp')[1].split()[0].strip())
 
-                if "bestmove" in line:
+                if 'bestmove' in line:
                     logger.info('elapsed(ms) since go: %0.0f'\
                                 %((time.clock() - go_start) * 1000))
                     self.num_pos_tried += 1
@@ -320,7 +320,7 @@ class Analyze():
                         movesan = b.san(move)
                         logger.info('bestmove: %s' %(movesan))
                     except:
-                        print("move %s is not legal" %(bm))
+                        print('move %s is not legal' %(bm))
                         logger.error('move %s is not legal' %(bm))
                     
                     # Find in the solution set if bm is there
@@ -362,15 +362,15 @@ class Analyze():
                        (time.clock() - start_t)*1000 -\
                        self.stop_time_margin_ms >= self.movetime:
                     stop_sent = True
-                    p.stdin.write("stop\n")
-                    logger.debug(">> stop")
+                    p.stdin.write('stop\n')
+                    logger.debug('>> stop')
                     
             epd = ' '.join(fen_line[0].split()[0:4])
             logger.info('%s bm %s; ce %d; acd %d;' % (epd, movesan,
                                                       score_cp_info, depth_info))
 
         # Quit engine when all fen are analyzed
-        p.stdin.write("quit\n")
+        p.stdin.write('quit\n')
         logger.debug('>> quit')
         p.communicate()
 
@@ -405,12 +405,12 @@ class Analyze():
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE)
         
-        p.stdin.write("xboard\n")
+        p.stdin.write('xboard\n')
         logger.debug('>> xboard')
 
         # Wait for done=1, applies for protover 2 only
         if self.protover == 2:
-            p.stdin.write("protover 2\n")
+            p.stdin.write('protover 2\n')
             logger.debug('>> protover 2')
 
             for eline in iter(p.stdout.readline, ''):
@@ -420,15 +420,15 @@ class Analyze():
                     break
 
         logger.debug('>> post')
-        p.stdin.write("post\n")        
+        p.stdin.write('post\n')        
 
-        p.stdin.write("new\n")
+        p.stdin.write('new\n')
         logger.debug('>> new')
 
-        p.stdin.write("hard\n")
+        p.stdin.write('hard\n')
         logger.debug('>> hard')
 
-        p.stdin.write("easy\n")
+        p.stdin.write('easy\n')
         logger.debug('>> easy')        
 
         line_cnt = 0
@@ -449,19 +449,19 @@ class Analyze():
             # depth = 0
             fen = fen_line[0]
             
-            p.stdin.write("new\n")
+            p.stdin.write('new\n')
             logger.debug('>> new')
 
-            p.stdin.write("force\n")
-            logger.debug(">> force")
+            p.stdin.write('force\n')
+            logger.debug('>> force')
             
-            p.stdin.write("setboard %s\n" % fen)
-            logger.debug(">> setboard %s" % fen)
+            p.stdin.write('setboard %s\n' % fen)
+            logger.debug('>> setboard %s' % fen)
 
             # Use st
             if self.stmode:
-                p.stdin.write("st %0.0f\n" % (self.movetime/1000.0))
-                logger.debug(">> st %0.0f" % (self.movetime/1000.0))
+                p.stdin.write('st %0.0f\n' % (self.movetime/1000.0))
+                logger.debug('>> st %0.0f' % (self.movetime/1000.0))
             # Use level
             else:
                 period = 40
@@ -469,33 +469,33 @@ class Analyze():
                 tpm_s = period * tpm_ms/1000  # sec
                 m, s = divmod(tpm_s, 60)
                 if s == 0:
-                    p.stdin.write("level %d %d 0\n" % (period, m))
-                    logger.debug(">> level %d %d 0" % (period, m))
+                    p.stdin.write('level %d %d 0\n' % (period, m))
+                    logger.debug('>> level %d %d 0' % (period, m))
                     
-                    p.stdin.write("time %d\n" % (period*tpm_ms/10))  # in centisec
-                    logger.debug(">> time %d" % (period*tpm_ms/10))
+                    p.stdin.write('time %d\n' % (period*tpm_ms/10))  # in centisec
+                    logger.debug('>> time %d' % (period*tpm_ms/10))
                 else:
                     # EXchess does not like m:n notation for min:sec in level
                     if 'exchess' in self.name.lower():
-                        p.stdin.write("level %d %d 0\n" % (period, max(1, m)))
-                        logger.debug(">> level %d %d 0" % (period, max(1, m)))                    
-                        p.stdin.write("time %d\n" % (period*tpm_ms/10))
-                        logger.debug(">> time %d" % (period*tpm_ms/10))
+                        p.stdin.write('level %d %d 0\n' % (period, max(1, m)))
+                        logger.debug('>> level %d %d 0' % (period, max(1, m)))                    
+                        p.stdin.write('time %d\n' % (period*tpm_ms/10))
+                        logger.debug('>> time %d' % (period*tpm_ms/10))
                     else:
-                        p.stdin.write("level %d %d:%d 0\n" % (period, m, s))
-                        logger.debug(">> level %d %d:%d 0" % (period, m, s))
-                        p.stdin.write("time %d\n" % (period*tpm_ms/10))
-                        logger.debug(">> time %d" % (period*tpm_ms/10))
+                        p.stdin.write('level %d %d:%d 0\n' % (period, m, s))
+                        logger.debug('>> level %d %d:%d 0' % (period, m, s))
+                        p.stdin.write('time %d\n' % (period*tpm_ms/10))
+                        logger.debug('>> time %d' % (period*tpm_ms/10))
             
-            p.stdin.write("go %d\n")
+            p.stdin.write('go %d\n')
             go_start = time.clock()
-            logger.debug(">> go")
+            logger.debug('>> go')
 
             # Parse engine output
             for eline in iter(p.stdout.readline, ''):
                 line = eline.strip()
-                logger.debug("<< %s" % (line))
-                if "move" in line and len(line.split()) == 2:
+                logger.debug('<< %s' % (line))
+                if 'move' in line and len(line.split()) == 2:
                     logger.info('elapsed(ms) since go: %0.0f' %(
                             (time.clock() - go_start) * 1000))
                     self.num_pos_tried += 1
@@ -513,7 +513,7 @@ class Analyze():
                             movesan = b.san(move)
                             logger.info('bestmove: %s' % movesan)
                         except:
-                            print("move %s is not legal" % bm)
+                            print('move %s is not legal' % bm)
                             logger.error('move %s is not legal' % bm)
                     
                     # Find in the solution set if bm is there
@@ -550,7 +550,7 @@ class Analyze():
                     break
 
         # Quit engine when all fen are analyzed
-        p.stdin.write("quit\n")
+        p.stdin.write('quit\n')
         logger.debug('>> quit')
         p.communicate()
 
@@ -767,40 +767,40 @@ def write_results_in_csv(csv_fn, ana_data,
                     cnt, engine_name, rating, top1, maxtop1, top1rate,
                     score, maxscore, scorerate, movetime, hashval, threadsval))
             
-def main(argv):    
+def main(argv):
     parser = argparse.ArgumentParser(description=APP_DESC, epilog=APP_NAME_VERSION)
     parser.add_argument('-i', '--epd', help='input epd filename', required=True)
     parser.add_argument('-o', '--output', default='mea_results.txt',
                         help='text output filename for result, default=mea_results.txt')
     parser.add_argument('-e', '--engine', help='engine filename', required=True)
     parser.add_argument('--eoption', 
-       help='uci engine option, --eoption "contempt=true, \
-       Futility Pruning=false, pawn value=120"', required=False)
+       help='uci engine option, --eoption "contempt=true, ' +
+       'Futility Pruning=false, pawn value=120"', required=False)
     parser.add_argument('-n', '--name', help='engine name', required=True)
     parser.add_argument('-t', '--threads', default=1,
-                        help='Threads or cores to be used by the engine, \
-                        default=1.', type=int)
+                        help='Threads or cores to be used by the engine, ' +
+                        'default=1.', type=int)
     parser.add_argument('-m', '--hash', default=64,
             help='Hash in MB to be used by the engine, default=64.', type=int)
     parser.add_argument('-a', '--movetime', default=500,
         help='Analysis time in milliseconds, 1s = 1000ms, default=500', type=int)
     parser.add_argument('-r', '--rating', default=2500, 
-        help="You may input a rating for this engine, this will be shown \
-        in the output file, default=2500", type=int)
+        help='You may input a rating for this engine, this will be shown ' +
+        'in the output file, default=2500', type=int)
     parser.add_argument('-p', '--protocol', default='uci',
                         help='engine protocol [uci/xboard], default=uci')
     parser.add_argument('-s', '--san', default=0,
-        help="for xboard engine, set this to 1 if it will send a move \
-        in san format, default=0", type=int, choices=[0, 1])
+        help='for xboard engine, set this to 1 if it will send a move ' +
+        'in san format, default=0', type=int, choices=[0, 1])
     parser.add_argument('--stmode', default=1,
-        help='for xboard engines, set this to 0 if it does not support \
-        st command, default=1', type=int, choices=[0, 1])
-    parser.add_argument("--protover", default=2,
+        help='for xboard engines, set this to 0 if it does not support ' +
+        'st command, default=1', type=int, choices=[0, 1])
+    parser.add_argument('--protover', default=2,
         help='for xboard engines, this is protocol version number, default=2',
         type=int, choices=[1, 2])
     parser.add_argument('--log', help='Records engine and analyzer output ' +
                         'to [engine name]_[movetime]_log.txt',
-                        action="store_true")
+                        action='store_true')
 
     # Get values from arguments    
     args = parser.parse_args()
@@ -871,7 +871,7 @@ def main(argv):
 
     # Move engine log to log dir. If dir does not exist, we will create it.
     if log_fn is not None:
-        if not os.path.isdir("log/"):
+        if not os.path.isdir('log/'):
             logger.info('Create log dir')
             os.mkdir('log')
 
@@ -882,5 +882,5 @@ def main(argv):
         shutil.move(log_fn, 'log/' + log_fn)
             
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main(sys.argv[1:])
