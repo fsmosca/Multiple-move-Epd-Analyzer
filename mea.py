@@ -22,7 +22,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.3.1'
+APP_VERSION = '0.3.2'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -147,9 +147,9 @@ def csv_to_html(csvfn, htmlfn, epdfn):
 
 
 class Analyze():     
-    def __init__(self, engine, fen_list, max_epd_cnt,
-                 movetime, num_threads, num_hash, proto,
-                 name, san, stmode, protover, eoption=None):
+    def __init__(self, engine, fen_list, max_epd_cnt, movetime, num_threads,
+                 num_hash, proto, name, san, stmode, protover, epd_output_fn,
+                 multipv, eoption, input_epd_fn):
         self.engine = engine
         self.fen_list = fen_list # [fen, solutions, id]
         self.max_epd_cnt = max_epd_cnt
@@ -167,7 +167,9 @@ class Analyze():
         self.stmode = stmode
         self.protover = protover  # 1 or 2
         self.eoption = eoption
-        self.multipv = 1
+        self.epd_output_fn = os.path.basename(epd_output_fn)
+        self.multipv = multipv
+        self.input_epd_fn = os.path.basename(input_epd_fn)
 
     def run(self):
         """ Run engine to analyze epd """
@@ -225,9 +227,6 @@ class Analyze():
                 # Set it
                 p.stdin.write('setoption name %s value %s\n' % (name, value))
                 logger.debug('>> setoption name %s value %s' % (name, value))
-                
-                if name.lower() == 'multipv':
-                    self.multipv = int(value)
         
         # Prepare engine
         p.stdin.write('isready\n')
@@ -240,7 +239,7 @@ class Analyze():
                 break
 
         line_cnt = 0
-        t1 = time.clock()
+        t1 = time.clock()        
 
         for fen_line in self.fen_list:
             logger.info('\n')
@@ -248,6 +247,8 @@ class Analyze():
             logger.info('id %s' %(fen_line[2]))
             logger.info('FEN: %s' %(fen_line[0]))
             logger.info('Solutions: %s' %(fen_line[1]))
+            
+            search_info = {}
                     
             line_cnt += 1
 
@@ -283,15 +284,24 @@ class Analyze():
                 if self.multipv >= 2:
                     for i in range(1, self.multipv + 1, 1):
                         if 'multipv ' + str(i) in line:
-                            if i == 1 and 'score' in line:
+                            if 'score' in line and 'depth' in line and 'pv' in line \
+                                and not 'upperbound' in line \
+                                and not 'lowerbound' in line:
                                 if 'score mate' in line:
                                     distance_to_mate = int(line.split('mate')[1].split()[0].strip())
                                     score_cp_info = mate_distance_to_value(distance_to_mate)
                                 elif 'cp' in line:
                                     score_cp_info = int(line.split('cp')[1].split()[0].strip())
                                     
-                            if i == 1 and 'depth' in line:
                                 depth_info = int(line.split('depth')[1].split()[0])
+                                
+                                pv_info = line.split(' pv')[1].strip().split()[0]
+                                tmp_board = chess.Board(fen)
+                                pv_move_san = tmp_board.san(chess.Move.from_uci(pv_info))
+                                
+                                dict_value = {i: {'score': score_cp_info, 'depth': depth_info, 'bm': pv_move_san}}
+                                search_info.update(dict_value)
+                                
                 elif 'depth' in line or 'score' in line:                    
                     # Get depth, assume depth first before seldepth
                     if 'depth' in line:
@@ -366,8 +376,30 @@ class Analyze():
                     logger.debug('>> stop')
                     
             epd = ' '.join(fen_line[0].split()[0:4])
-            logger.info('%s bm %s; ce %d; acd %d;' % (epd, movesan,
-                                                      score_cp_info, depth_info))
+            
+            # Debug
+            if self.multipv >= 2:
+                for k, v in search_info.items():
+                    logger.info('multipv {} = {}'.format(k, v))
+            
+            # Save epd with ce and acd
+            # (1) Multipv is 1
+            if self.multipv == 1:
+                with open(self.epd_output_fn, 'a') as h:
+                    h.write('%s bm %s; ce %d; acd %d;\n' % (
+                            epd, movesan, score_cp_info, depth_info))
+                logger.info('%s bm %s; ce %d; acd %d;' % (epd, movesan,
+                                                score_cp_info, depth_info))
+            else:
+                for i in range(1, len(search_info)+1, 1):
+                    id_operand = self.input_epd_fn + ' pos ' + str(line_cnt) + ' MultiPV=' + str(i)
+                    with open(self.epd_output_fn, 'a') as h:
+                        h.write('%s id \"%s\"; bm %s; ce %d; acd %d;\n' % (
+                                epd, id_operand, search_info[i]['bm'], search_info[i]['score'],
+                                search_info[i]['depth']))
+                    logger.info('%s id \"%s\"; bm %s; ce %d; acd %d;' % (
+                            epd, id_operand, search_info[i]['bm'], search_info[i]['score'],
+                            search_info[i]['depth']))
 
         # Quit engine when all fen are analyzed
         p.stdin.write('quit\n')
@@ -387,14 +419,29 @@ class Analyze():
         if (ActualElapsedTime <= expectedMaxTime + timeMargin) and\
                 ActualElapsedTime >= expectedMaxTime - timeMargin:
             logger.info('Time allocation  : GOOD!!')
+            logger.info('at <= et + mt and at >= et - mt')
+            print('Time allocation  : GOOD!!')
+            print('at <= et + mt and at >= et - mt')
         elif ActualElapsedTime > expectedMaxTime + timeMargin:
             logger.info('Time allocation  : BAD!! spending more time')
+            logger.info('ActualTime > ExpectedTime + MarginTime')
+            print('Time allocation  : BAD!! spending more time')
+            print('at > et + mt')
         else:
             logger.info('Time allocation  : BAD!! spending less time')
+            logger.info('at < et - mt')
+            print('Time allocation  : BAD!! spending less time')
+            print('at < et - mt')
+
         logger.info('ExpectedTime     : %0.1fs' %(float(expectedMaxTime)/1000))
         logger.info('ActualTime       : %0.1fs' %(float(ActualElapsedTime)/1000))
-        logger.info('TimeMargin/pos   : %0.1fs' %(float(timeMarginPerPos)/1000))
-        logger.info('TimeMarginTotal  : %0.1fs' %(float(timeMargin)/1000))
+        logger.info('MarginTime/pos   : %0.1fs' %(float(timeMarginPerPos)/1000))
+        logger.info('MarginTime       : %0.1fs' %(float(timeMargin)/1000))
+        
+        print('ExpectedTime     : %0.1fs' %(float(expectedMaxTime)/1000))
+        print('ActualTime       : %0.1fs' %(float(ActualElapsedTime)/1000))
+        print('MarginTime/pos   : %0.1fs' %(float(timeMarginPerPos)/1000))
+        print('MarginTime       : %0.1fs' %(float(timeMargin)/1000))
 
     def run_xb_engine(self):
         """ Start engine """
@@ -813,7 +860,8 @@ def main(argv):
     engine_rating = args.rating
     proto = args.protocol
     eoption = args.eoption
-
+    
+    multipv = 1
     csv_fn = output_summary_fn[0:-4] + '.csv'
     html_fn = output_summary_fn[0:-4] + '.html'
 
@@ -826,27 +874,14 @@ def main(argv):
     ana_data = []
     log_fn = None
 
-    log_fn = '_'.join(args.name.split()) + '_mt' + str(ana_time) + 'ms_log.txt'
-    log_fn.replace('/', '_')
-    log_fn.replace('\\', '_')
+    log_fn = args.name + '_mt' + str(ana_time) + 'ms_log.txt'
+    log_fn = log_fn.replace(' ', '_')
+    log_fn = log_fn.replace('/', '_')
+    log_fn = log_fn.replace('\\', '_')
     logging.basicConfig(format=FORMAT, filename=log_fn,filemode='w')
-
-    a = Analyze(engine_fn, fen_list, epd_cnt, ana_time, engine_numthreads,
-                 engine_numhash, proto, args.name,
-                 args.san, args.stmode, args.protover, eoption)
-    
-    start_time = time.clock()
-    a.run()
-    end_time = time.clock()
-    
-    elapsed = end_time - start_time             
-    v = a.get_result()  # [engine, top1cnt, score, maxscore, numpostried]
-    v.insert(len(v), elapsed)  # [engine, top1cnt, score, maxscore, numpostried, elapsed]
-    v.insert(len(v), engine_rating) # [engine, top1cnt, score, maxscore, numpostried, elapsed, rating]
-    ana_data.append(v)
     
     # If there is engine options in command line, find the hash and threads
-    # value, we will use this in csv and html table
+    # value, we will use this as info in csv and html table
     if eoption:
         opt_list = eoption.split(',')
         for o in opt_list:
@@ -857,6 +892,38 @@ def main(argv):
                 engine_numhash = int(value)
             elif name.lower() == 'threads':
                 engine_numthreads = int(value)
+            elif name.lower() == 'multipv':
+                multipv = int(value)            
+
+    # filename for epd output saving bm, ce and acd
+    epd_test_fn = os.path.basename(args.epd)
+    epd_output_fn = epd_test_fn[0:-4] + '_' + args.name + '.epd'
+    epd_output_fn = epd_output_fn.replace(' ', '_')
+    epd_output_fn.replace('/', '_')
+    epd_output_fn.replace('\\', '_')
+    
+    if multipv >= 2:
+        epd_output_fn = input_epd_fn[0:-4] + '_multipv' + str(multipv) + '_' + args.name + '.epd'
+        epd_output_fn = epd_output_fn.replace(' ', '_')
+        epd_output_fn.replace('/', '_')
+        epd_output_fn.replace('\\', '_')
+        
+    # Delete existing epd output, this is like overwrite mode
+    delete_file(epd_output_fn)
+
+    a = Analyze(engine_fn, fen_list, epd_cnt, ana_time, engine_numthreads,
+                 engine_numhash, proto, args.name, args.san, args.stmode,
+                 args.protover, epd_output_fn, multipv, eoption, input_epd_fn)
+    
+    start_time = time.clock()
+    a.run()
+    end_time = time.clock()
+    
+    elapsed = end_time - start_time             
+    v = a.get_result()  # [engine, top1cnt, score, maxscore, numpostried]
+    v.insert(len(v), elapsed)  # [engine, top1cnt, score, maxscore, numpostried, elapsed]
+    v.insert(len(v), engine_rating) # [engine, top1cnt, score, maxscore, numpostried, elapsed, rating]
+    ana_data.append(v)
 
     temp_csv_fn = 'temp_csv_results.csv'
     write_results_summary(output_summary_fn, ana_data, engine_numthreads,
