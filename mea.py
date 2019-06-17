@@ -22,8 +22,9 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.3.2'
+APP_VERSION = '0.3.3'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
+MAX_DEPTH = 128
 
 
 THREAD_NAME = ['Threads', 'Cores', 'Number Of Threads', 'Max CPUs', 'CPUs']
@@ -147,13 +148,14 @@ def csv_to_html(csvfn, htmlfn, epdfn):
 
 
 class Analyze():     
-    def __init__(self, engine, fen_list, max_epd_cnt, movetime, num_threads,
+    def __init__(self, engine, fen_list, max_epd_cnt, movetime, max_depth, num_threads,
                  num_hash, proto, name, san, stmode, protover, epd_output_fn,
                  multipv, eoption, input_epd_fn):
         self.engine = engine
         self.fen_list = fen_list # [fen, solutions, id]
         self.max_epd_cnt = max_epd_cnt
         self.movetime = movetime
+        self.max_depth = max_depth
         self.num_threads = num_threads
         self.num_hash = num_hash
         self.num_pos_tried = 0
@@ -167,9 +169,9 @@ class Analyze():
         self.stmode = stmode
         self.protover = protover  # 1 or 2
         self.eoption = eoption
-        self.epd_output_fn = os.path.basename(epd_output_fn)
+        self.epd_output_fn = epd_output_fn
         self.multipv = multipv
-        self.input_epd_fn = os.path.basename(input_epd_fn)
+        self.input_epd_fn = input_epd_fn
 
     def run(self):
         """ Run engine to analyze epd """
@@ -266,9 +268,9 @@ class Analyze():
             p.stdin.write('position fen ' + fen + '\n')
             logger.debug('>> position fen ' + fen)
             
-            p.stdin.write('go movetime %d\n' % self.movetime)
+            p.stdin.write('go movetime %d depth %d\n' % (self.movetime, self.max_depth))
             go_start = time.clock()
-            logger.debug('>> go movetime %d' % self.movetime)
+            logger.debug('>> go movetime %d depth %d' % (self.movetime, self.max_depth))
             start_t = time.clock()
             stop_sent = False
 
@@ -361,10 +363,9 @@ class Analyze():
                             self.total_score += s
                             break
                     logger.info('Score for this test: %d' % this_move_score)
+                    pct = float(self.total_score)/self.max_score if self.max_score > 0 else 0.0 
                     logger.info('Total Score update: %d / %d (%0.3f)'\
-                                   %(self.total_score,
-                                     self.max_score,
-                                     float(self.total_score)/self.max_score))                                
+                                   % (self.total_score, self.max_score, pct))
                     break
 
                 # There are engines that does not follow movetime so we stop it
@@ -416,22 +417,23 @@ class Analyze():
 
         logger.warning('\n')
         
-        if (ActualElapsedTime <= expectedMaxTime + timeMargin) and\
-                ActualElapsedTime >= expectedMaxTime - timeMargin:
-            logger.info('Time allocation  : GOOD!!')
-            logger.info('at <= et + mt and at >= et - mt')
-            print('Time allocation  : GOOD!!')
-            print('at <= et + mt and at >= et - mt')
-        elif ActualElapsedTime > expectedMaxTime + timeMargin:
-            logger.info('Time allocation  : BAD!! spending more time')
-            logger.info('ActualTime > ExpectedTime + MarginTime')
-            print('Time allocation  : BAD!! spending more time')
-            print('at > et + mt')
-        else:
-            logger.info('Time allocation  : BAD!! spending less time')
-            logger.info('at < et - mt')
-            print('Time allocation  : BAD!! spending less time')
-            print('at < et - mt')
+        if self.max_depth == MAX_DEPTH:
+            if (ActualElapsedTime <= expectedMaxTime + timeMargin) and\
+                    ActualElapsedTime >= expectedMaxTime - timeMargin:
+                logger.info('Time allocation  : GOOD!!')
+                logger.info('at <= et + mt and at >= et - mt')
+                print('Time allocation  : GOOD!!')
+                print('at <= et + mt and at >= et - mt')
+            elif ActualElapsedTime > expectedMaxTime + timeMargin:
+                logger.info('Time allocation  : BAD!! spending more time')
+                logger.info('ActualTime > ExpectedTime + MarginTime')
+                print('Time allocation  : BAD!! spending more time')
+                print('at > et + mt')
+            else:
+                logger.info('Time allocation  : BAD!! spending less time')
+                logger.info('at < et - mt')
+                print('Time allocation  : BAD!! spending less time')
+                print('at < et - mt')
 
         logger.info('ExpectedTime     : %0.1fs' %(float(expectedMaxTime)/1000))
         logger.info('ActualTime       : %0.1fs' %(float(ActualElapsedTime)/1000))
@@ -591,9 +593,9 @@ class Analyze():
                             self.total_score += s
                             break
                     logger.info('Score for this test: %d' %(this_move_score))
+                    pct = float(self.total_score)/self.max_score if self.max_score > 0 else 0.0
                     logger.info('Total Score update: %d / %d (%0.3f)' % (
-                            self.total_score, self.max_score,
-                            float(self.total_score)/self.max_score))
+                            self.total_score, self.max_score, pct))
                     break
 
         # Quit engine when all fen are analyzed
@@ -831,6 +833,8 @@ def main(argv):
             help='Hash in MB to be used by the engine, default=64.', type=int)
     parser.add_argument('-a', '--movetime', default=500,
         help='Analysis time in milliseconds, 1s = 1000ms, default=500', type=int)
+    parser.add_argument('-d', '--depth', default=MAX_DEPTH,
+        help='Analysis depth, default=128', type=int)
     parser.add_argument('-r', '--rating', default=2500, 
         help='You may input a rating for this engine, this will be shown ' +
         'in the output file, default=2500', type=int)
@@ -857,6 +861,7 @@ def main(argv):
     engine_numthreads = args.threads
     engine_numhash = args.hash
     ana_time = args.movetime
+    max_depth = args.depth
     engine_rating = args.rating
     proto = args.protocol
     eoption = args.eoption
@@ -903,7 +908,7 @@ def main(argv):
     epd_output_fn.replace('\\', '_')
     
     if multipv >= 2:
-        epd_output_fn = input_epd_fn[0:-4] + '_multipv' + str(multipv) + '_' + args.name + '.epd'
+        epd_output_fn = epd_test_fn[0:-4] + '_multipv' + str(multipv) + '_' + args.name + '.epd'
         epd_output_fn = epd_output_fn.replace(' ', '_')
         epd_output_fn.replace('/', '_')
         epd_output_fn.replace('\\', '_')
@@ -911,9 +916,9 @@ def main(argv):
     # Delete existing epd output, this is like overwrite mode
     delete_file(epd_output_fn)
 
-    a = Analyze(engine_fn, fen_list, epd_cnt, ana_time, engine_numthreads,
+    a = Analyze(engine_fn, fen_list, epd_cnt, ana_time, max_depth, engine_numthreads,
                  engine_numhash, proto, args.name, args.san, args.stmode,
-                 args.protover, epd_output_fn, multipv, eoption, input_epd_fn)
+                 args.protover, epd_output_fn, multipv, eoption, epd_test_fn)
     
     start_time = time.clock()
     a.run()
@@ -947,7 +952,13 @@ def main(argv):
         
         # Use 'log/' + log_fn as destination to overwrite existing file
         shutil.move(log_fn, 'log/' + log_fn)
-            
+        
+    # Move epd output to epd_out folder, will be created if not present
+    if epd_output_fn is not None:
+        if not os.path.isdir('epd_out/'):
+            os.mkdir('epd_out')
+        shutil.move(epd_output_fn, 'epd_out/' + epd_output_fn)
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
