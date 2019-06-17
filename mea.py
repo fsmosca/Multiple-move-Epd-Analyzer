@@ -22,12 +22,9 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.3.3'
+APP_VERSION = '0.3.4'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 MAX_DEPTH = 128
-
-
-THREAD_NAME = ['Threads', 'Cores', 'Number Of Threads', 'Max CPUs', 'CPUs']
 
 
 # Create logger
@@ -195,26 +192,20 @@ class Analyze():
         
         p.stdin.write('uci\n')
         logger.debug('>> uci')
-        uciTN = []
+
         for eline in iter(p.stdout.readline, ''):
             aa = eline.strip()
             logger.debug('<< %s' % aa)
-            for n in THREAD_NAME:
-                if n in aa:
-                    uciTN.append(n)
-                    break
             if 'uciok' in aa:
                 break
 
         # Threads
-        uciTN = list(set(uciTN))
-        for n in uciTN:
-            p.stdin.write('setoption name %s value %d\n' % (n, self.num_threads))
-            logger.debug('>> setoption name %s value %d' %(n, self.num_threads))
+        p.stdin.write('setoption name hash value %d\n' % self.num_threads)
+        logger.debug('>> setoption name hash value %d' % self.num_threads)
 
         # Hash in mb
         p.stdin.write('setoption name Hash value %d\n' % self.num_hash)
-        logger.debug('>> setoption name Hash value %d' %(self.num_hash))
+        logger.debug('>> setoption name Hash value %d' % self.num_hash)
         
         # Other options
         # 'Futility Pruning=true, lmr=false, contempt=false'
@@ -245,10 +236,11 @@ class Analyze():
 
         for fen_line in self.fen_list:
             logger.info('\n')
-            logger.info('Pos %d' %(line_cnt+1))
-            logger.info('id %s' %(fen_line[2]))
-            logger.info('FEN: %s' %(fen_line[0]))
-            logger.info('Solutions: %s' %(fen_line[1]))
+            logger.info('Pos %d' % (line_cnt+1))
+            logger.info('EPD: %s' % fen_line[3])
+            logger.info('id %s' % fen_line[2])
+            logger.info('FEN: %s' % fen_line[0])
+            logger.info('Solutions: %s' % fen_line[1])
             
             search_info = {}
                     
@@ -325,15 +317,9 @@ class Analyze():
                     bm = bm.strip()
 
                     # Convert uci bestmove to san bestmove
-                    b = chess.Board(fen)
-                    try:
-                        b.push_uci(bm)
-                        move = b.pop()
-                        movesan = b.san(move)
-                        logger.info('bestmove: %s' %(movesan))
-                    except:
-                        print('move %s is not legal' %(bm))
-                        logger.error('move %s is not legal' %(bm))
+                    tmp_board = chess.Board(fen)
+                    movesan = tmp_board.san(chess.Move.from_uci(bm))
+                    logger.info('bestmove: %s' % movesan)
                     
                     # Find in the solution set if bm is there
                     # Sample solution set: Nd2=10, h3=7, Be2=6
@@ -486,6 +472,7 @@ class Analyze():
         for fen_line in self.fen_list:
             logger.info('\n')
             logger.info('Pos %d' %(line_cnt+1))
+            logger.info('EPD: %s' % fen_line[3])
             logger.info('id %s' %(fen_line[2]))
             logger.info('FEN: %s' %(fen_line[0]))
             logger.info('Solutions: %s' %(fen_line[1]))
@@ -555,15 +542,9 @@ class Analyze():
                         movesan = bm
                     else:
                         # Convert uci bestmove to san bestmove
-                        b = chess.Board(fen)
-                        try:
-                            b.push_uci(bm)
-                            move = b.pop()
-                            movesan = b.san(move)
-                            logger.info('bestmove: %s' % movesan)
-                        except:
-                            print('move %s is not legal' % bm)
-                            logger.error('move %s is not legal' % bm)
+                        tmp_board = chess.Board(fen)
+                        movesan = tmp_board.san(chess.Move.from_uci(bm))
+                        logger.info('bestmove: %s' % movesan)
                     
                     # Find in the solution set if bm is there
                     # Sample solution set: Nd2=10, h3=7, Be2=6
@@ -613,22 +594,31 @@ class Analyze():
 
         logger.info('\n')
         
+        # winboard/xboard engine        
         if (ActualElapsedTime <= expectedMaxTime + timeMargin) and\
                 ActualElapsedTime >= expectedMaxTime - timeMargin:
             logger.info('Time allocation  : GOOD!!')
+            print('Time allocation  : GOOD!!')
         elif ActualElapsedTime > expectedMaxTime + timeMargin:
             logger.info('Time allocation  : BAD!! spending more time')
+            print('Time allocation  : BAD!! spending more time')
         else:
             logger.info('Time allocation  : BAD!! spending less time')
+            print('Time allocation  : BAD!! spending less time')
         logger.info('ExpectedTime     : %0.1fs' %(float(expectedMaxTime)/1000))
         logger.info('ActualTime       : %0.1fs' %(float(ActualElapsedTime)/1000))
         logger.info('TimeMargin/pos   : %0.1fs' %(float(timeMarginPerPos)/1000))
         logger.info('TimeMarginTotal  : %0.1fs' %(float(timeMargin)/1000))
+        
+        print('ExpectedTime     : %0.1fs' %(float(expectedMaxTime)/1000))
+        print('ActualTime       : %0.1fs' %(float(ActualElapsedTime)/1000))
+        print('TimeMargin/pos   : %0.1fs' %(float(timeMarginPerPos)/1000))
+        print('TimeMarginTotal  : %0.1fs' %(float(timeMargin)/1000))
 
 
 def create_epd_list(epd_fn):
     """ Read epd file and return a list in a format
-        [fen, solutions, id]
+        [fen, solutions, id, orig_fen]
     """
     fen_data = []
     cnt = 0
@@ -661,7 +651,7 @@ def create_epd_list(epd_fn):
                 epd_id = re.search('id\s\"(.*?)\";', epd_line).group(1)
             except:
                 pass
-            fen_data.append([fen, solutions, epd_id])
+            fen_data.append([fen, solutions, epd_id, epd_line])
             cnt += 1
 
     return cnt, fen_data
@@ -942,7 +932,7 @@ def main(argv):
     logger.info('Done!!')
 
     # Move engine log to log dir. If dir does not exist, we will create it.
-    if log_fn is not None:
+    if os.path.isfile(log_fn):
         if not os.path.isdir('log/'):
             logger.info('Create log dir')
             os.mkdir('log')
@@ -952,9 +942,9 @@ def main(argv):
         
         # Use 'log/' + log_fn as destination to overwrite existing file
         shutil.move(log_fn, 'log/' + log_fn)
-        
+
     # Move epd output to epd_out folder, will be created if not present
-    if epd_output_fn is not None:
+    if os.path.isfile(epd_output_fn):
         if not os.path.isdir('epd_out/'):
             os.mkdir('epd_out')
         shutil.move(epd_output_fn, 'epd_out/' + epd_output_fn)
