@@ -22,7 +22,14 @@ python -m pip install -U py-cpuinfo
 https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 
 ### Getting started
-* c:\python36\python.exe mea.py --[options] [option value] <br>
+* Example command line:<br>
+`c:\python36\python.exe mea.py --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" --name "Deuterium v2019.1.36.50" --epd ".\epd\2-moves.epd" --log`
+
+* Output files
+1. log output file will be moved to log folder <br>
+2. epd output file will be moved to epd_out folder <br>
+
+* Help
 ```
 usage: mea.exe [-h] -i EPD [-o OUTPUT] -e ENGINE [--eoption EOPTION] -n NAME
                [-t THREADS] [-m HASH] [-a MOVETIME] [-r RATING] [-p PROTOCOL]
