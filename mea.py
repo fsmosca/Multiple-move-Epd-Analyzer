@@ -22,7 +22,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.3.4'
+APP_VERSION = '0.3.5'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 MAX_DEPTH = 128
 
@@ -31,16 +31,6 @@ MAX_DEPTH = 128
 logger = logging.getLogger('root')
 FORMAT = '[%(asctime)24s - %(levelname)8s ] %(message)s'
 logger.setLevel(logging.DEBUG)
-
-
-def mate_distance_to_value(d):
-    """ returns value given distance to mate """
-    value = 0
-    if d < 0:
-        value = -2*d - 32000
-    elif d > 0:
-        value = 32000 - 2*d + 1
-    return value
 
 
 def delete_file(fn):
@@ -145,14 +135,13 @@ def csv_to_html(csvfn, htmlfn, epdfn):
 
 
 class Analyze():     
-    def __init__(self, engine, fen_list, max_epd_cnt, movetime, max_depth, num_threads,
+    def __init__(self, engine, fen_list, max_epd_cnt, movetime, num_threads,
                  num_hash, proto, name, san, stmode, protover, epd_output_fn,
                  multipv, eoption, input_epd_fn):
         self.engine = engine
         self.fen_list = fen_list # [fen, solutions, id]
         self.max_epd_cnt = max_epd_cnt
         self.movetime = movetime
-        self.max_depth = max_depth
         self.num_threads = num_threads
         self.num_hash = num_hash
         self.num_pos_tried = 0
@@ -169,6 +158,7 @@ class Analyze():
         self.epd_output_fn = epd_output_fn
         self.multipv = multipv
         self.input_epd_fn = input_epd_fn
+        self.depth = -1
 
     def run(self):
         """ Run engine to analyze epd """
@@ -176,6 +166,16 @@ class Analyze():
             self.run_xb_engine()
         else:
             self.run_uci_engine()
+            
+    def mate_distance_to_value(self, d):
+        """ Returns value in cp given distance to mate """
+        value = 0
+        if d < 0:
+            value = -2*d - 32000
+        elif d > 0:
+            value = 32000 - 2*d + 1
+
+        return value
 
     def get_result(self):
         return [self.name, self.best_cnt, self.total_score,
@@ -184,11 +184,11 @@ class Analyze():
     def run_uci_engine(self):
         """ Start engine """
         logger.info('Run engine %s' % self.name)
-
-        # Works for windows and python 2.7.x
-        p = subprocess.Popen(self.engine,
-                             stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE)
+        
+        # Python 3.x
+        p = subprocess.Popen(self.engine, bufsize=1, stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                             universal_newlines=True)
         
         p.stdin.write('uci\n')
         logger.debug('>> uci')
@@ -200,8 +200,8 @@ class Analyze():
                 break
 
         # Threads
-        p.stdin.write('setoption name hash value %d\n' % self.num_threads)
-        logger.debug('>> setoption name hash value %d' % self.num_threads)
+        p.stdin.write('setoption name threads value %d\n' % self.num_threads)
+        logger.debug('>> setoption name threads value %d' % self.num_threads)
 
         # Hash in mb
         p.stdin.write('setoption name Hash value %d\n' % self.num_hash)
@@ -216,6 +216,11 @@ class Analyze():
                 opt = o.strip()
                 name = opt.split('=')[0].strip()
                 value = opt.split('=')[1].strip()
+
+                # Send go depth value when depth is in --eoption
+                if name.lower() == 'depth':
+                    self.depth = int(value)
+                    continue
                 
                 # Set it
                 p.stdin.write('setoption name %s value %s\n' % (name, value))
@@ -260,9 +265,16 @@ class Analyze():
             p.stdin.write('position fen ' + fen + '\n')
             logger.debug('>> position fen ' + fen)
             
-            p.stdin.write('go movetime %d depth %d\n' % (self.movetime, self.max_depth))
-            go_start = time.clock()
-            logger.debug('>> go movetime %d depth %d' % (self.movetime, self.max_depth))
+            if self.depth >= 0:
+                p.stdin.write('go movetime %d depth %d\n' % (self.movetime, self.depth))
+                go_start = time.clock()
+                logger.debug('>> go movetime %d depth %d' % (self.movetime, self.depth))
+                
+            else:
+                p.stdin.write('go movetime %d\n' % (self.movetime))
+                go_start = time.clock()
+                logger.debug('>> go movetime %d' % (self.movetime))
+                
             start_t = time.clock()
             stop_sent = False
 
@@ -283,15 +295,17 @@ class Analyze():
                                 and not 'lowerbound' in line:
                                 if 'score mate' in line:
                                     distance_to_mate = int(line.split('mate')[1].split()[0].strip())
-                                    score_cp_info = mate_distance_to_value(distance_to_mate)
+                                    score_cp_info = self.mate_distance_to_value(distance_to_mate)
                                 elif 'cp' in line:
                                     score_cp_info = int(line.split('cp')[1].split()[0].strip())
                                     
                                 depth_info = int(line.split('depth')[1].split()[0])
                                 
-                                pv_info = line.split(' pv')[1].strip().split()[0]
+                                pv_info_first_move = line.split(' pv')[1].strip().split()[0]
                                 tmp_board = chess.Board(fen)
-                                pv_move_san = tmp_board.san(chess.Move.from_uci(pv_info))
+                                
+                                # Convert move from uci to san move format
+                                pv_move_san = tmp_board.san(chess.Move.from_uci(pv_info_first_move))
                                 
                                 dict_value = {i: {'score': score_cp_info, 'depth': depth_info, 'bm': pv_move_san}}
                                 search_info.update(dict_value)
@@ -305,7 +319,7 @@ class Analyze():
                     if 'score' in line:
                         if 'score mate' in line:
                             distance_to_mate = int(line.split('mate')[1].split()[0].strip())
-                            score_cp_info = mate_distance_to_value(distance_to_mate)
+                            score_cp_info = self.mate_distance_to_value(distance_to_mate)
                         elif 'cp' in line:
                             score_cp_info = int(line.split('cp')[1].split()[0].strip())
 
@@ -391,7 +405,13 @@ class Analyze():
         # Quit engine when all fen are analyzed
         p.stdin.write('quit\n')
         logger.debug('>> quit')
-        p.communicate()
+        
+        try:
+            p.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            logger.warning('Engine is terminated by kill()')
+            p.kill()
+            p.communicate()
 
         t2 = time.clock()
 
@@ -403,7 +423,7 @@ class Analyze():
 
         logger.warning('\n')
         
-        if self.max_depth == MAX_DEPTH:
+        if self.depth <= -1:
             if (ActualElapsedTime <= expectedMaxTime + timeMargin) and\
                     ActualElapsedTime >= expectedMaxTime - timeMargin:
                 logger.info('Time allocation  : GOOD!!')
@@ -434,11 +454,11 @@ class Analyze():
     def run_xb_engine(self):
         """ Start engine """
         logger.info('Run engine %s' % self.name)
-
-        # Works for windows and python 2.7.x
-        p = subprocess.Popen(self.engine,
-                             stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE)
+        
+        # Python 3.x
+        p = subprocess.Popen(self.engine, bufsize=1, stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                             universal_newlines=True)
         
         p.stdin.write('xboard\n')
         logger.debug('>> xboard')
@@ -582,7 +602,13 @@ class Analyze():
         # Quit engine when all fen are analyzed
         p.stdin.write('quit\n')
         logger.debug('>> quit')
-        p.communicate()
+        
+        try:
+            p.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            logger.warning('Engine is terminated by kill()')
+            p.kill()
+            p.communicate()
 
         t2 = time.clock()
 
@@ -823,8 +849,6 @@ def main(argv):
             help='Hash in MB to be used by the engine, default=64.', type=int)
     parser.add_argument('-a', '--movetime', default=500,
         help='Analysis time in milliseconds, 1s = 1000ms, default=500', type=int)
-    parser.add_argument('-d', '--depth', default=MAX_DEPTH,
-        help='Analysis depth, default=128', type=int)
     parser.add_argument('-r', '--rating', default=2500, 
         help='You may input a rating for this engine, this will be shown ' +
         'in the output file, default=2500', type=int)
@@ -851,7 +875,6 @@ def main(argv):
     engine_numthreads = args.threads
     engine_numhash = args.hash
     ana_time = args.movetime
-    max_depth = args.depth
     engine_rating = args.rating
     proto = args.protocol
     eoption = args.eoption
@@ -906,7 +929,7 @@ def main(argv):
     # Delete existing epd output, this is like overwrite mode
     delete_file(epd_output_fn)
 
-    a = Analyze(engine_fn, fen_list, epd_cnt, ana_time, max_depth, engine_numthreads,
+    a = Analyze(engine_fn, fen_list, epd_cnt, ana_time, engine_numthreads,
                  engine_numhash, proto, args.name, args.san, args.stmode,
                  args.protover, epd_output_fn, multipv, eoption, epd_test_fn)
     
