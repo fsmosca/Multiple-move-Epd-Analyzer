@@ -7,7 +7,6 @@ Analyzes epd file having multiple solution moves with points
 """
 
 
-import sys
 import os
 import subprocess
 import logging
@@ -22,9 +21,8 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.3.5'
+APP_VERSION = '0.3.6'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
-MAX_DEPTH = 128
 
 
 # Create logger
@@ -194,9 +192,9 @@ class Analyze():
         logger.debug('>> uci')
 
         for eline in iter(p.stdout.readline, ''):
-            aa = eline.strip()
-            logger.debug('<< %s' % aa)
-            if 'uciok' in aa:
+            line = eline.strip()
+            logger.debug('<< %s' % line)
+            if 'uciok' in line:
                 break
 
         # Threads
@@ -335,33 +333,41 @@ class Analyze():
                     movesan = tmp_board.san(chess.Move.from_uci(bm))
                     logger.info('bestmove: %s' % movesan)
                     
-                    # Find in the solution set if bm is there
+                    # Find in the solution set if bm is there.
                     # Sample solution set: Nd2=10, h3=7, Be2=6
                     bests = fen_line[1] # Nd2=10, h3=7, Be2=6
                     best_list = bests.split(',')
                     
                     top_move_cnt = 0                    
                     this_move_score = 0
+                    
+                    # Loop thru the solution moves ['Nd2=10', 'h3=7', 'Be2=6']
                     for n in best_list:
                         top_move_cnt += 1
                         # Deal with 2 equal symbols, b1=Q=77
                         if n.count('=') == 2:
                             m = n.split('=')[0] + '=' +  n.split('=')[1] # Get move
                             m = m.strip()
-                            s = int(n.split('=')[2])  # Get score
+                            move_score = int(n.split('=')[2])  # Get score
                         else:
                             m = n.split('=')[0]  # Get move
                             m = m.strip()
-                            s = int(n.split('=')[1])  # Get score
+                            move_score = int(n.split('=')[1])  # Get score
+                            
+                        # Assume that the first solution move has the highest score
                         if top_move_cnt == 1:
-                            self.max_score += s
+                            self.max_score += move_score
+                            
+                        # Check if engne bm is the same to one of the solution moves
                         if m == movesan:
-                            this_move_score = s
+                            this_move_score = move_score
                             if top_move_cnt == 1:
                                 self.best_cnt += 1
                                 logger.info('Top 1 move!!')
-                            self.total_score += s
+                            self.total_score += move_score
                             break
+                        
+                    # Get pct of score after thie epd so far
                     logger.info('Score for this test: %d' % this_move_score)
                     pct = float(self.total_score)/self.max_score if self.max_score > 0 else 0.0 
                     logger.info('Total Score update: %d / %d (%0.3f)'\
@@ -406,6 +412,7 @@ class Analyze():
         p.stdin.write('quit\n')
         logger.debug('>> quit')
         
+        # Terminate engine process when engine does not quit after quit command        
         try:
             p.communicate(timeout=5)
         except subprocess.TimeoutExpired:
@@ -644,31 +651,44 @@ class Analyze():
 
 def create_epd_list(epd_fn):
     """ Read epd file and return a list in a format
-        [fen, solutions, id, orig_fen]
+        [fen, solutions, id, orig_epd_line]
     """
     fen_data = []
     cnt = 0
+    num_epd_line = 0
+    
     with open(epd_fn, 'r') as f:
         for line in f:                
             epd_line = line.strip()
-            epd_with_bm = epd_line.split(';')[0]          
-            epd = ' '.join(epd_with_bm.split()[0:4])
+            epd = ' '.join(epd_line.split()[0:4])
+            num_epd_line += 1
+            
+            logger.info('EPD position: {}'.format(num_epd_line))
+            logger.info('EPD: {}'.format(epd_line))
 
             # Get solution line for epd with multiple good moves
-            solutions = ''
+            solutions = None
             try:
+                # STS format
+                # [pcs] w - - bm g5; id "epd id"; c0 "g5=10, Bd4=4, Kg8=4, Rd8=3";
                 solutions = re.search('c0\s\"(.*?)\";', epd_line).group(1)
             except:
-                print('\nProblem reading c0 field in epd: %s' %(epd_line))
-                print('This position is not included.\n')
+                logger.warning('Problem reading c0 field in epd: {}'.format(epd_line))
+                logger.warning('This position is not included.')
                 continue
+
+            # Tony epd format
+            # [pcs] w - - bm Kf2; c0 "positional scores are: Kf2=7, a4=3"; id "tony.pos.15";
             if ':' in solutions:
                 solutions = solutions.split(':')[1]
             solutions = solutions.strip() # Nd2=10, h3=7, Be2=6
-            if solutions == '':
-                print('\nThe following epd has no solution pts. epd: %s' % epd_line)
-                print('This position is not included.\n')
+            
+            if solutions is None:
+                logger.warning('The following epd has no solution pts. epd: {}'.format(epd_line))
+                logger.warning('This position is not included.')
                 continue
+            
+            # Hack ignore the hmvc and fmvn
             fen = epd + ' 0 1'
 
             # Get id
@@ -677,6 +697,8 @@ def create_epd_list(epd_fn):
                 epd_id = re.search('id\s\"(.*?)\";', epd_line).group(1)
             except:
                 pass
+
+            logger.info('solutions: {}'.format(solutions))
             fen_data.append([fen, solutions, epd_id, epd_line])
             cnt += 1
 
@@ -832,7 +854,7 @@ def write_results_in_csv(csv_fn, ana_data,
                     cnt, engine_name, rating, top1, maxtop1, top1rate,
                     score, maxscore, scorerate, movetime, hashval, threadsval))
             
-def main(argv):
+def main():
     parser = argparse.ArgumentParser(description=APP_DESC, epilog=APP_NAME_VERSION)
     parser.add_argument('-i', '--epd', help='input epd filename', required=True)
     parser.add_argument('-o', '--output', default='mea_results.txt',
@@ -882,21 +904,19 @@ def main(argv):
     multipv = 1
     csv_fn = output_summary_fn[0:-4] + '.csv'
     html_fn = output_summary_fn[0:-4] + '.html'
-
-    if not args.log:
-        logger.disabled = True
-
-    # Covert epd file to a list
-    epd_cnt, fen_list = create_epd_list(input_epd_fn)
     
     ana_data = []
-    log_fn = None
 
     log_fn = args.name + '_mt' + str(ana_time) + 'ms_log.txt'
     log_fn = log_fn.replace(' ', '_')
     log_fn = log_fn.replace('/', '_')
     log_fn = log_fn.replace('\\', '_')
-    logging.basicConfig(format=FORMAT, filename=log_fn,filemode='w')
+    
+    if args.log:
+        logging.basicConfig(format=FORMAT, filename=log_fn,filemode='w')
+    
+    # Covert epd file to a list
+    epd_cnt, fen_list = create_epd_list(input_epd_fn)
     
     # If there is engine options in command line, find the hash and threads
     # value, we will use this as info in csv and html table
@@ -974,4 +994,4 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main()
