@@ -10,8 +10,8 @@ https://github.com/workhorsy/py-cpuinfo <br>
 Get processor info, brand and number of cores
 
 ### Installation
-* Python 2.7.16 <br>
-https://www.python.org/downloads/release/python-2716/ <br>
+* Python 3.6 and up <br>
+https://www.python.org/downloads/ <br>
 * Python-chess<br>
 https://github.com/niklasf/python-chess <br>
 pip install python-chess
@@ -22,7 +22,7 @@ python -m pip install -U py-cpuinfo
 https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 
 ### Getting started
-* c:\python27\python.exe mea.py --[options] [option value] <br>
+* c:\python36\python.exe mea.py --[options] [option value] <br>
 ```
 usage: mea.exe [-h] -i EPD [-o OUTPUT] -e ENGINE [--eoption EOPTION] -n NAME
                [-t THREADS] [-m HASH] [-a MOVETIME] [-r RATING] [-p PROTOCOL]
