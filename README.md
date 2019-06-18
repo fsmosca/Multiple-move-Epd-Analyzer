@@ -24,9 +24,9 @@ https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 ### Getting started
 * c:\python27\python.exe mea.py --[options] [option value] <br>
 ```
-usage: mea.py [-h] -i EPD [-o OUTPUT] -e ENGINE [--eoption EOPTION] -n NAME
-              [-t THREADS] [-m HASH] [-a MOVETIME] [-r RATING] [-p PROTOCOL]
-              [-s {0,1}] [--stmode {0,1}] [--protover {1,2}] [--log]
+usage: mea.exe [-h] -i EPD [-o OUTPUT] -e ENGINE [--eoption EOPTION] -n NAME
+               [-t THREADS] [-m HASH] [-a MOVETIME] [-r RATING] [-p PROTOCOL]
+               [-s {0,1}] [--stmode {0,1}] [--protover {1,2}] [--log]
 
 Analyzes epd file having multiple solution moves with points
 
@@ -62,7 +62,7 @@ optional arguments:
   --log                 Records engine and analyzer output to [engine
                         name]_[movetime]_log.txt
 
-MEA v0.3
+MEA v0.3.5
 ```
 
 ### Credits
