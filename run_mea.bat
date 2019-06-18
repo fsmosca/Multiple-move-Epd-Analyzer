@@ -15,7 +15,7 @@ c:\python36\python.exe mea.py --engine ".\engines\Deuterium_v2019.1.36.50_x64_po
 --output %OUTPUT% --log
 
 :: (2) Example with single thread and other engine specific option
-c:\python36\python.exe mea.py --engine "c:\chess\engines\stockfish\stockfish_10.exe" ^
+:: c:\python36\python.exe mea.py --engine "c:\chess\engines\stockfish\stockfish_10.exe" ^
 :: --name "Stockfish 10" --hash %HASH% --threads 1 ^
 :: --eoption "contempt=0" --rating 3400 --protocol uci --epd %EPD% ^
 :: --movetime %MT% --output %OUTPUT% --log
