@@ -21,7 +21,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.3.6'
+APP_VERSION = '0.3.7'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -164,6 +164,46 @@ class Analyze():
             self.run_xb_engine()
         else:
             self.run_uci_engine()
+            
+    def update_score(self, fen_line, movesan):
+        """ Update score of the engine """
+        bests = fen_line # Nd2=10, h3=7, Be2=6
+        best_list = bests.split(',')
+        
+        top_move_cnt = 0                    
+        this_move_score = 0
+        
+        # Loop thru the solution moves ['Nd2=10', 'h3=7', 'Be2=6']
+        for n in best_list:
+            top_move_cnt += 1
+            # Deal with 2 equal symbols, b1=Q=77
+            if n.count('=') == 2:
+                m = n.split('=')[0] + '=' +  n.split('=')[1] # Get move
+                m = m.strip()
+                move_score = int(n.split('=')[2])  # Get score
+            else:
+                m = n.split('=')[0]  # Get move
+                m = m.strip()
+                move_score = int(n.split('=')[1])  # Get score
+                
+            # Assume that the first solution move has the highest score
+            if top_move_cnt == 1:
+                self.max_score += move_score
+                
+            # Check if engne bm is the same to one of the solution moves
+            if m == movesan:
+                this_move_score = move_score
+                if top_move_cnt == 1:
+                    self.best_cnt += 1
+                    logger.info('Top 1 move!!')
+                self.total_score += move_score
+                break
+            
+        # Get pct of score after thie epd so far
+        logger.info('Score for this test: %d' % this_move_score)
+        pct = float(self.total_score)/self.max_score if self.max_score > 0 else 0.0 
+        logger.info('Total Score update: %d / %d (%0.3f)'\
+                       % (self.total_score, self.max_score, pct))
             
     def mate_distance_to_value(self, d):
         """ Returns value in cp given distance to mate """
@@ -331,47 +371,8 @@ class Analyze():
                     # Convert uci bestmove to san bestmove
                     tmp_board = chess.Board(fen)
                     movesan = tmp_board.san(chess.Move.from_uci(bm))
-                    logger.info('bestmove: %s' % movesan)
-                    
-                    # Find in the solution set if bm is there.
-                    # Sample solution set: Nd2=10, h3=7, Be2=6
-                    bests = fen_line[1] # Nd2=10, h3=7, Be2=6
-                    best_list = bests.split(',')
-                    
-                    top_move_cnt = 0                    
-                    this_move_score = 0
-                    
-                    # Loop thru the solution moves ['Nd2=10', 'h3=7', 'Be2=6']
-                    for n in best_list:
-                        top_move_cnt += 1
-                        # Deal with 2 equal symbols, b1=Q=77
-                        if n.count('=') == 2:
-                            m = n.split('=')[0] + '=' +  n.split('=')[1] # Get move
-                            m = m.strip()
-                            move_score = int(n.split('=')[2])  # Get score
-                        else:
-                            m = n.split('=')[0]  # Get move
-                            m = m.strip()
-                            move_score = int(n.split('=')[1])  # Get score
-                            
-                        # Assume that the first solution move has the highest score
-                        if top_move_cnt == 1:
-                            self.max_score += move_score
-                            
-                        # Check if engne bm is the same to one of the solution moves
-                        if m == movesan:
-                            this_move_score = move_score
-                            if top_move_cnt == 1:
-                                self.best_cnt += 1
-                                logger.info('Top 1 move!!')
-                            self.total_score += move_score
-                            break
-                        
-                    # Get pct of score after thie epd so far
-                    logger.info('Score for this test: %d' % this_move_score)
-                    pct = float(self.total_score)/self.max_score if self.max_score > 0 else 0.0 
-                    logger.info('Total Score update: %d / %d (%0.3f)'\
-                                   % (self.total_score, self.max_score, pct))
+                    logger.info('bestmove: %s' % movesan)                    
+                    self.update_score(fen_line[1], movesan)
                     break
 
                 # There are engines that does not follow movetime so we stop it
@@ -427,8 +428,6 @@ class Analyze():
         ActualElapsedTime = (t2 - t1) * 1000  # ms
         timeMarginPerPos = 200  # ms
         timeMargin = self.max_epd_cnt * timeMarginPerPos  # ms
-
-        logger.warning('\n')
         
         if self.depth <= -1:
             if (ActualElapsedTime <= expectedMaxTime + timeMargin) and\
@@ -572,38 +571,8 @@ class Analyze():
                         tmp_board = chess.Board(fen)
                         movesan = tmp_board.san(chess.Move.from_uci(bm))
                         logger.info('bestmove: %s' % movesan)
-                    
-                    # Find in the solution set if bm is there
-                    # Sample solution set: Nd2=10, h3=7, Be2=6
-                    bests = fen_line[1] # Nd2=10, h3=7, Be2=6
-                    best_list = bests.split(',')
-                    
-                    top_move_cnt = 0                    
-                    this_move_score = 0
-                    for n in best_list:
-                        top_move_cnt += 1
-                        # Deal with 2 equal symbols, b1=Q=77
-                        if n.count('=') == 2:
-                            m = n.split('=')[0] + '=' +  n.split('=')[1] # Get move
-                            m = m.strip()
-                            s = int(n.split('=')[2])  # Get score
-                        else:
-                            m = n.split('=')[0]  # Get move
-                            m = m.strip()
-                            s = int(n.split('=')[1])  # Get score
-                        if top_move_cnt == 1:
-                            self.max_score += s
-                        if m == movesan:
-                            this_move_score = s
-                            if top_move_cnt == 1:
-                                self.best_cnt += 1
-                                logger.info('Top 1 move!!')
-                            self.total_score += s
-                            break
-                    logger.info('Score for this test: %d' %(this_move_score))
-                    pct = float(self.total_score)/self.max_score if self.max_score > 0 else 0.0
-                    logger.info('Total Score update: %d / %d (%0.3f)' % (
-                            self.total_score, self.max_score, pct))
+
+                    self.update_score(fen_line[1], movesan)
                     break
 
         # Quit engine when all fen are analyzed
@@ -624,8 +593,6 @@ class Analyze():
         ActualElapsedTime = (t2 - t1) * 1000  # ms
         timeMarginPerPos = 200  # ms
         timeMargin = self.max_epd_cnt * timeMarginPerPos  # ms
-
-        logger.info('\n')
         
         # winboard/xboard engine        
         if (ActualElapsedTime <= expectedMaxTime + timeMargin) and\
@@ -638,6 +605,7 @@ class Analyze():
         else:
             logger.info('Time allocation  : BAD!! spending less time')
             print('Time allocation  : BAD!! spending less time')
+
         logger.info('ExpectedTime     : %0.1fs' %(float(expectedMaxTime)/1000))
         logger.info('ActualTime       : %0.1fs' %(float(ActualElapsedTime)/1000))
         logger.info('TimeMargin/pos   : %0.1fs' %(float(timeMarginPerPos)/1000))
