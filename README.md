@@ -8,6 +8,9 @@ Converts uci move format to san move format
 * Py-cpuinfo <br>
 https://github.com/workhorsy/py-cpuinfo <br>
 Get processor info, brand and number of cores
+* Psutil <br>
+https://github.com/griampaolo/psutil <br>
+Get memory usage of a process
 
 ### Installation
 * Python 3.6 and up <br>
@@ -69,7 +72,7 @@ optional arguments:
   --log                 Records engine and analyzer output to [engine
                         name]_[movetime]_log.txt
 
-MEA v0.3.5
+MEA v0.3.10
 ```
 
 ### Credits
@@ -77,3 +80,5 @@ MEA v0.3.5
 https://github.com/niklasf/python-chess <br>
 * Py-cpuinfo <br>
 https://github.com/workhorsy/py-cpuinfo <br>
+* Psutil <br>
+https://github.com/griampaolo/psutil <br>
