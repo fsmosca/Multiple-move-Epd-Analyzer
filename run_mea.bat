@@ -6,25 +6,34 @@ set EPD=.\epd\2-moves.epd
 
 :: MT is movetime in milliseconds
 
+mea.exe --help >help.txt
+
 :: A. uci engine
 
 :: (1) Example with depth limit and multipv
-c:\python36\python.exe mea.py --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" ^
---name "Deuterium v2019.1.36.50" --hash %HASH% --eoption "depth=8, multipv=3" ^
---rating 2800 --protocol uci --epd %EPD% --movetime %MT% ^
+mea.exe --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" ^
+--name "Deuterium v2019.1.36.50" --hash %HASH% --eoption "depth=12, multipv=3" ^
+--rating 2850 --protocol uci --epd %EPD% --movetime %MT% ^
 --output %OUTPUT% --log
 
 :: (2) Example with single thread and other engine specific option
-:: c:\python36\python.exe mea.py --engine "c:\chess\engines\stockfish\stockfish_10.exe" ^
+:: mea.exe --engine "C:\chess\engines\stockfish\stockfish_10.exe" ^
 :: --name "Stockfish 10" --hash %HASH% --threads 1 ^
-:: --eoption "contempt=0" --rating 3400 --protocol uci --epd %EPD% ^
+:: --eoption "contempt=0" --rating 3450 --protocol uci --epd %EPD% ^
 :: --movetime %MT% --output %OUTPUT% --log
 
-:: (3) Example using mea.exe
-:: mea.exe --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" ^
-:: --name "Deuterium v2019.1.36.50" --hash %HASH% --eoption "depth=8, multipv=3" ^
-:: --rating 2800 --protocol uci --epd %EPD% --movetime %MT% ^
-:: --output %OUTPUT% --log
+:: mea.exe --engine "C:\chess\engines\wasp_360\Wasp360-x64.exe" ^
+:: --name "Wasp 3.60" --eoption "threads=1, hash=256" --rating 2930 ^
+:: --protocol uci --epd %EPD% --movetime %MT% --output %OUTPUT% --log
+
+:: mea.exe --engine "C:\chess\engines\smt198\SmarThink_v198_x64_SSE3_standalone.exe" ^
+:: --name "SmarThink 1.98" --eoption "threads=1, hash=256" --rating 2900 ^
+:: --protocol uci --epd %EPD% --movetime %MT% --output %OUTPUT% --log
+
+:: mea.exe --engine "C:\chess\engines\LCZERO\lc0-v0.21.2-windows-blas\Lc0.exe" ^
+:: --name "Lc0 v0.21.2 w11258-112x9" --threads %THREADS% ^
+:: --eoption "smartpruningfactor=0, ramlimitmb=512, weightsfile=C:\chess\engines\LCZERO\id\11258-112x9-se.pb.gz" ^
+:: --protocol uci --rating 2800 --epd %EPD% --movetime %MT% --output %OUTPUT% --log
 
 
 ::-----------------------------------------------------------------------------
@@ -36,7 +45,7 @@ c:\python36\python.exe mea.py --engine ".\engines\Deuterium_v2019.1.36.50_x64_po
 :: (1) Example when xboard engine supports st value command, use --stmode 1
 :: mea.exe --engine "C:\chess\engines\Dirty_CUCUMBER\Dirty.exe -hash 256" ^
 :: --name "Dirty CUCUMBER" --hash %HASH% --protocol xboard --protover 2 --stmode 1 ^
-:: --rating 2797 --epd %EPD% --movetime %MT% --output %OUTPUT% --log
+:: --rating 2800 --epd %EPD% --movetime %MT% --output %OUTPUT% --log
 
 
 pause
