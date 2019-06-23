@@ -9,7 +9,7 @@ Converts uci move format to san move format
 https://github.com/workhorsy/py-cpuinfo <br>
 Get processor info, brand and number of cores
 * Psutil <br>
-https://github.com/griampaolo/psutil <br>
+https://github.com/giampaolo/psutil <br>
 Get memory usage of a process
 
 ### Installation
@@ -21,6 +21,9 @@ pip install python-chess
 * Py-cpuinfo <br>
 https://github.com/workhorsy/py-cpuinfo <br>
 python -m pip install -U py-cpuinfo
+* Psutil <br>
+https://github.com/giampaolo/psutil <br>
+pip install psutil
 * mea.py <br>
 https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 
@@ -81,4 +84,4 @@ https://github.com/niklasf/python-chess <br>
 * Py-cpuinfo <br>
 https://github.com/workhorsy/py-cpuinfo <br>
 * Psutil <br>
-https://github.com/griampaolo/psutil <br>
+https://github.com/giampaolo/psutil <br>
