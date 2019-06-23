@@ -11,17 +11,19 @@ import os
 import subprocess
 import logging
 import time
+import statistics as stats
 import shutil
 import re
 import csv
 import argparse
 import chess
 import cpuinfo
+import psutil
 
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.3.9'
+APP_VERSION = '0.3.10'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -157,6 +159,7 @@ class Analyze():
         self.multipv = multipv
         self.input_epd_fn = input_epd_fn
         self.depth = -1
+        self.lc0_mem = []
 
     def run(self):
         """ Run engine to analyze epd """
@@ -362,6 +365,14 @@ class Analyze():
                             score_cp_info = int(line.split('cp')[1].split()[0].strip())
 
                 if 'bestmove' in line:
+                    # Get memory usage of Lc0
+                    for proc in psutil.process_iter(attrs=['name']):
+                        if 'lc0' in proc.info['name'].lower():
+                            mem_bytes = proc.memory_info().peak_wset
+                            self.lc0_mem.append(mem_bytes)
+                            logger.info('Lc0 peak mem usage: {} bytes'.format(mem_bytes))
+                            break
+
                     logger.info('elapsed(ms) since go: %0.0f'\
                                 %((time.perf_counter() - go_start) * 1000))
                     self.num_pos_tried += 1
@@ -371,7 +382,7 @@ class Analyze():
                     # Convert uci bestmove to san bestmove
                     tmp_board = chess.Board(fen)
                     movesan = tmp_board.san(chess.Move.from_uci(bm))
-                    logger.info('bestmove: %s' % movesan)                    
+                    logger.info('bestmove: %s' % movesan)
                     self.update_score(fen_line[1], movesan)
                     break
 
@@ -923,6 +934,10 @@ def main():
     
     start_time = time.perf_counter()  # Python v3.3 and up
     a.run()
+    # Get actual memory usage if engine is Lc0.exe
+    if len(a.lc0_mem):
+        lc0_max_mem_mean = stats.mean(a.lc0_mem)
+        engine_numhash = int(lc0_max_mem_mean/(1024*1024))
     end_time = time.perf_counter()
     
     elapsed = end_time - start_time             
