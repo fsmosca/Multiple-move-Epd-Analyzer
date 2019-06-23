@@ -21,7 +21,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.3.8'
+APP_VERSION = '0.3.9'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -275,7 +275,7 @@ class Analyze():
                 break
 
         line_cnt = 0
-        t1 = time.time()        
+        t1 = time.perf_counter()        
 
         for fen_line in self.fen_list:
             logger.info('\n')
@@ -305,15 +305,15 @@ class Analyze():
             
             if self.depth >= 0:
                 p.stdin.write('go movetime %d depth %d\n' % (self.movetime, self.depth))
-                go_start = time.time()
+                go_start = time.perf_counter()
                 logger.debug('>> go movetime %d depth %d' % (self.movetime, self.depth))
                 
             else:
                 p.stdin.write('go movetime %d\n' % (self.movetime))
-                go_start = time.time()
+                go_start = time.perf_counter()
                 logger.debug('>> go movetime %d' % (self.movetime))
                 
-            start_t = time.time()
+            start_t = time.perf_counter()
             stop_sent = False
 
             # Parse engine output
@@ -363,7 +363,7 @@ class Analyze():
 
                 if 'bestmove' in line:
                     logger.info('elapsed(ms) since go: %0.0f'\
-                                %((time.time() - go_start) * 1000))
+                                %((time.perf_counter() - go_start) * 1000))
                     self.num_pos_tried += 1
                     bm = line.split()[1]
                     bm = bm.strip()
@@ -377,7 +377,7 @@ class Analyze():
 
                 # There are engines that does not follow movetime so we stop it
                 if not stop_sent and\
-                       (time.time() - start_t)*1000 -\
+                       (time.perf_counter() - start_t)*1000 -\
                        self.stop_time_margin_ms >= self.movetime:
                     stop_sent = True
                     p.stdin.write('stop\n')
@@ -421,7 +421,7 @@ class Analyze():
             p.kill()
             p.communicate()
 
-        t2 = time.time()
+        t2 = time.perf_counter()
 
         # Check analysis time anomalies
         expectedMaxTime = self.movetime * self.max_epd_cnt  # ms
@@ -493,7 +493,7 @@ class Analyze():
         logger.debug('>> easy')        
 
         line_cnt = 0
-        t1 = time.time()
+        t1 = time.perf_counter()
 
         for fen_line in self.fen_list:
             logger.info('\n')
@@ -550,7 +550,7 @@ class Analyze():
                         logger.debug('>> time %d' % (period*tpm_ms/10))
             
             p.stdin.write('go %d\n')
-            go_start = time.time()
+            go_start = time.perf_counter()
             logger.debug('>> go')
 
             # Parse engine output
@@ -559,7 +559,7 @@ class Analyze():
                 logger.debug('<< %s' % (line))
                 if 'move' in line and len(line.split()) == 2:
                     logger.info('elapsed(ms) since go: %0.0f' %(
-                            (time.time() - go_start) * 1000))
+                            (time.perf_counter() - go_start) * 1000))
                     self.num_pos_tried += 1
                     bm = line.split()[1]
                     bm = bm.strip()
@@ -586,7 +586,7 @@ class Analyze():
             p.kill()
             p.communicate()
 
-        t2 = time.time()
+        t2 = time.perf_counter()
 
         # Check analysis time anomalies
         expectedMaxTime = self.movetime * self.max_epd_cnt  # ms
@@ -921,9 +921,9 @@ def main():
                  engine_numhash, proto, args.name, args.san, args.stmode,
                  args.protover, epd_output_fn, multipv, eoption, epd_test_fn)
     
-    start_time = time.time()
+    start_time = time.perf_counter()  # Python v3.3 and up
     a.run()
-    end_time = time.time()
+    end_time = time.perf_counter()
     
     elapsed = end_time - start_time             
     v = a.get_result()  # [engine, top1cnt, score, maxscore, numpostried]
