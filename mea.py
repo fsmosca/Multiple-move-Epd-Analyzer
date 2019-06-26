@@ -9,10 +9,10 @@ Analyzes epd file having multiple solution moves with points
 
 import os
 import subprocess
+from pathlib import Path
 import logging
 import time
 import statistics as stats
-import shutil
 import re
 import csv
 import argparse
@@ -23,15 +23,37 @@ import psutil
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.3.10'
+APP_VERSION = '0.4'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
 # Create logger
-logger = logging.getLogger('root')
-FORMAT = '[%(asctime)24s - %(levelname)8s ] %(message)s'
+logger = logging.getLogger()
+LOG_FORMAT = '[%(asctime)24s - %(levelname)8s ] %(message)s'
 logger.setLevel(logging.DEBUG)
 
+
+def move_file(dirname, filename):
+    """ Move filename to dirname, create dirname if it does not exists """
+    cwd = Path.cwd()
+    
+    dir_path = Path(cwd, dirname)
+    if not dir_path.exists():
+        dir_path.mkdir()
+        
+    # If we successfully created the dir we will move our file there
+    if dir_path.exists():
+        file_path = Path(cwd, filename)
+
+        # If log file exists
+        if file_path.exists():
+            new_file_path = Path(dir_path, filename)
+
+            # Move/replace file to new dir
+            file_path.replace(new_file_path)
+            
+            if new_file_path.exists():
+                print('File {} was sucessfully moved to {}.'.format(filename, dir_path))
 
 def delete_file(fn):
     """ Delete file if it exist """
@@ -47,15 +69,6 @@ def sort_key_top1(item):
 def sort_key_score(item):
     """ Sort by score """
     return item[5]
-
-
-def count_pos(inputfn):
-    """ count pos in the epd file """
-    cnt = 0
-    with open(inputfn) as f:
-        for _ in f:
-            cnt += 1
-    return cnt
 
 
 def csv_to_html(csvfn, htmlfn, epdfn):
@@ -137,7 +150,7 @@ def csv_to_html(csvfn, htmlfn, epdfn):
 class Analyze():     
     def __init__(self, engine, fen_list, max_epd_cnt, movetime, num_threads,
                  num_hash, proto, name, san, stmode, protover, epd_output_fn,
-                 multipv, eoption, input_epd_fn):
+                 multipv, eoption, input_epd_name):
         self.engine = engine
         self.fen_list = fen_list # [fen, solutions, id]
         self.max_epd_cnt = max_epd_cnt
@@ -157,7 +170,7 @@ class Analyze():
         self.eoption = eoption
         self.epd_output_fn = epd_output_fn
         self.multipv = multipv
-        self.input_epd_fn = input_epd_fn
+        self.input_epd_name = input_epd_name
         self.depth = -1
         self.lc0_mem = []
 
@@ -367,7 +380,7 @@ class Analyze():
                 if 'bestmove' in line:
                     # Get memory usage of Lc0
                     for proc in psutil.process_iter(attrs=['name']):
-                        if 'lc0' in proc.info['name'].lower():
+                        if 'lc0' in proc.info['name'].lower() and 'lc0' in self.name.lower():
                             mem_bytes = proc.memory_info().peak_wset
                             self.lc0_mem.append(mem_bytes)
                             logger.info('Lc0 peak mem usage: {} bytes'.format(mem_bytes))
@@ -411,7 +424,7 @@ class Analyze():
                                                 score_cp_info, depth_info))
             else:
                 for i in range(1, len(search_info)+1, 1):
-                    id_operand = self.input_epd_fn + ' pos ' + str(line_cnt) + ' MultiPV=' + str(i)
+                    id_operand = self.input_epd_name + ' pos ' + str(line_cnt) + ' MultiPV=' + str(i)
                     with open(self.epd_output_fn, 'a') as h:
                         h.write('%s id \"%s\"; bm %s; ce %d; acd %d;\n' % (
                                 epd, id_operand, search_info[i]['bm'], search_info[i]['score'],
@@ -633,7 +646,7 @@ def create_epd_list(epd_fn):
         [fen, solutions, id, orig_epd_line]
     """
     fen_data = []
-    cnt = 0
+    num_good_epd_line = 0
     num_epd_line = 0
     
     with open(epd_fn, 'r') as f:
@@ -679,46 +692,38 @@ def create_epd_list(epd_fn):
 
             logger.info('solutions: {}'.format(solutions))
             fen_data.append([fen, solutions, epd_id, epd_line])
-            cnt += 1
+            num_good_epd_line += 1
 
-    return cnt, fen_data
+    return fen_data, num_good_epd_line, num_epd_line
 
 
-def write_results_summary(out_fn, data, threadsval, hashval, movetime, epd_fn):
+def write_results_summary(out_fn, data, threadsval, hashval, movetime,
+                          input_epd_path_and_file, input_epd_file, good_epd_cnt):
     """ Write results summary in text format """
-    # Get epd filename alone, not including path
-    epd_fn_only = epd_fn.split('\\')
-    varlen = len(epd_fn_only)
-    if varlen > 0:
-        epd_fn_name = epd_fn_only[varlen-1]
-    else:
-        epd_fn_name = epd_fn
-        
-    # Write summary to a file
     if not os.path.isfile(out_fn):
         with open(out_fn, 'a') as f:
             info = cpuinfo.get_cpu_info()
             f.write('A. Processor\n')
-            f.write('Brand          : %s\n' %(info['brand']))
-            f.write('Arch           : %s\n' %(info['arch']))
-            f.write('Count          : %s\n\n' %(info['count']))
+            f.write('Brand          : %s\n' % (info['brand']))
+            f.write('Arch           : %s\n' % (info['arch']))
+            f.write('Count          : %s\n\n' % (info['count']))
             
             f.write('B. Engine settings\n')
             
-            f.write('Threads        : %d\n' %(threadsval))
-            f.write('Hash (mb)      : %d\n' %(hashval))
-            f.write('Time(s)/pos    : %0.1f\n\n' %(float(movetime)/1000))
+            f.write('Threads        : %d\n' % threadsval)
+            f.write('Hash (mb)      : %d\n' % hashval)
+            f.write('Time(s)/pos    : %0.1f\n\n' % (float(movetime)/1000))
 
 
             f.write('C. Test set\n')            
            
-            f.write('Filename       : %s\n' %(epd_fn_name))
-            f.write('NumPos         : %s\n\n' %(count_pos(epd_fn)))
+            f.write('Filename       : %s\n' % input_epd_file)
+            f.write('NumPos         : %s\n\n' % good_epd_cnt)
 
 
             f.write('D. Results\n')
             
-            f.write('%-24s : %6s  %5s  %7s  %8s  %5s  %8s  %9s\n' % (
+            f.write('%-32s : %6s  %5s  %7s  %8s  %5s  %8s  %9s\n' % (
                     'Engine', 'Rating', 'Top1', 'MaxTop1', 'Top1Rate',
                     'Score', 'MaxScore', 'ScoreRate'))
 
@@ -739,7 +744,7 @@ def write_results_summary(out_fn, data, threadsval, hashval, movetime, epd_fn):
             score_rate = 0.0
             if max_score:
                 score_rate = float(total_score)/max_score
-            f.write('%-24s : %6d  %5d  %7d  %8.3f  %5d  %8d  %9.3f\n' % (
+            f.write('%-32s : %6d  %5d  %7d  %8.3f  %5d  %8d  %9.3f\n' % (
                     engine_name, rating, top1_cnt, epd_cnt_tried,
                     top1_rate, total_score, max_score, score_rate))
             
@@ -870,7 +875,7 @@ def main():
 
     # Get values from arguments    
     args = parser.parse_args()
-    input_epd_fn = args.epd
+    input_epd_fn = args.epd  # Can have path like .\epd\test.epd
     output_summary_fn = args.output
     engine_fn = args.engine
     engine_numthreads = args.threads
@@ -880,22 +885,10 @@ def main():
     proto = args.protocol
     eoption = args.eoption
     
+    ana_data = []
     multipv = 1
     csv_fn = output_summary_fn[0:-4] + '.csv'
     html_fn = output_summary_fn[0:-4] + '.html'
-    
-    ana_data = []
-
-    log_fn = args.name + '_mt' + str(ana_time) + 'ms_log.txt'
-    log_fn = log_fn.replace(' ', '_')
-    log_fn = log_fn.replace('/', '_')
-    log_fn = log_fn.replace('\\', '_')
-    
-    if args.log:
-        logging.basicConfig(format=FORMAT, filename=log_fn,filemode='w')
-    
-    # Covert epd file to a list
-    epd_cnt, fen_list = create_epd_list(input_epd_fn)
     
     # If there is engine options in command line, find the hash and threads
     # value, we will use this as info in csv and html table
@@ -910,35 +903,47 @@ def main():
             elif name.lower() == 'threads':
                 engine_numthreads = int(value)
             elif name.lower() == 'multipv':
-                multipv = int(value)            
-
-    # filename for epd output saving bm, ce and acd
-    epd_test_fn = os.path.basename(args.epd)
-    epd_output_fn = epd_test_fn[0:-4] + '_' + args.name + '.epd'
-    epd_output_fn = epd_output_fn.replace(' ', '_')
-    epd_output_fn.replace('/', '_')
-    epd_output_fn.replace('\\', '_')
+                multipv = int(value)
     
-    if multipv >= 2:
-        epd_output_fn = epd_test_fn[0:-4] + '_multipv' + str(multipv) + '_' + args.name + '.epd'
-        epd_output_fn = epd_output_fn.replace(' ', '_')
-        epd_output_fn.replace('/', '_')
-        epd_output_fn.replace('\\', '_')
-        
-    # Delete existing epd output, this is like overwrite mode
-    delete_file(epd_output_fn)
+    # Prepare filenames
+    input_epd_file = os.path.basename(args.epd) # filename alone with extension
+    input_epd_name = input_epd_file[0:-4]  # filename alone without extension
+    
+    # Declare log filename and replace other chars in it
+    log_fn = '{}_multipv{}_{}_mt{}ms_log.txt'.format(input_epd_name, multipv,
+                     args.name, ana_time)
+    for r in ((' ', '_'), ('/', '_'), ('\\', '_')):
+        log_fn = log_fn.replace(*r)
+    
+    # Only create log file if there is --log
+    if args.log:
+        delete_file(log_fn)
+        logging.basicConfig(format=LOG_FORMAT, filename=log_fn, filemode='w')
 
-    a = Analyze(engine_fn, fen_list, epd_cnt, ana_time, engine_numthreads,
+    # Declare epd output filename (saving bm, ce and acd) and replace other chars in it
+    epd_output_fn = '{}_multipv{}_{}_mt{}ms_epd.epd'.format(input_epd_name, multipv,
+                     args.name, ana_time)
+    for r in ((' ', '_'), ('/', '_'), ('\\', '_')):
+        epd_output_fn = epd_output_fn.replace(*r)
+    delete_file(epd_output_fn)
+    
+    # Covert epd file to a list
+    fen_list, good_epd_cnt, total_epd_cnt = create_epd_list(args.epd)
+    if good_epd_cnt != total_epd_cnt:
+        logger.warning('Total positions in the input epd are not being considered.')
+        
+    # Analyze the epd
+    a = Analyze(engine_fn, fen_list, good_epd_cnt, ana_time, engine_numthreads,
                  engine_numhash, proto, args.name, args.san, args.stmode,
-                 args.protover, epd_output_fn, multipv, eoption, epd_test_fn)
+                 args.protover, epd_output_fn, multipv, eoption, input_epd_name)
     
     start_time = time.perf_counter()  # Python v3.3 and up
     a.run()
+    end_time = time.perf_counter()
     # Get actual memory usage if engine is Lc0.exe
     if len(a.lc0_mem):
         lc0_max_mem_mean = stats.mean(a.lc0_mem)
         engine_numhash = int(lc0_max_mem_mean/(1024*1024))
-    end_time = time.perf_counter()
     
     elapsed = end_time - start_time             
     v = a.get_result()  # [engine, top1cnt, score, maxscore, numpostried]
@@ -948,7 +953,8 @@ def main():
 
     temp_csv_fn = 'temp_csv_results.csv'
     write_results_summary(output_summary_fn, ana_data, engine_numthreads,
-                          engine_numhash, ana_time, input_epd_fn)
+                          engine_numhash, ana_time, args.epd, input_epd_file,
+                          good_epd_cnt)
     write_results_in_csv(csv_fn, ana_data, ana_time, engine_numhash,
                          engine_numthreads, temp_csv_fn)
 
@@ -956,24 +962,10 @@ def main():
     csv_to_html(temp_csv_fn, html_fn, input_epd_fn)
     delete_file(temp_csv_fn)
     logger.info('Done!!')
-
-    # Move engine log to log dir. If dir does not exist, we will create it.
-    if os.path.isfile(log_fn):
-        if not os.path.isdir('log/'):
-            logger.info('Create log dir')
-            os.mkdir('log')
-
-        logger.info('move %s to log dir' % log_fn)
-        logging.shutdown()
-        
-        # Use 'log/' + log_fn as destination to overwrite existing file
-        shutil.move(log_fn, 'log/' + log_fn)
-
-    # Move epd output to epd_out folder, will be created if not present
-    if os.path.isfile(epd_output_fn):
-        if not os.path.isdir('epd_out/'):
-            os.mkdir('epd_out')
-        shutil.move(epd_output_fn, 'epd_out/' + epd_output_fn)
+    logging.shutdown()
+    
+    move_file('log', log_fn)
+    move_file('epd_out', epd_output_fn)
 
 
 if __name__ == '__main__':
