@@ -23,7 +23,7 @@ import psutil
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.4'
+APP_VERSION = '0.5'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -150,7 +150,7 @@ def csv_to_html(csvfn, htmlfn, epdfn):
 class Analyze():     
     def __init__(self, engine, fen_list, max_epd_cnt, movetime, num_threads,
                  num_hash, proto, name, san, stmode, protover, epd_output_fn,
-                 multipv, eoption, input_epd_name):
+                 multipv, eoption, input_epd_name, infinite):
         self.engine = engine
         self.fen_list = fen_list # [fen, solutions, id]
         self.max_epd_cnt = max_epd_cnt
@@ -161,7 +161,7 @@ class Analyze():
         self.best_cnt = 0
         self.total_score = 0        
         self.max_score = 0
-        self.stop_time_margin_ms = 500
+        self.stop_time_margin_ms = max(10, min(100, self.movetime//4))
         self.proto = proto
         self.name = name
         self.san = san
@@ -173,6 +173,7 @@ class Analyze():
         self.input_epd_name = input_epd_name
         self.depth = -1
         self.lc0_mem = []
+        self.infinite = infinite
 
     def run(self):
         """ Run engine to analyze epd """
@@ -239,14 +240,17 @@ class Analyze():
         """ Start engine """
         logger.info('Run engine %s' % self.name)
         
-        # Python 3.x
+        # Run engine on the engine's folder and not from mea's folder
+        folder = Path(self.engine).parents[0]
+        
+        # Python 3.7
         p = subprocess.Popen(self.engine, bufsize=1, stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                             universal_newlines=True)
+                             universal_newlines=True, cwd=folder)
         
         p.stdin.write('uci\n')
         logger.debug('>> uci')
-
+        
         for eline in iter(p.stdout.readline, ''):
             line = eline.strip()
             logger.debug('<< %s' % line)
@@ -323,7 +327,11 @@ class Analyze():
                 p.stdin.write('go movetime %d depth %d\n' % (self.movetime, self.depth))
                 go_start = time.perf_counter()
                 logger.debug('>> go movetime %d depth %d' % (self.movetime, self.depth))
-                
+            # Send go infinite for smarthink and fizbo engines, and halt it with stop
+            elif self.infinite:
+                p.stdin.write('go infinite\n')
+                go_start = time.perf_counter()
+                logger.debug('>> go infinite')
             else:
                 p.stdin.write('go movetime %d\n' % (self.movetime))
                 go_start = time.perf_counter()
@@ -398,11 +406,17 @@ class Analyze():
                     logger.info('bestmove: %s' % movesan)
                     self.update_score(fen_line[1], movesan)
                     break
+                
+                tdiff = (time.perf_counter() - start_t) * 1000
+                
+                # Send stop early if we re using go infinite
+                if not stop_sent and self.infinite and tdiff > 2*self.movetime//3:
+                    stop_sent = True
+                    p.stdin.write('stop\n')
+                    logger.debug('>> stop')
 
                 # There are engines that does not follow movetime so we stop it
-                if not stop_sent and\
-                       (time.perf_counter() - start_t)*1000 -\
-                       self.stop_time_margin_ms >= self.movetime:
+                if not stop_sent and tdiff - self.stop_time_margin_ms >= self.movetime:
                     stop_sent = True
                     p.stdin.write('stop\n')
                     logger.debug('>> stop')
@@ -450,7 +464,7 @@ class Analyze():
         # Check analysis time anomalies
         expectedMaxTime = self.movetime * self.max_epd_cnt  # ms
         ActualElapsedTime = (t2 - t1) * 1000  # ms
-        timeMarginPerPos = 200  # ms
+        timeMarginPerPos = max(50, min(200, self.movetime//4))  # ms
         timeMargin = self.max_epd_cnt * timeMarginPerPos  # ms
         
         if self.depth <= -1:
@@ -485,10 +499,12 @@ class Analyze():
         """ Start engine """
         logger.info('Run engine %s' % self.name)
         
-        # Python 3.x
+        folder = Path(self.engine).parents[0]
+        
+        # Python 3.7
         p = subprocess.Popen(self.engine, bufsize=1, stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                             universal_newlines=True)
+                             universal_newlines=True, cwd=folder)
         
         p.stdin.write('xboard\n')
         logger.debug('>> xboard')
@@ -546,8 +562,12 @@ class Analyze():
 
             # Use st
             if self.stmode:
-                p.stdin.write('st %0.0f\n' % (self.movetime/1000.0))
-                logger.debug('>> st %0.0f' % (self.movetime/1000.0))
+                if self.movetime < 1000:
+                    p.stdin.write('st %0.1f\n' % (self.movetime/1000.0))
+                    logger.debug('>> st %0.1f' % (self.movetime/1000.0))
+                else:
+                    p.stdin.write('st %0.0f\n' % (self.movetime/1000.0))
+                    logger.debug('>> st %0.0f' % (self.movetime/1000.0))
             # Use level
             else:
                 period = 40
@@ -573,7 +593,7 @@ class Analyze():
                         p.stdin.write('time %d\n' % (period*tpm_ms/10))
                         logger.debug('>> time %d' % (period*tpm_ms/10))
             
-            p.stdin.write('go %d\n')
+            p.stdin.write('go\n')
             go_start = time.perf_counter()
             logger.debug('>> go')
 
@@ -598,6 +618,12 @@ class Analyze():
 
                     self.update_score(fen_line[1], movesan)
                     break
+                
+            # (1) Multipv is 1
+            if self.multipv == 1:
+                epd = ' '.join(fen.split()[0:4]).strip()
+                with open(self.epd_output_fn, 'a') as h:
+                    h.write('%s bm %s;\n' % (epd, movesan))
 
         # Quit engine when all fen are analyzed
         p.stdin.write('quit\n')
@@ -615,7 +641,7 @@ class Analyze():
         # Check analysis time anomalies
         expectedMaxTime = self.movetime * self.max_epd_cnt  # ms
         ActualElapsedTime = (t2 - t1) * 1000  # ms
-        timeMarginPerPos = 200  # ms
+        timeMarginPerPos = max(50, min(200, self.movetime//4))  # ms
         timeMargin = self.max_epd_cnt * timeMarginPerPos  # ms
         
         # winboard/xboard engine        
@@ -869,6 +895,8 @@ def main():
     parser.add_argument('--protover', default=2,
         help='for xboard engines, this is protocol version number, default=2',
         type=int, choices=[1, 2])
+    parser.add_argument('--infinite', help='Run uci engine with go infinite',
+                        action='store_true')
     parser.add_argument('--log', help='Records engine and analyzer output ' +
                         'to [engine name]_[movetime]_log.txt',
                         action='store_true')
@@ -921,8 +949,11 @@ def main():
         logging.basicConfig(format=LOG_FORMAT, filename=log_fn, filemode='w')
 
     # Declare epd output filename (saving bm, ce and acd) and replace other chars in it
-    epd_output_fn = '{}_multipv{}_{}_mt{}ms_epd.epd'.format(input_epd_name, multipv,
-                     args.name, ana_time)
+    if multipv > 1:
+        epd_output_fn = '{}_multipv{}_{}_mt{}ms_epd.epd'.format(
+                input_epd_name, multipv, args.name, ana_time)
+    else:
+        epd_output_fn = '{}_{}.epd'.format(input_epd_name, args.name)
     for r in ((' ', '_'), ('/', '_'), ('\\', '_')):
         epd_output_fn = epd_output_fn.replace(*r)
     delete_file(epd_output_fn)
@@ -935,7 +966,8 @@ def main():
     # Analyze the epd
     a = Analyze(engine_fn, fen_list, good_epd_cnt, ana_time, engine_numthreads,
                  engine_numhash, proto, args.name, args.san, args.stmode,
-                 args.protover, epd_output_fn, multipv, eoption, input_epd_name)
+                 args.protover, epd_output_fn, multipv, eoption, input_epd_name,
+                 args.infinite)
     
     start_time = time.perf_counter()  # Python v3.3 and up
     a.run()
