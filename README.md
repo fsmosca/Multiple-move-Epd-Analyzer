@@ -8,24 +8,22 @@ Converts uci move format to san move format
 * Py-cpuinfo <br>
 https://github.com/workhorsy/py-cpuinfo <br>
 Get processor info, brand and number of cores
-* Psutil <br>
-https://github.com/giampaolo/psutil <br>
-Get memory usage of a process
 
 ### Installation
-* Python 3.6 and up <br>
-https://www.python.org/downloads/ <br>
-* Python-chess<br>
-https://github.com/niklasf/python-chess <br>
+#### Run using the source
+* Python 3.7 and up for mea v0.5 and up otherwise Python 3.6  
+https://www.python.org/downloads/  
+* Python-chess  
+https://github.com/niklasf/python-chess  
 pip install python-chess
-* Py-cpuinfo <br>
-https://github.com/workhorsy/py-cpuinfo <br>
+* Py-cpuinfo  
+https://github.com/workhorsy/py-cpuinfo  
 python -m pip install -U py-cpuinfo
-* Psutil <br>
-https://github.com/giampaolo/psutil <br>
-pip install psutil
-* mea.py <br>
+* mea.py  
 https://github.com/fsmosca/Multiple-move-Epd-Analyzer
+
+#### Run using exe file
+Just download the exe file in Release link
 
 ### Getting started
 * Example command line:<br>
@@ -37,9 +35,10 @@ https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 
 * Help
 ```
-usage: mea.exe [-h] -i EPD [-o OUTPUT] -e ENGINE [--eoption EOPTION] -n NAME
-               [-t THREADS] [-m HASH] [-a MOVETIME] [-r RATING] [-p PROTOCOL]
-               [-s {0,1}] [--stmode {0,1}] [--protover {1,2}] [--log]
+usage: mea.py [-h] -i EPD [-o OUTPUT] -e ENGINE [--eoption EOPTION] -n NAME
+              [-t THREADS] [-m HASH] [-a MOVETIME] [-r RATING] [-p PROTOCOL]
+              [-s {0,1}] [--stmode {0,1}] [--protover {1,2}] [--infinite]
+              [--log]
 
 Analyzes epd file having multiple solution moves with points
 
@@ -72,10 +71,11 @@ optional arguments:
                         support st command, default=1
   --protover {1,2}      for xboard engines, this is protocol version number,
                         default=2
+  --infinite            Run uci engine with go infinite
   --log                 Records engine and analyzer output to [engine
                         name]_[movetime]_log.txt
 
-MEA v0.3.10
+MEA v0.6
 ```
 
 ### Credits
@@ -83,5 +83,3 @@ MEA v0.3.10
 https://github.com/niklasf/python-chess <br>
 * Py-cpuinfo <br>
 https://github.com/workhorsy/py-cpuinfo <br>
-* Psutil <br>
-https://github.com/giampaolo/psutil <br>
