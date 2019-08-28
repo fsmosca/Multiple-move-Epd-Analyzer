@@ -27,8 +27,7 @@ APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
 # Create logger
-logger = logging.getLogger()
-LOG_FORMAT = '[%(asctime)24s - %(levelname)8s ] %(message)s'
+logger = logging.getLogger('mea')
 logger.setLevel(logging.DEBUG)
 
 
@@ -325,7 +324,7 @@ class Analyze():
                 p.stdin.write('go movetime %d depth %d\n' % (self.movetime, self.depth))
                 go_start = time.perf_counter()
                 logger.debug('>> go movetime %d depth %d' % (self.movetime, self.depth))
-            # Send go infinite for smarthink and fizbo engines, and halt it with stop
+            # Send go infinite for engines that does not support movetime and/or depth properly
             elif self.infinite:
                 p.stdin.write('go infinite\n')
                 go_start = time.perf_counter()
@@ -927,16 +926,18 @@ def main():
     input_epd_file = os.path.basename(args.epd) # filename alone with extension
     input_epd_name = input_epd_file[0:-4]  # filename alone without extension
     
-    # Declare log filename and replace other chars in it
-    log_fn = '{}_multipv{}_{}_mt{}ms_log.txt'.format(input_epd_name, multipv,
-                     args.name, ana_time)
-    for r in ((' ', '_'), ('/', '_'), ('\\', '_')):
-        log_fn = log_fn.replace(*r)
-    
     # Only create log file if there is --log
     if args.log:
-        delete_file(log_fn)
-        logging.basicConfig(format=LOG_FORMAT, filename=log_fn, filemode='w')
+        # Declare log filename and replace forward, backward, and empty chars with underscore
+        log_fn = '{}_multipv{}_{}_mt{}ms_log.txt'.format(input_epd_name, multipv,
+                         args.name, ana_time)
+        for r in ((' ', '_'), ('/', '_'), ('\\', '_')):
+            log_fn = log_fn.replace(*r)
+        
+        fh = logging.FileHandler(log_fn, mode='w')
+        formatter = logging.Formatter('[%(asctime)24s - %(name)s - %(levelname)8s ] %(message)s')
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
 
     # Declare epd output filename (saving bm, ce and acd) and replace other chars in it
     if multipv > 1:
@@ -982,8 +983,9 @@ def main():
     logger.info('Done!!')
     logging.shutdown()
     
-    move_file('log', log_fn)
     move_file('epd_out', epd_output_fn)
+    if args.log:
+        move_file('log', log_fn) 
 
 
 if __name__ == '__main__':
