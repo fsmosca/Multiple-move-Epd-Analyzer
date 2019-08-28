@@ -317,6 +317,15 @@ class Analyze():
             p.stdin.write('ucinewgame\n')
             logger.debug('>> ucinewgame')
             
+            # Prepare engine
+            p.stdin.write('isready\n')
+            logger.debug('>> isready')
+                    
+            for eline in iter(p.stdout.readline, ''):
+                if 'readyok' in eline:
+                    logger.debug('<< readyok')
+                    break
+
             p.stdin.write('position fen ' + fen + '\n')
             logger.debug('>> position fen ' + fen)
             
