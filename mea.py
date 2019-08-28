@@ -18,12 +18,11 @@ import csv
 import argparse
 import chess
 import cpuinfo
-import psutil
 
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.5'
+APP_VERSION = '0.6'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -172,7 +171,6 @@ class Analyze():
         self.multipv = multipv
         self.input_epd_name = input_epd_name
         self.depth = -1
-        self.lc0_mem = []
         self.infinite = infinite
 
     def run(self):
@@ -386,14 +384,6 @@ class Analyze():
                             score_cp_info = int(line.split('cp')[1].split()[0].strip())
 
                 if 'bestmove' in line:
-                    # Get memory usage of Lc0
-                    for proc in psutil.process_iter(attrs=['name']):
-                        if 'lc0' in proc.info['name'].lower() and 'lc0' in self.name.lower():
-                            mem_bytes = proc.memory_info().peak_wset
-                            self.lc0_mem.append(mem_bytes)
-                            logger.info('Lc0 peak mem usage: {} bytes'.format(mem_bytes))
-                            break
-
                     logger.info('elapsed(ms) since go: %0.0f'\
                                 %((time.perf_counter() - go_start) * 1000))
                     self.num_pos_tried += 1
@@ -972,10 +962,6 @@ def main():
     start_time = time.perf_counter()  # Python v3.3 and up
     a.run()
     end_time = time.perf_counter()
-    # Get actual memory usage if engine is Lc0.exe
-    if len(a.lc0_mem):
-        lc0_max_mem_mean = stats.mean(a.lc0_mem)
-        engine_numhash = int(lc0_max_mem_mean/(1024*1024))
     
     elapsed = end_time - start_time             
     v = a.get_result()  # [engine, top1cnt, score, maxscore, numpostried]
