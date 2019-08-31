@@ -26,8 +26,8 @@ https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 Just download the exe file in Release link
 
 ### Getting started
-* Example command line:<br>
-`c:\python36\python.exe mea.py --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" --name "Deuterium v2019.1.36.50" --epd ".\epd\2-moves.epd" --log`
+* Example command line
+`mea.exe --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" --name "Deuterium v2019.1.36.50" --epd ".\epd\openings200-mea.epd" --log`
 
 * Output files
 1. log output file will be moved to log folder <br>
@@ -83,3 +83,12 @@ MEA v0.6
 https://github.com/niklasf/python-chess <br>
 * Py-cpuinfo <br>
 https://github.com/workhorsy/py-cpuinfo <br>
+* Kai Laskos  
+openings200.epd
+* Sedat Canbaz  
+OTSv4.epd  
+https://sites.google.com/site/computerschess/ots-v4-ranking
+* Tony Hedlund  
+tony-pos.epd  
+https://privat.bahnhof.se/wb432434/fentest.htm
+
