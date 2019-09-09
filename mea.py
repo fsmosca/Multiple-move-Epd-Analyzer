@@ -21,7 +21,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.6.2'
+APP_VERSION = '0.6.3'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -943,7 +943,7 @@ def main():
             log_fn = log_fn.replace(*r)
         
         fh = logging.FileHandler(log_fn, mode='w')
-        formatter = logging.Formatter('[%(asctime)24s - %(name)s - %(levelname)8s ] %(message)s')
+        formatter = logging.Formatter('[%(asctime)24s - %(levelname)8s ] %(message)s')
         fh.setFormatter(formatter)
         logger.addHandler(fh)
 
