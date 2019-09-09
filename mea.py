@@ -21,7 +21,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.6.1'
+APP_VERSION = '0.6.2'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -395,7 +395,7 @@ class Analyze():
                                 %((time.perf_counter() - go_start) * 1000))
                     self.num_pos_tried += 1
                     bm = line.split()[1]
-                    bm = bm.strip()
+                    bm = bm.lower()
 
                     # Convert uci bestmove to san bestmove
                     tmp_board = chess.Board(fen)
