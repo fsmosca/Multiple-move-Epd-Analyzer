@@ -12,7 +12,6 @@ import subprocess
 from pathlib import Path
 import logging
 import time
-import statistics as stats
 import re
 import csv
 import argparse
@@ -22,7 +21,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.6'
+APP_VERSION = '0.6.1'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
