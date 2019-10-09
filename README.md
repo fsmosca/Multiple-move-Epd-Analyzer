@@ -35,10 +35,10 @@ Just download the exe file in Release link
 
 * Help
 ```
-usage: mea.py [-h] -i EPD [-o OUTPUT] -e ENGINE [--eoption EOPTION] -n NAME
-              [-t THREADS] [-m HASH] [-a MOVETIME] [-r RATING] [-p PROTOCOL]
-              [-s {0,1}] [--stmode {0,1}] [--protover {1,2}] [--infinite]
-              [--log]
+usage: mea.exe [-h] -i EPD [-o OUTPUT] -e ENGINE [--eoption EOPTION] -n NAME
+               [-t THREADS] [-m HASH] [-a MOVETIME] [-r RATING] [-p PROTOCOL]
+               [-s {0,1}] [--stmode {0,1}] [--protover {1,2}] [--infinite]
+               [--log] [--runenginefromcwd]
 
 Analyzes epd file having multiple solution moves with points
 
@@ -74,8 +74,9 @@ optional arguments:
   --infinite            Run uci engine with go infinite
   --log                 Records engine and analyzer output to [engine
                         name]_[movetime]_log.txt
+  --runenginefromcwd    Run engine from mea folder
 
-MEA v0.6
+MEA v0.6.5
 ```
 
 ### Credits
