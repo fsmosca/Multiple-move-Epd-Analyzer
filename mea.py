@@ -21,7 +21,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.6.4'
+APP_VERSION = '0.6.5'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -147,7 +147,7 @@ def csv_to_html(csvfn, htmlfn, epdfn):
 class Analyze():     
     def __init__(self, engine, fen_list, max_epd_cnt, movetime, num_threads,
                  num_hash, proto, name, san, stmode, protover, epd_output_fn,
-                 multipv, eoption, input_epd_name, infinite):
+                 multipv, eoption, input_epd_name, infinite, runenginefromcwd):
         self.engine = engine
         self.fen_list = fen_list # [fen, solutions, id]
         self.max_epd_cnt = max_epd_cnt
@@ -170,6 +170,7 @@ class Analyze():
         self.input_epd_name = input_epd_name
         self.depth = -1
         self.infinite = infinite
+        self.runenginefromcwd = runenginefromcwd
 
     def run(self):
         """ Run engine to analyze epd """
@@ -236,8 +237,8 @@ class Analyze():
         """ Start engine """
         logger.info('Run engine %s' % self.name)
         
-        # Run engine on the engine's folder and not from mea's folder
-        folder = Path(self.engine).parents[0]
+        # Run from engine's folder by default and not from mea's folder
+        folder = Path(self.engine).parents[0] if not self.runenginefromcwd else None
         
         # Python 3.7
         p = subprocess.Popen(self.engine, bufsize=1, stdin=subprocess.PIPE,
@@ -495,7 +496,7 @@ class Analyze():
         """ Start engine """
         logger.info('Run engine %s' % self.name)
         
-        folder = Path(self.engine).parents[0]
+        folder = Path(self.engine).parents[0] if not self.runenginefromcwd else None
         
         # Python 3.7
         p = subprocess.Popen(self.engine, bufsize=1, stdin=subprocess.PIPE,
@@ -517,7 +518,7 @@ class Analyze():
                     break
 
         logger.debug('>> post')
-        p.stdin.write('post\n')        
+        p.stdin.write('post\n')
 
         p.stdin.write('new\n')
         logger.debug('>> new')
@@ -526,7 +527,7 @@ class Analyze():
         logger.debug('>> hard')
 
         p.stdin.write('easy\n')
-        logger.debug('>> easy')        
+        logger.debug('>> easy')
 
         line_cnt = 0
         t1 = time.perf_counter()
@@ -897,6 +898,8 @@ def main():
     parser.add_argument('--log', help='Records engine and analyzer output ' +
                         'to [engine name]_[movetime]_log.txt',
                         action='store_true')
+    parser.add_argument('--runenginefromcwd', help='Run engine from mea folder',
+                        action='store_true')
 
     # Get values from arguments    
     args = parser.parse_args()
@@ -966,7 +969,7 @@ def main():
     a = Analyze(engine_fn, fen_list, good_epd_cnt, ana_time, engine_numthreads,
                  engine_numhash, proto, args.name, args.san, args.stmode,
                  args.protover, epd_output_fn, multipv, eoption, input_epd_name,
-                 args.infinite)
+                 args.infinite, args.runenginefromcwd)
     
     start_time = time.perf_counter()  # Python v3.3 and up
     a.run()
