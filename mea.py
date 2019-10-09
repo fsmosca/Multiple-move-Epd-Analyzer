@@ -21,7 +21,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.6.3'
+APP_VERSION = '0.6.4'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -328,21 +328,18 @@ class Analyze():
             p.stdin.write('position fen ' + fen + '\n')
             logger.debug('>> position fen ' + fen)
             
+            go_start = time.perf_counter()
             if self.depth >= 0:
                 p.stdin.write('go movetime %d depth %d\n' % (self.movetime, self.depth))
-                go_start = time.perf_counter()
                 logger.debug('>> go movetime %d depth %d' % (self.movetime, self.depth))
             # Send go infinite for engines that does not support movetime and/or depth properly
             elif self.infinite:
                 p.stdin.write('go infinite\n')
-                go_start = time.perf_counter()
                 logger.debug('>> go infinite')
             else:
                 p.stdin.write('go movetime %d\n' % (self.movetime))
-                go_start = time.perf_counter()
                 logger.debug('>> go movetime %d' % (self.movetime))
-                
-            start_t = time.perf_counter()
+
             stop_sent = False
 
             # Parse engine output
@@ -391,20 +388,22 @@ class Analyze():
                             score_cp_info = int(line.split('cp')[1].split()[0].strip())
 
                 if 'bestmove' in line:
-                    logger.info('elapsed(ms) since go: %0.0f'\
-                                %((time.perf_counter() - go_start) * 1000))
                     self.num_pos_tried += 1
                     bm = line.split()[1]
                     bm = bm.lower()
 
                     # Convert uci bestmove to san bestmove
                     tmp_board = chess.Board(fen)
-                    movesan = tmp_board.san(chess.Move.from_uci(bm))
-                    logger.info('bestmove: %s' % movesan)
+                    movesan = tmp_board.san(chess.Move.from_uci(bm)) 
+                    
+                    logger.info('elapsed(ms) since go: {:0.0f}'.format(
+                            (time.perf_counter() - go_start) * 1000))
+                    logger.info('bestmove: {}'.format(movesan))
+                    
                     self.update_score(fen_line[1], movesan)
                     break
                 
-                tdiff = (time.perf_counter() - start_t) * 1000
+                tdiff = (time.perf_counter() - go_start) * 1000
                 
                 # Send stop early if we re using go infinite
                 if not stop_sent and self.infinite and tdiff > 2*self.movetime//3:
@@ -590,8 +589,8 @@ class Analyze():
                         p.stdin.write('time %d\n' % (period*tpm_ms/10))
                         logger.debug('>> time %d' % (period*tpm_ms/10))
             
-            p.stdin.write('go\n')
             go_start = time.perf_counter()
+            p.stdin.write('go\n')
             logger.debug('>> go')
 
             # Parse engine output
@@ -599,8 +598,6 @@ class Analyze():
                 line = eline.strip()
                 logger.debug('<< %s' % (line))
                 if 'move' in line and len(line.split()) == 2:
-                    logger.info('elapsed(ms) since go: %0.0f' %(
-                            (time.perf_counter() - go_start) * 1000))
                     self.num_pos_tried += 1
                     bm = line.split()[1]
                     bm = bm.strip()
@@ -611,7 +608,10 @@ class Analyze():
                         # Convert uci bestmove to san bestmove
                         tmp_board = chess.Board(fen)
                         movesan = tmp_board.san(chess.Move.from_uci(bm))
-                        logger.info('bestmove: %s' % movesan)
+                    
+                    logger.info('elapsed(ms) since go: {:0.0f}'.format(
+                            (time.perf_counter() - go_start) * 1000))
+                    logger.info('bestmove: {}'.format(movesan))
 
                     self.update_score(fen_line[1], movesan)
                     break
