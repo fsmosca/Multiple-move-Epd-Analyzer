@@ -21,7 +21,7 @@ import cpuinfo
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.6.5'
+APP_VERSION = '0.7.0'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -330,9 +330,13 @@ class Analyze():
             logger.debug('>> position fen ' + fen)
             
             go_start = time.perf_counter()
-            if self.depth >= 0:
-                p.stdin.write('go movetime %d depth %d\n' % (self.movetime, self.depth))
-                logger.debug('>> go movetime %d depth %d' % (self.movetime, self.depth))
+            if self.depth > 0:
+                if self.movetime <= 0:
+                    p.stdin.write('go depth %d\n' % (self.depth))
+                    logger.debug('>> go depth %d' % (self.depth))
+                else:
+                    p.stdin.write('go movetime %d depth %d\n' % (self.movetime, self.depth))
+                    logger.debug('>> go movetime %d depth %d' % (self.movetime, self.depth))
             # Send go infinite for engines that does not support movetime and/or depth properly
             elif self.infinite:
                 p.stdin.write('go infinite\n')
