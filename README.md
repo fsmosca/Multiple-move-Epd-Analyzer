@@ -10,9 +10,9 @@ Sample [html output](https://fsmosca.github.io/Multiple-move-Epd-Analyzer/).
 ### Command line
 ```
 python mea.py --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" ^
---name "Deuterium v2019.1.36.50" --hash %HASH% ^
---rating 2773 --protocol uci --epd %EPD% --movetime %MT% ^
---output %OUTPUT% --log
+--name "Deuterium v2019.1.36.50" --hash 256 ^
+--rating 2773 --protocol uci --epd Openings200-mea.epd --movetime 1000 ^
+--output Openings200-mea.txt --log
 ```
 
 ### Dependent modules
