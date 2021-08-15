@@ -3,6 +3,8 @@ Analyzes epd file having multiple solution moves with points and generates text 
 
 Sample [html output](https://fsmosca.github.io/Multiple-move-Epd-Analyzer/).
 
+![html-output](https://user-images.githubusercontent.com/22366935/129468957-13cbcd87-ddc5-4abc-87dc-b4add13a1f61.png)
+
 ### Dependent modules
 * Python-chess <br>
 https://github.com/niklasf/python-chess <br>
