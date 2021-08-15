@@ -1,8 +1,8 @@
 set MT=1000
 set HASH=256
 set THREADS=1
-set OUTPUT=2-moves.txt
-set EPD=.\epd\2-moves.epd
+set OUTPUT=Openings200-mea.txt
+set EPD=.\epd\Openings200-mea.epd
 
 :: MT is movetime in milliseconds
 
@@ -10,11 +10,26 @@ mea.exe --help >help.txt
 
 :: A. uci engine
 
+python mea.py --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" ^
+--name "Deuterium v2019.1.36.50" --hash %HASH% ^
+--rating 2773 --protocol uci --epd %EPD% --movetime %MT% ^
+--output %OUTPUT% --log
+
+
+python mea.py --engine ".\engines\Deuterium_v2019.2.37.73_64bit_pop.exe" ^
+--name "Deuterium v2019.2.37.73" --hash %HASH% ^
+--rating 2824 --protocol uci --epd %EPD% --movetime %MT% ^
+--output %OUTPUT% --log
+
+goto end
+
+
 :: (1) Example with depth limit and multipv
-mea.exe --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" ^
---name "Deuterium v2019.1.36.50" --hash %HASH% --eoption "depth=12, multipv=3" ^
+python mea.py --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" ^
+--hash %HASH% --eoption "depth=12, multipv=3" ^
 --rating 2850 --protocol uci --epd %EPD% --movetime %MT% ^
 --output %OUTPUT% --log
+
 
 :: (2) Example with single thread and other engine specific option
 :: mea.exe --engine "C:\chess\engines\stockfish\stockfish_10.exe" ^
@@ -47,5 +62,6 @@ mea.exe --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" ^
 :: --name "Dirty CUCUMBER" --hash %HASH% --protocol xboard --protover 2 --stmode 1 ^
 :: --rating 2800 --epd %EPD% --movetime %MT% --output %OUTPUT% --log
 
+:end
 
 pause
