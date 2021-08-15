@@ -1,9 +1,19 @@
 # Multiple-move Epd Analyzer
 Analyzes epd file having multiple solution moves with points and generates text and html output files.
 
+### Sample output
+
 Sample [html output](https://fsmosca.github.io/Multiple-move-Epd-Analyzer/).
 
 ![html-output](https://user-images.githubusercontent.com/22366935/129468957-13cbcd87-ddc5-4abc-87dc-b4add13a1f61.png)
+
+### Command line
+```
+python mea.py --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" ^
+--name "Deuterium v2019.1.36.50" --hash %HASH% ^
+--rating 2773 --protocol uci --epd %EPD% --movetime %MT% ^
+--output %OUTPUT% --log
+```
 
 ### Dependent modules
 * Python-chess <br>
