@@ -15,13 +15,13 @@ import time
 import re
 import csv
 import argparse
+
 import chess
-import cpuinfo
 
 
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.7.0'
+APP_VERSION = '0.8.0'
 APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
 
 
@@ -78,8 +78,6 @@ def csv_to_html(csvfn, htmlfn, epdfn):
     else:
         epd_fn_name = epdfn
     
-    info = cpuinfo.get_cpu_info()
-    
     # Open the CSV file for reading
     reader = csv.reader(open(csvfn))
 
@@ -106,12 +104,7 @@ def csv_to_html(csvfn, htmlfn, epdfn):
 
     htmlfile.write('<h3>%s</h3>\n' %(APP_NAME))
 
-    htmlfile.write('<strong>A. Processor:</strong><br>\n')
-    htmlfile.write('Brand: %s<br>\n' %(info['brand']))
-    htmlfile.write('Arch: %s<br>\n' %(info['arch']))
-    htmlfile.write('Cores: %s<br><br>\n' %(info['count']))
-
-    htmlfile.write('<strong>B. EPD test set:</strong><br>\n')
+    htmlfile.write('<strong>A. EPD test set:</strong><br>\n')
     htmlfile.write('Filename: %s<br><br>\n' %(epd_fn_name))
 
     # write <table> tag
@@ -730,26 +723,20 @@ def write_results_summary(out_fn, data, threadsval, hashval, movetime,
     """ Write results summary in text format """
     if not os.path.isfile(out_fn):
         with open(out_fn, 'a') as f:
-            info = cpuinfo.get_cpu_info()
-            f.write('A. Processor\n')
-            f.write('Brand          : %s\n' % (info['brand']))
-            f.write('Arch           : %s\n' % (info['arch']))
-            f.write('Count          : %s\n\n' % (info['count']))
-            
-            f.write('B. Engine settings\n')
+            f.write('A. Engine settings\n')
             
             f.write('Threads        : %d\n' % threadsval)
             f.write('Hash (mb)      : %d\n' % hashval)
             f.write('Time(s)/pos    : %0.1f\n\n' % (float(movetime)/1000))
 
 
-            f.write('C. Test set\n')            
+            f.write('B. Test set\n')
            
             f.write('Filename       : %s\n' % input_epd_file)
             f.write('NumPos         : %s\n\n' % good_epd_cnt)
 
 
-            f.write('D. Results\n')
+            f.write('C. Results\n')
             
             f.write('%-32s : %6s  %5s  %7s  %8s  %5s  %8s  %9s\n' % (
                     'Engine', 'Rating', 'Top1', 'MaxTop1', 'Top1Rate',
