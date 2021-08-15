@@ -11,14 +11,20 @@ Get processor info, brand and number of cores
 
 ### Installation
 #### Run using the source
-* Python 3.7 and up for mea v0.5 and up otherwise Python 3.6  
-https://www.python.org/downloads/  
+* Python 3.7 and up  
+  for mea v0.5 and up  
+  https://www.python.org/downloads/  
+* Python 3.6  
+  for mea below 0.5
+  
 * Python-chess  
 https://github.com/niklasf/python-chess  
 pip install python-chess
+
 * Py-cpuinfo  
 https://github.com/workhorsy/py-cpuinfo  
-python -m pip install -U py-cpuinfo
+pip install py-cpuinfo
+
 * mea.py  
 https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 
