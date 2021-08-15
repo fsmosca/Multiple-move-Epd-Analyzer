@@ -1,13 +1,10 @@
 # Multiple-move Epd Analyzer
-Analyzes epd file having multiple solution moves with points
+Analyzes epd file having multiple solution moves with points and generates text and html output files.
 
 ### Dependent modules
 * Python-chess <br>
 https://github.com/niklasf/python-chess <br>
 Converts uci move format to san move format
-* Py-cpuinfo <br>
-https://github.com/workhorsy/py-cpuinfo <br>
-Get processor info, brand and number of cores
 
 ### Installation
 #### Run using the source
@@ -21,10 +18,6 @@ Get processor info, brand and number of cores
 https://github.com/niklasf/python-chess  
 pip install python-chess
 
-* Py-cpuinfo  
-https://github.com/workhorsy/py-cpuinfo  
-pip install py-cpuinfo
-
 * mea.py  
 https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 
@@ -32,12 +25,16 @@ https://github.com/fsmosca/Multiple-move-Epd-Analyzer
 Just download the exe file in Release link
 
 ### Getting started
-* Example command line
-`mea.exe --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" --name "Deuterium v2019.1.36.50" --epd ".\epd\openings200-mea.epd" --log`
+* Example command line  
+Run uci engine at 1s per position.
+```
+python mea.py --engine ".\engines\Deuterium_v2019.1.36.50_x64_pop.exe" --name "Deuterium v2019.1.36.50" --epd ".\epd\openings200-mea.epd" --hash 256 --movetime 1000 --log
+```
 
 * Output files
-1. log output file will be moved to log folder <br>
-2. epd output file will be moved to epd_out folder <br>
+1. log output file will be moved to log folder  
+2. epd output file will be moved to epd_out folder  
+3. html file
 
 * Help
 ```
@@ -87,9 +84,7 @@ MEA v0.6.5
 
 ### Credits
 * Python-chess <br>
-https://github.com/niklasf/python-chess <br>
-* Py-cpuinfo <br>
-https://github.com/workhorsy/py-cpuinfo <br>
+https://github.com/niklasf/python-chess  
 * Kai Laskos  
 openings200.epd
 * Sedat Canbaz  
