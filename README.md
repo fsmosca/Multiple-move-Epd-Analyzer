@@ -1,6 +1,8 @@
 # Multiple-move Epd Analyzer
 Analyzes epd file having multiple solution moves with points and generates text and html output files.
 
+Sample [html output](https://fsmosca.github.io/Multiple-move-Epd-Analyzer/).
+
 ### Dependent modules
 * Python-chess <br>
 https://github.com/niklasf/python-chess <br>
