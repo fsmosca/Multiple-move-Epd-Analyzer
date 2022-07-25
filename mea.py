@@ -19,10 +19,12 @@ import argparse
 import chess
 
 
+__version__ = '1.0'
+
+
 APP_NAME = 'MEA'
 APP_DESC = 'Analyzes epd file having multiple solution moves with points'
-APP_VERSION = '0.8.0'
-APP_NAME_VERSION = APP_NAME + ' v' + APP_VERSION
+APP_NAME_VERSION = APP_NAME + ' v' + __version__
 
 
 # Create logger
@@ -339,6 +341,7 @@ class Analyze():
                 logger.debug('>> go movetime %d' % (self.movetime))
 
             stop_sent = False
+            max_depth = 1
 
             # Parse engine output
             for eline in iter(p.stdout.readline, ''):
@@ -348,34 +351,37 @@ class Analyze():
                     and not 'upperbound' in line \
                     and not 'lowerbound' in line) or 'bestmove' in line:
                     logger.debug('<< %s' % line)
-                
+
                 if self.multipv >= 2:
-                    for i in range(1, self.multipv + 1, 1):
-                        if 'multipv ' + str(i) in line:
-                            if 'score' in line and 'depth' in line and 'pv' in line \
-                                and not 'upperbound' in line \
-                                and not 'lowerbound' in line:
-                                if 'score mate' in line:
-                                    distance_to_mate = int(line.split('mate')[1].split()[0].strip())
-                                    score_cp_info = self.mate_distance_to_value(distance_to_mate)
-                                elif 'cp' in line:
-                                    score_cp_info = int(line.split('cp')[1].split()[0].strip())
-                                    
-                                depth_info = int(line.split('depth')[1].split()[0])
-                                
-                                pv_info_first_move = line.split(' pv')[1].strip().split()[0]
-                                tmp_board = chess.Board(fen)
-                                
-                                # Convert move from uci to san move format
-                                pv_move_san = tmp_board.san(chess.Move.from_uci(pv_info_first_move))
-                                
-                                dict_value = {i: {'score': score_cp_info, 'depth': depth_info, 'bm': pv_move_san}}
-                                search_info.update(dict_value)
+                    if ('score' in line and 'depth' in line and 'pv' in line
+                            and not 'upperbound' in line
+                            and not 'lowerbound' in line
+                            and 'multipv' in line):
+                        if 'score mate' in line:
+                            distance_to_mate = int(line.split('mate')[1].split()[0].strip())
+                            score_cp_info = self.mate_distance_to_value(distance_to_mate)
+                        elif 'cp' in line:
+                            score_cp_info = int(line.split('cp')[1].split()[0].strip())
+                            
+                        depth_info = int(line.split('depth')[1].split()[0])
+                        mpv_info = int(line.split('multipv')[1].split()[0])
+                        key = f'd{depth_info}_mpv{mpv_info}'
+
+                        pv_info_first_move = line.split(' pv')[1].strip().split()[0]
+                        tmp_board = chess.Board(fen)
+                        
+                        # Convert move from uci to san move format
+                        pv_move_san = tmp_board.san(chess.Move.from_uci(pv_info_first_move))
+                        
+                        dict_value = {key: {'score': score_cp_info, 'depth': depth_info, 'bm': pv_move_san}}
+                        search_info.update(dict_value)
+                        max_depth = max(depth_info, max_depth)
                                 
                 elif 'depth' in line or 'score' in line:                    
                     # Get depth, assume depth first before seldepth
                     if 'depth' in line:
                         depth_info = int(line.split('depth')[1].split()[0])
+                        max_depth = max(depth_info, max_depth)
                     
                     # Get score
                     if 'score' in line:
@@ -402,7 +408,7 @@ class Analyze():
                     break
                 
                 tdiff = (time.perf_counter() - go_start) * 1000
-                
+
                 # Send stop early if we re using go infinite
                 if not stop_sent and self.infinite and tdiff > 2*self.movetime//3:
                     stop_sent = True
@@ -414,6 +420,12 @@ class Analyze():
                     stop_sent = True
                     p.stdin.write('stop\n')
                     logger.debug('>> stop')
+
+            # Clean mpv result, save the last depth with complete mpv as
+            # there are engines that do not complete the mpv at certain depth.
+            fdata = []
+            if self.multipv >= 2:
+                fdata = get_mpv_data(search_info, max_depth)
                     
             epd = ' '.join(fen_line[0].split()[0:4])
             
@@ -424,22 +436,22 @@ class Analyze():
             
             # Save epd with ce and acd
             # (1) Multipv is 1
-            if self.multipv == 1:
+            if self.multipv <= 1:
                 with open(self.epd_output_fn, 'a') as h:
                     h.write('%s bm %s; ce %d; acd %d;\n' % (
                             epd, movesan, score_cp_info, depth_info))
                 logger.info('%s bm %s; ce %d; acd %d;' % (epd, movesan,
                                                 score_cp_info, depth_info))
             else:
-                for i in range(1, len(search_info)+1, 1):
-                    id_operand = self.input_epd_name + ' pos ' + str(line_cnt) + ' MultiPV=' + str(i)
+                for i, v in enumerate(fdata):
+                    id_operand = self.input_epd_name + ' pos ' + str(line_cnt) + ' MultiPV=' + str(i+1)
                     with open(self.epd_output_fn, 'a') as h:
                         h.write('%s id \"%s\"; bm %s; ce %d; acd %d;\n' % (
-                                epd, id_operand, search_info[i]['bm'], search_info[i]['score'],
-                                search_info[i]['depth']))
+                                epd, id_operand, v[i+1]['bm'], v[i+1]['score'],
+                                v[i+1]['depth']))
                     logger.info('%s id \"%s\"; bm %s; ce %d; acd %d;' % (
-                            epd, id_operand, search_info[i]['bm'], search_info[i]['score'],
-                            search_info[i]['depth']))
+                            epd, id_operand, v[i+1]['bm'], v[i+1]['score'],
+                            v[i+1]['depth']))
 
         # Quit engine when all fen are analyzed
         p.stdin.write('quit\n')
@@ -660,6 +672,44 @@ class Analyze():
         print('ActualTime       : %0.1fs' %(float(ActualElapsedTime)/1000))
         print('TimeMargin/pos   : %0.1fs' %(float(timeMarginPerPos)/1000))
         print('TimeMarginTotal  : %0.1fs' %(float(timeMargin)/1000))
+
+
+def get_mpv_data(search_info, max_depth):
+    """Clean multipv search data.
+    """
+    # Get the number of mpv at depth 1 or next depth.
+    d1_cnt = 0
+    for i in range(1, 100):
+        if d1_cnt > 0:
+            break
+        for k, v in search_info.items():
+            if f'd{i}_mpv' in k:
+                d1_cnt += 1
+    # Find the last depth with complete mpv.
+    iscut, depth_complete, last_i = False, 1, 1
+    for i in range(1, max_depth+1):
+        sk = f'd{i}_mpv'
+        cnt = 0
+        last_i = i
+        for k, v in search_info.items():
+            if sk in k:
+                cnt += 1
+        if cnt < d1_cnt and cnt != 0:
+            # This is not a complete mpv.
+            depth_complete = i-1
+            iscut = True
+            break
+    if not iscut:
+        # All depth have complete mpv.
+        depth_complete = last_i
+
+    # Save search info for last depth with complete mpv.
+    cnt, fdata = 0, []
+    for k, v in search_info.items():
+        if f'd{depth_complete}_mpv' in k:
+            cnt += 1
+            fdata.append({cnt: v})
+    return fdata
 
 
 def create_epd_list(epd_fn):
@@ -891,6 +941,7 @@ def main():
                         action='store_true')
     parser.add_argument('--runenginefromcwd', help='Run engine from mea folder',
                         action='store_true')
+    parser.add_argument('--version', '-V', action='version', version=f"{__version__}")
 
     # Get values from arguments    
     args = parser.parse_args()
