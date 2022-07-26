@@ -20,6 +20,7 @@ import chess
 
 
 __version__ = '1.0'
+__credits__ = ['majkelnowaq']
 
 
 APP_NAME = 'MEA'
