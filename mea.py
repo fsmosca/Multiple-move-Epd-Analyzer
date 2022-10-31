@@ -19,7 +19,7 @@ import argparse
 import chess
 
 
-__version__ = '1.0'
+__version__ = '1.1'
 __credits__ = ['majkelnowaq']
 
 
@@ -751,9 +751,19 @@ def create_epd_list(epd_fn):
                 logger.warning('The following epd has no solution pts. epd: {}'.format(epd_line))
                 logger.warning('This position is not included.')
                 continue
-            
-            # Hack ignore the hmvc and fmvn
-            fen = epd + ' 0 1'
+
+            # Check if epd has hmvc. If there is, add it to the FEN.
+            # r3r1k1/1p2qpp1/1bp2n1p/2n1pP2/p5P1/B6P/PPPNQPB1/R2R2K1 b - - bm e4; hmvc 60;
+            # hmvc = half-move clock
+            # fmvn = full-move number
+            hmvc, fmvn = 0, 1
+            try:
+                hmvc = re.search('hmvc\s(.*?);', epd_line).group(1)
+            except AttributeError:
+                pass
+
+            # r3r1k1/1p2qpp1/1bp2n1p/2n1pP2/p5P1/B6P/PPPNQPB1/R2R2K1 b - - 60 1            
+            fen = f'{epd} {hmvc} {fmvn}'
 
             # Get id
             epd_id = None
