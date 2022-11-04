@@ -19,7 +19,7 @@ import argparse
 import chess
 
 
-__version__ = '1.1'
+__version__ = '1.2'
 __credits__ = ['majkelnowaq']
 
 
@@ -168,13 +168,17 @@ class Analyze():
         self.infinite = infinite
         self.runenginefromcwd = runenginefromcwd
 
+    def command(self, p, com):
+        logger.debug(f'>> {com}')
+        p.stdin.write(f'{com}\n')
+
     def run(self):
         """ Run engine to analyze epd """
         if self.proto == 'xboard':
             self.run_xb_engine()
         else:
             self.run_uci_engine()
-            
+
     def update_score(self, fen_line, movesan):
         """ Update score of the engine """
         bests = fen_line # Nd2=10, h3=7, Be2=6
@@ -241,8 +245,7 @@ class Analyze():
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                              universal_newlines=True, cwd=folder)
         
-        p.stdin.write('uci\n')
-        logger.debug('>> uci')
+        self.command(p, 'uci')
         
         for eline in iter(p.stdout.readline, ''):
             line = eline.strip()
@@ -250,15 +253,11 @@ class Analyze():
             if 'uciok' in line:
                 break
 
-        # Threads
-        p.stdin.write('setoption name threads value %d\n' % self.num_threads)
-        logger.debug('>> setoption name threads value %d' % self.num_threads)
-
-        # Hash in mb
-        p.stdin.write('setoption name Hash value %d\n' % self.num_hash)
-        logger.debug('>> setoption name Hash value %d' % self.num_hash)
+        # Set engine options Hash in mb and Threads.
+        self.command(p, f'setoption name Threads value {self.num_threads}')
+        self.command(p, f'setoption name Hash value {self.num_hash}')
         
-        # Other options
+        # Set other options from --eoption.
         # 'Futility Pruning=true, lmr=false, contempt=false'
         if self.eoption is not None:
             opt_list = self.eoption.split(',')
@@ -274,13 +273,10 @@ class Analyze():
                     continue
                 
                 # Set it
-                p.stdin.write('setoption name %s value %s\n' % (name, value))
-                logger.debug('>> setoption name %s value %s' % (name, value))
+                self.command(p, f'setoption name {name} value {value}')
         
-        # Prepare engine
-        p.stdin.write('isready\n')
-        logger.debug('>> isready')
-                
+        # Prepare engine.
+        self.command(p, 'isready')                
         for eline in iter(p.stdout.readline, ''):
             aa = eline.strip()
             if 'readyok' in aa:
@@ -309,37 +305,37 @@ class Analyze():
             score_cp_info = -32000
             fen = fen_line[0]
             movesan = None
-            
-            p.stdin.write('ucinewgame\n')
-            logger.debug('>> ucinewgame')
-            
-            # Prepare engine
-            p.stdin.write('isready\n')
-            logger.debug('>> isready')
-                    
+
+            # Prepare the engine.
+            self.command(p, 'ucinewgame')
+
+            self.command(p, 'isready')
             for eline in iter(p.stdout.readline, ''):
                 if 'readyok' in eline:
                     logger.debug('<< readyok')
                     break
 
-            p.stdin.write('position fen ' + fen + '\n')
-            logger.debug('>> position fen ' + fen)
+            # Send the position.
+            self.command(p, f'position fen {fen}')
+
+            # Send isready again to make sure we are in sync with the engine.
+            self.command(p, 'isready')
+            for eline in iter(p.stdout.readline, ''):
+                if 'readyok' in eline:
+                    logger.debug('<< readyok')
+                    break
             
             go_start = time.perf_counter()
             if self.depth > 0:
                 if self.movetime <= 0:
-                    p.stdin.write('go depth %d\n' % (self.depth))
-                    logger.debug('>> go depth %d' % (self.depth))
+                    self.command(p, f'go depth {self.depth}')
                 else:
-                    p.stdin.write('go movetime %d depth %d\n' % (self.movetime, self.depth))
-                    logger.debug('>> go movetime %d depth %d' % (self.movetime, self.depth))
+                    self.command(p, f'go movetime {self.movetime} depth {self.depth}')
             # Send go infinite for engines that does not support movetime and/or depth properly
             elif self.infinite:
-                p.stdin.write('go infinite\n')
-                logger.debug('>> go infinite')
+                self.command(p, 'go infinite')
             else:
-                p.stdin.write('go movetime %d\n' % (self.movetime))
-                logger.debug('>> go movetime %d' % (self.movetime))
+                self.command(p, f'go movetime {self.movetime}')
 
             stop_sent = False
             max_depth = 1
@@ -413,14 +409,12 @@ class Analyze():
                 # Send stop early if we re using go infinite
                 if not stop_sent and self.infinite and tdiff > 2*self.movetime//3:
                     stop_sent = True
-                    p.stdin.write('stop\n')
-                    logger.debug('>> stop')
+                    self.command(p, 'stop')
 
                 # There are engines that does not follow movetime so we stop it
                 if not stop_sent and tdiff - self.stop_time_margin_ms >= self.movetime:
                     stop_sent = True
-                    p.stdin.write('stop\n')
-                    logger.debug('>> stop')
+                    self.command(p, 'stop')
 
             # Clean mpv result, save the last depth with complete mpv as
             # there are engines that do not complete the mpv at certain depth.
@@ -454,9 +448,8 @@ class Analyze():
                             epd, id_operand, v[i+1]['bm'], v[i+1]['score'],
                             v[i+1]['depth']))
 
-        # Quit engine when all fen are analyzed
-        p.stdin.write('quit\n')
-        logger.debug('>> quit')
+        # Quit engine when all FEN's are analyzed.
+        self.command(p, 'quit')
         
         # Terminate engine process when engine does not quit after quit command        
         try:
@@ -513,13 +506,11 @@ class Analyze():
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                              universal_newlines=True, cwd=folder)
         
-        p.stdin.write('xboard\n')
-        logger.debug('>> xboard')
+        self.command(p, 'xboard')
 
         # Wait for done=1, applies for protover 2 only
         if self.protover == 2:
-            p.stdin.write('protover 2\n')
-            logger.debug('>> protover 2')
+            self.command(p, 'protover 2')
 
             for eline in iter(p.stdout.readline, ''):
                 line = eline.strip()
@@ -527,17 +518,10 @@ class Analyze():
                 if 'done=1' in line:                    
                     break
 
-        logger.debug('>> post')
-        p.stdin.write('post\n')
-
-        p.stdin.write('new\n')
-        logger.debug('>> new')
-
-        p.stdin.write('hard\n')
-        logger.debug('>> hard')
-
-        p.stdin.write('easy\n')
-        logger.debug('>> easy')
+        self.command(p, 'post')
+        self.command(p, 'new')
+        self.command(p, 'hard')
+        self.command(p, 'easy')
 
         line_cnt = 0
         t1 = time.perf_counter()
@@ -558,23 +542,16 @@ class Analyze():
             # depth = 0
             fen = fen_line[0]
             
-            p.stdin.write('new\n')
-            logger.debug('>> new')
-
-            p.stdin.write('force\n')
-            logger.debug('>> force')
-            
-            p.stdin.write('setboard %s\n' % fen)
-            logger.debug('>> setboard %s' % fen)
+            self.command(p, 'new')
+            self.command(p, 'force')            
+            self.command(p, f'setboard {fen}')
 
             # Use st
             if self.stmode:
                 if self.movetime < 1000:
-                    p.stdin.write('st %0.1f\n' % (self.movetime/1000.0))
-                    logger.debug('>> st %0.1f' % (self.movetime/1000.0))
+                    self.command(p, f'st {self.movetime/1000.0:0.1f}')
                 else:
-                    p.stdin.write('st %0.0f\n' % (self.movetime/1000.0))
-                    logger.debug('>> st %0.0f' % (self.movetime/1000.0))
+                    self.command(p, f'st {self.movetime/1000.0:0.0f}')
             # Use level
             else:
                 period = 40
@@ -582,27 +559,19 @@ class Analyze():
                 tpm_s = period * tpm_ms/1000  # sec
                 m, s = divmod(tpm_s, 60)
                 if s == 0:
-                    p.stdin.write('level %d %d 0\n' % (period, m))
-                    logger.debug('>> level %d %d 0' % (period, m))
-                    
-                    p.stdin.write('time %d\n' % (period*tpm_ms/10))  # in centisec
-                    logger.debug('>> time %d' % (period*tpm_ms/10))
+                    self.command(p, f'level {period} {m} 0')                    
+                    self.command(p, f'time {period*tpm_ms/10}')  # in centisec
                 else:
                     # EXchess does not like m:n notation for min:sec in level
                     if 'exchess' in self.name.lower():
-                        p.stdin.write('level %d %d 0\n' % (period, max(1, m)))
-                        logger.debug('>> level %d %d 0' % (period, max(1, m)))                    
-                        p.stdin.write('time %d\n' % (period*tpm_ms/10))
-                        logger.debug('>> time %d' % (period*tpm_ms/10))
+                        self.command(p, f'level {period} {max(1, m)} 0')               
+                        self.command(p, f'time {period*tpm_ms/10}')
                     else:
-                        p.stdin.write('level %d %d:%d 0\n' % (period, m, s))
-                        logger.debug('>> level %d %d:%d 0' % (period, m, s))
-                        p.stdin.write('time %d\n' % (period*tpm_ms/10))
-                        logger.debug('>> time %d' % (period*tpm_ms/10))
+                        self.command(p, f'level {period} {m}:{s} 0')
+                        self.command(p, f'time {period*tpm_ms/10}')
             
             go_start = time.perf_counter()
-            p.stdin.write('go\n')
-            logger.debug('>> go')
+            self.command(p, 'go')
 
             # Parse engine output
             for eline in iter(p.stdout.readline, ''):
@@ -633,9 +602,7 @@ class Analyze():
                 with open(self.epd_output_fn, 'a') as h:
                     h.write('%s bm %s;\n' % (epd, movesan))
 
-        # Quit engine when all fen are analyzed
-        p.stdin.write('quit\n')
-        logger.debug('>> quit')
+        self.command(p, 'quit')
         
         try:
             p.communicate(timeout=5)
