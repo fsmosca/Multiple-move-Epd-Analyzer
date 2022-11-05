@@ -19,7 +19,7 @@ import argparse
 import chess
 
 
-__version__ = '1.2'
+__version__ = '1.3'
 __credits__ = ['majkelnowaq']
 
 
@@ -374,7 +374,7 @@ class Analyze():
                         search_info.update(dict_value)
                         max_depth = max(depth_info, max_depth)
                                 
-                elif 'depth' in line or 'score' in line:                    
+                elif ('depth' in line or 'score' in line) and 'pv' in line:
                     # Get depth, assume depth first before seldepth
                     if 'depth' in line:
                         depth_info = int(line.split('depth')[1].split()[0])
